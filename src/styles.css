@@ -1,0 +1,44 @@
+@import "../node_modules/primeng/resources/themes/tailwind-light/theme.css";
+@import "../node_modules/primeng/resources/primeng.css";
+@import "../node_modules/primeicons/primeicons.css";
+@import "../node_modules/primeflex/primeflex.css";
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  min-height: 100%;
+  font-family: var(--font-family);
+}
+
+/* Custom header table */
+.p-datatable .p-datatable-header {
+  background: transparent;
+  border: none;
+}
+
+.p-datatable.p-datatable-sm .p-datatable-header {
+  padding: 2rem 0;
+}
+
+/* Custom paginator */
+.p-datatable .p-paginator {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0px;
+  border: none;
+}
+
+/* Custom menu */
+.p-menu .p-submenu-header {
+  color: #212529;
+  background: transparent;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+  border: none;
+}

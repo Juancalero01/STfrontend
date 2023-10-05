@@ -1,0 +1,175 @@
+<div class="w-full h-full flex flex-column">
+  <div class="flex align-items-center justify-content-between">
+    <div>
+      <button
+        pButton
+        icon="pi pi-plus"
+        class="p-button-info p-button-success"
+        (click)="createProduct()"
+      ></button>
+    </div>
+    <div>
+      <div class="p-inputgroup">
+        <input
+          type="text"
+          pInputText
+          placeholder="Buscar por número de serie"
+          class="w-20rem"
+        />
+        <button
+          type="button"
+          pButton
+          icon="pi pi-search"
+          class="p-button-sm p-button-info"
+        ></button>
+      </div>
+    </div>
+  </div>
+  <p-tabView styleClass="my-4">
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <i class="pi pi-info-circle mr-2"></i>
+        <span>Información</span>
+      </ng-template>
+    </p-tabPanel>
+    <p-tabPanel header="Header II">
+      <ng-template pTemplate="header">
+        <i class="pi pi-cog mr-2"></i>
+        <span>Servicio técnico</span>
+      </ng-template>
+    </p-tabPanel>
+  </p-tabView>
+  <!-- <p-table
+    #dt
+    [value]="productData"
+    [rows]="10"
+    [rowHover]="true"
+    [paginator]="true"
+    [globalFilterFields]="['serial']"
+    [scrollable]="true"
+    [rowsPerPageOptions]="[10, 25, 50, 100]"
+    scrollHeight="640px"
+    styleClass="p-datatable-striped p-datatable-gridlines"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="w-15rem">Número de serie</th>
+        <th>
+          <div class="flex align-items-center justify-content-between">
+            Razón Social
+            <p-columnFilter
+              field="client"
+              matchMode="in"
+              display="chip"
+              [showMatchModes]="false"
+              [showOperator]="false"
+              [showAddButton]="false"
+              [showApplyButton]="false"
+              [showClearButton]="false"
+            >
+              <ng-template
+                pTemplate="filter"
+                let-value
+                let-filter="filterCallback"
+              >
+                <p-multiSelect
+                  [ngModel]="value"
+                  [options]="clientData"
+                  [showToggleAll]="false"
+                  optionLabel="name"
+                  placeholder="Filtrar por razón social"
+                  emptyFilterMessage="No hay resultados"
+                  (onChange)="filter($event.value)"
+                >
+                  <ng-template let-client pTemplate="item">
+                    <span>{{ client.name }}</span>
+                  </ng-template>
+                </p-multiSelect>
+              </ng-template>
+            </p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="flex align-items-center justify-content-between">
+            <span>Tipo de producto</span>
+            <p-columnFilter
+              field="productType"
+              matchMode="in"
+              display="chip"
+              [showMatchModes]="false"
+              [showOperator]="false"
+              [showAddButton]="false"
+              [showApplyButton]="false"
+              [showClearButton]="false"
+            >
+              <ng-template
+                pTemplate="filter"
+                let-value
+                let-filter="filterCallback"
+              >
+                <p-multiSelect
+                  [ngModel]="value"
+                  [options]="productTypeData"
+                  [showToggleAll]="false"
+                  optionLabel="name"
+                  placeholder="Filtrar por tipo de producto"
+                  emptyFilterMessage="No hay resultados"
+                  (onChange)="filter($event.value)"
+                >
+                  <ng-template let-productType pTemplate="item">
+                    <span>{{ productType.name }}</span>
+                  </ng-template>
+                </p-multiSelect>
+              </ng-template>
+            </p-columnFilter>
+          </div>
+        </th>
+        <th class="w-15rem">Fecha de envio</th>
+        <th class="w-15rem">Acciones</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-product>
+      <tr>
+        <td>{{ product.serial }}</td>
+        <td>{{ product.client.name }}</td>
+        <td>{{ product.productType.name }}</td>
+        <td>{{ product.deliveryDate | date : "dd/MM/yyyy" }}</td>
+        <td>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-pencil"
+            class="p-button-rounded p-button-text font-medium p-button-secondary"
+            (click)="updateProduct(product)"
+          ></button>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-trash"
+            class="p-button-rounded p-button-text font-medium p-button-danger"
+            (click)="deleteProduct(product.id)"
+          ></button>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-history"
+            class="p-button-rounded p-button-text font-medium p-button-help"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5">
+          <div class="flex gap-2 align-items-center">
+            <i class="pi pi-info-circle"></i>
+            <span class="font-medium">Sin resultados</span>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table> -->
+</div>
+<p-confirmDialog />
+<p-toast position="bottom-right" />

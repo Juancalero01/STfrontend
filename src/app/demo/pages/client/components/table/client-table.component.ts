@@ -1,0 +1,80 @@
+import { Component } from '@angular/core';
+import { Table } from 'primeng/table';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ClientFormComponent } from '../form/client-form.component';
+import { ClientService } from '../../../../api/services/client.service';
+import { IClient } from '../../../../api/interfaces/client.interface';
+import { MessageService } from 'primeng/api';
+
+@Component({
+  selector: 'app-client-table',
+  templateUrl: './client-table.component.html',
+})
+export class ClientTableComponent {
+  constructor(
+    private readonly clientService: ClientService,
+    private readonly dialogService: DialogService,
+    private readonly messageService: MessageService
+  ) {}
+
+  public clientData: IClient[] = [];
+  public ref: DynamicDialogRef = new DynamicDialogRef();
+
+  public ngOnInit(): void {
+    this.loadClients();
+  }
+
+  public ngDestroy(): void {
+    if (this.ref) this.ref.close();
+  }
+
+  private loadClients(): void {
+    this.clientService.findAll().subscribe({
+      next: (clients: IClient[]) => (this.clientData = clients),
+      error: (e: Error) =>
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: e.message,
+        }),
+    });
+  }
+
+  public createClient() {
+    this.ref = this.dialogService.open(ClientFormComponent, {
+      header: 'FORMULARIO DE REGISTRO DE CLIENTE',
+      width: '50%',
+      closable: false,
+      closeOnEscape: false,
+      dismissableMask: false,
+      showHeader: true,
+      position: 'center',
+    });
+
+    this.ref.onClose.subscribe(() => {
+      this.loadClients();
+    });
+  }
+
+  public updateClient(client: IClient) {
+    this.ref = this.dialogService.open(ClientFormComponent, {
+      header: 'FORMULARIO DE ACTUALIZACIÓN DE CLIENTE',
+      width: '50%',
+      closable: false,
+      closeOnEscape: false,
+      dismissableMask: false,
+      showHeader: true,
+      position: 'center',
+      data: client,
+    });
+
+    this.ref.onClose.subscribe(() => {
+      this.loadClients();
+    });
+  }
+
+  public cleanFilters(table: Table, filter: any) {
+    table.clear();
+    filter.value = '';
+  }
+}

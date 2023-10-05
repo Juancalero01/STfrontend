@@ -1,0 +1,176 @@
+<form class="flex flex-wrap gap-3" [formGroup]="clientForm">
+  <div class="flex flex-column w-full">
+    <label>NOMBRE / RAZÓN SOCIAL</label>
+    <input
+      pInputText
+      formControlName="taxpayerName"
+      maxlength="150"
+      class="w-full"
+      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('taxpayerName') }"
+    />
+    <small *ngIf="validateForm('taxpayerName')" class="p-error">
+      Campo requerido*
+    </small>
+  </div>
+
+  <div class="flex gap-2 w-full">
+    <div class="flex flex-column w-full">
+      <label>CUIT</label>
+      <p-inputMask
+        formControlName="taxpayerId"
+        mask="99-99999999-9"
+        pKeyFilter="num"
+        styleClass="w-full"
+      />
+    </div>
+    <div class="flex flex-column w-full">
+      <label>CONDICIÓN FISCAL</label>
+      <p-dropdown
+        formControlName="taxCondition"
+        [options]="taxConditionsDropdown"
+        optionLabel="name"
+        optionValue="id"
+        [filter]="true"
+        placeholder="Seleccionar..."
+        styleClass="w-full"
+      >
+      </p-dropdown>
+    </div>
+  </div>
+
+  <div class="flex gap-2 w-full">
+    <div class="flex flex-column w-full">
+      <label>CORREO ELECTRÓNICO</label>
+      <input
+        pInputText
+        formControlName="taxpayerEmail"
+        maxlength="120"
+        pKeyFilter="email"
+      />
+    </div>
+    <div class="flex flex-column w-full">
+      <label>TELÉFONO / CELULAR</label>
+      <input
+        pInputText
+        formControlName="taxpayerPhone"
+        maxlength="20"
+        pKeyFilter="num"
+      />
+    </div>
+  </div>
+
+  <div class="flex gap-2 w-full">
+    <div class="flex flex-column w-full">
+      <label>PROVINCIA</label>
+      <p-dropdown
+        formControlName="province"
+        [options]="provincesDropdown"
+        optionLabel="name"
+        optionValue="id"
+        [filter]="true"
+        placeholder="Seleccionar..."
+        styleClass="w-full"
+      >
+      </p-dropdown>
+    </div>
+    <div class="flex flex-column w-full">
+      <label>CALLE</label>
+      <input
+        pInputText
+        formControlName="street"
+        maxlength="150"
+        class="w-full"
+      />
+    </div>
+  </div>
+
+  <div class="flex gap-2 w-full">
+    <div class="flex flex-column w-full">
+      <label>NÚMERO</label>
+      <input
+        pInputText
+        formControlName="number"
+        maxlength="10"
+        class="w-full"
+      />
+    </div>
+    <div class="flex flex-column w-full">
+      <label>PISO</label>
+      <input pInputText formControlName="floor" maxlength="10" class="w-full" />
+    </div>
+    <div class="flex flex-column w-full">
+      <label>DEPARTAMENTO / OFICINA</label>
+      <input
+        pInputText
+        formControlName="office"
+        maxlength="10"
+        class="w-full"
+      />
+    </div>
+    <div class="flex flex-column w-full">
+      <label>CODIGO POSTAL</label>
+      <input
+        pInputText
+        formControlName="postalCode"
+        maxlength="8"
+        class="w-full"
+      />
+    </div>
+  </div>
+
+  <div class="flex flex-column w-full">
+    <label>PERSONA DE CONTACTO</label>
+    <input
+      pInputText
+      formControlName="contactName"
+      maxlength="120"
+      class="w-full"
+    />
+  </div>
+
+  <div class="flex gap-2 w-full">
+    <div class="flex flex-column w-full">
+      <label>CORREO ELECTRÓNICO (Persona de Contacto)</label>
+      <input
+        pInputText
+        formControlName="contactEmail"
+        maxlength="120"
+        pKeyFilter="email"
+      />
+    </div>
+    <div class="flex flex-column w-full">
+      <label>TELÉFONO / CELULAR (Persona de Contacto)</label>
+      <input
+        pInputText
+        formControlName="contactPhone"
+        maxlength="20"
+        pKeyFilter="num"
+      />
+    </div>
+  </div>
+
+  <div class="flex flex-column w-full">
+    <label>COMENTARIO ADICIONAL</label>
+    <textarea
+      pInputTextarea
+      formControlName="comment"
+      maxlength="250"
+      class="w-full"
+      [autoResize]="true"
+    ></textarea>
+  </div>
+
+  <div class="flex justify-content-end gap-2 w-full">
+    <p-button
+      label="CANCELAR"
+      styleClass="p-button-secondary p-button-text"
+      (onClick)="cancelForm()"
+    />
+    <p-button
+      [label]="buttonLabel"
+      [disabled]="clientForm.invalid"
+      styleClass="p-button-info p-button-text"
+      (onClick)="submitForm()"
+    />
+  </div>
+</form>

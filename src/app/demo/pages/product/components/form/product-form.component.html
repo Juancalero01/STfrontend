@@ -1,0 +1,91 @@
+<form class="flex flex-wrap gap-4" [formGroup]="productForm">
+  <div class="flex flex-column gap-2 w-full">
+    <label for="client">Cliente</label>
+    <p-dropdown
+      id="client"
+      [options]="clientDropdown"
+      formControlName="client"
+      optionLabel="name"
+      optionValue="id"
+      [filter]="true"
+      placeholder="Seleccionar cliente"
+      styleClass="w-full"
+    >
+    </p-dropdown>
+    <small id="client-help">Seleccionar cliente</small>
+  </div>
+
+  <div class="flex flex-column gap-2 w-full">
+    <label for="productType">Tipo de producto</label>
+    <p-dropdown
+      id="productType"
+      [options]="productTypeDropdown"
+      formControlName="productType"
+      optionLabel="name"
+      optionValue="id"
+      [filter]="true"
+      placeholder="Seleccionar tipo de producto"
+      styleClass="w-full"
+      (onChange)="onProductTypeChange()"
+    >
+    </p-dropdown>
+    <small id="productType-help">Seleccionar tipo de producto</small>
+  </div>
+
+  <div class="flex flex-column gap-2 w-full">
+    <label for="serial">Número de serie</label>
+    <input
+      id="serial"
+      type="text"
+      pInputText
+      formControlName="serial"
+      class="w-full"
+      maxlength="10"
+    />
+    <small id="serial-help">Ingresar número de serie</small>
+  </div>
+
+  <div class="flex flex-column gap-2 w-full">
+    <label for="reference">Remito</label>
+    <input
+      id="reference"
+      type="text"
+      pInputText
+      formControlName="reference"
+      class="w-full"
+    />
+    <small id="reference-help">Ingresar remito</small>
+  </div>
+
+  <div class="flex flex-column gap-2 w-full">
+    <label for="deliveryDate">Fecha de envio</label>
+    <p-calendar
+      id="deliveryDate"
+      formControlName="deliveryDate"
+      dateFormat="dd/mm/yy"
+      [readonlyInput]="true"
+      [showButtonBar]="true"
+      styleClass="w-full"
+    >
+    </p-calendar>
+    <small id="deliveryDate-help">Seleccionar fecha de entrega</small>
+  </div>
+
+  <div class="flex justify-content-end gap-2 w-full">
+    <button
+      pButton
+      type="button"
+      label="Cancelar"
+      class="p-button-secondary p-button-text"
+      (click)="cancelForm()"
+    ></button>
+    <button
+      pButton
+      type="button"
+      label="{{ buttonLabel }}"
+      class="p-button-info p-button-text"
+      [disabled]="productForm.invalid"
+      (click)="submitForm()"
+    ></button>
+  </div>
+</form>

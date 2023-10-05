@@ -1,0 +1,43 @@
+<form class="flex flex-wrap gap-4" [formGroup]="productTypeForm">
+  <div class="flex flex-column gap-2 w-full">
+    <label htmlFor="prefix">Prefijo</label>
+    <p-inputMask
+      formControlName="prefix"
+      id="prefix"
+      mask="9999"
+      pKeyFilter="num"
+      styleClass="w-full"
+      [ngClass]="{ 'ng-invalid ng-dirty': validateInput('prefix') }"
+    />
+    <small id="name-help" [ngClass]="{ 'p-error': validateInput('prefix') }">
+      Campo obligatorio*
+    </small>
+  </div>
+  <div class="flex flex-column gap-2 w-full">
+    <label for="name">Nombre</label>
+    <input
+      formControlName="name"
+      id="name"
+      type="text"
+      pInputText
+      class="w-full"
+      [ngClass]="{ 'ng-invalid ng-dirty': validateInput('name') }"
+    />
+    <small id="name-help" [ngClass]="{ 'p-error': validateInput('name') }">
+      Campo obligatorio*</small
+    >
+  </div>
+  <div class="flex justify-content-end gap-2 w-full">
+    <p-button
+      label="Cancelar"
+      styleClass="p-button-secondary p-button-text"
+      (click)="cancelForm()"
+    />
+    <p-button
+      [label]="buttonLabel"
+      [disabled]="productTypeForm.invalid"
+      styleClass="p-button-info p-button-text"
+      (click)="submitForm()"
+    />
+  </div>
+</form>
