@@ -34,15 +34,22 @@ export class AppTopbarComponent {
       routerLink: ['/'],
     },
     {
-      label: 'Productos',
-      icon: 'pi pi-fw pi-box',
-      routerLink: ['product'],
+      label: 'Producción',
+      icon: 'pi pi-fw pi-cog',
+      items: [
+        {
+          label: 'Productos',
+          icon: 'pi pi-fw pi-box',
+          routerLink: ['product'],
+        },
+        {
+          label: 'Tipo de Productos',
+          icon: 'pi pi-fw pi-tags',
+          routerLink: ['product-type'],
+        },
+      ],
     },
-    // {
-    //   label: 'Tipo de Productos',
-    //   icon: 'pi pi-fw pi-tags',
-    //   routerLink: ['product-type'],
-    // },
+
     {
       label: 'Clientes',
       icon: 'pi pi-fw pi-users',

@@ -32,13 +32,13 @@ import { NotfoundComponent } from './demo/pages/notfound/notfound.component';
                   (m) => m.ProductModule
                 ),
             },
-            // {
-            //   path: 'product-type',
-            //   loadChildren: () =>
-            //     import('./demo/pages/product-type/product-type.module').then(
-            //       (m) => m.ProductTypeModule
-            //     ),
-            // },
+            {
+              path: 'product-type',
+              loadChildren: () =>
+                import('./demo/pages/product-type/product-type.module').then(
+                  (m) => m.ProductTypeModule
+                ),
+            },
           ],
         },
         { path: 'notfound', component: NotfoundComponent },
