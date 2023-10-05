@@ -38,23 +38,13 @@
     [showCurrentPageReport]="true"
     currentPageReportTemplate="Mostrando {first} a {last}"
     scrollHeight="640px"
-    styleClass="p-datatable-striped p-datatable-gridlines"
+    styleClass="p-datatable-striped p-datatable-gridlines p-datatable-sm"
   >
     <ng-template pTemplate="header">
       <tr>
-        <th class="w-15rem" pSortableColumn="prefix">
-          <div class="flex align-items-center justify-content-between">
-            Prefijo
-            <p-sortIcon field="prefix" />
-          </div>
-        </th>
-        <th pSortableColumn="name">
-          <div class="flex align-items-center justify-content-between">
-            Nombre
-            <p-sortIcon field="name" />
-          </div>
-        </th>
-        <th class="w-15rem">Acciones</th>
+        <th class="w-15rem">CABECERA DE SERIE</th>
+        <th>NOMBRE DEL TIPO DE PRODUCTO</th>
+        <th class="w-1">ACCIONES</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-productType>
@@ -62,13 +52,11 @@
         <td>{{ productType.prefix | null }}</td>
         <td>{{ productType.name }}</td>
         <td>
-          <button
-            pButton
-            type="button"
+          <p-button
             icon="pi pi-pencil"
-            class="p-button-rounded p-button-text font-medium p-button-secondary"
+            styleClass="p-button-text p-button-secondary w-full"
             (click)="updateProductType(productType)"
-          ></button>
+          />
         </td>
       </tr>
     </ng-template>

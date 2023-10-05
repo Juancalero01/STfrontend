@@ -1,6 +1,6 @@
 <form class="flex flex-wrap gap-4" [formGroup]="productTypeForm">
-  <div class="flex flex-column gap-2 w-full">
-    <label htmlFor="prefix">NÚMERO DE CABEZERA</label>
+  <div class="flex flex-column w-full">
+    <label htmlFor="prefix">CABECERA DE SERIE</label>
     <p-inputMask
       formControlName="prefix"
       id="prefix"
@@ -13,7 +13,7 @@
       Campo requerido*
     </small>
   </div>
-  <div class="flex flex-column gap-2 w-full">
+  <div class="flex flex-column w-full">
     <label for="name">NOMBRE DEL TIPO DE PRODUCTO</label>
     <input
       formControlName="name"
