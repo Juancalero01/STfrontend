@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { IProductType } from 'src/app/demo/api/interfaces/product-type.interface';
+import { ProductTypeService } from 'src/app/demo/api/services/product-type.service';
 
 @Component({
   selector: 'app-product-type-form',
@@ -14,11 +15,13 @@ export class ProductTypeFormComponent {
     private readonly config: DynamicDialogConfig,
     private readonly confirmationService: ConfirmationService,
     private readonly messageService: MessageService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly productTypeService: ProductTypeService
   ) {}
 
   public productTypeForm: FormGroup = this.buildForm();
-  public buttonLabel: string = 'Registrar';
+  public buttonLabel: string = 'REGISTRAR';
+  public blockSpace: RegExp = /[^\s]/;
 
   public ngOnInit(): void {
     if (this.config.data) this.loadForm(this.config.data);
@@ -31,9 +34,16 @@ export class ProductTypeFormComponent {
     });
   }
 
-  public loadForm(productType: IProductType): void {
+  private loadForm(productType: IProductType): void {
     this.productTypeForm.patchValue(productType);
-    this.buttonLabel = 'Actualizar';
+    this.buttonLabel = 'ACTUALIZAR';
+  }
+
+  public validateForm(controlName: string): boolean | undefined {
+    return (
+      this.productTypeForm.get(controlName)?.invalid &&
+      this.productTypeForm.get(controlName)?.touched
+    );
   }
 
   public submitForm(): void {
@@ -44,20 +54,20 @@ export class ProductTypeFormComponent {
   public cancelForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea cancelar la operación?',
-      header: 'Confirmar',
+      header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
-      acceptLabel: 'Confirmar',
+      acceptLabel: 'CONFIRMAR',
       acceptButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
-      rejectLabel: 'Cancelar',
+      rejectLabel: 'CANCELAR',
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
       accept: () => {
         this.ref.close();
         this.messageService.add({
-          severity: 'success',
+          severity: 'info',
           summary: 'Operación cancelada',
-          detail: 'La operación se canceló correctamente',
+          detail: 'La operación se canceló',
         });
       },
       reject: () => {
@@ -73,20 +83,33 @@ export class ProductTypeFormComponent {
   public createProductType(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea crear el registro?',
-      header: 'Confirmar',
+      header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
-      acceptLabel: 'Confirmar',
+      acceptLabel: 'CONFIRMAR',
       acceptButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
-      rejectLabel: 'Cancelar',
+      rejectLabel: 'CANCELAR',
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
       accept: () => {
-        this.ref.close();
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Registro creado',
-          detail: 'El registro se creó correctamente',
+        this.productTypeService.create(this.productTypeForm.value).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Operación exitosa',
+              detail: 'El registro se creó',
+            });
+          },
+          error: (e: any) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Operación fallida',
+              detail: e.error?.errorMessage,
+            });
+          },
+          complete: () => {
+            this.ref.close();
+          },
         });
       },
       reject: () => {
@@ -102,34 +125,44 @@ export class ProductTypeFormComponent {
   public updateProductType(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea actualizar el registro?',
-      header: 'Confirmar',
+      header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
-      acceptLabel: 'Confirmar',
+      acceptLabel: 'CONFIRMAR',
       acceptButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
-      rejectLabel: 'Cancelar',
+      rejectLabel: 'CANCELAR',
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
       accept: () => {
-        this.ref.close();
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Registro actualizado',
-          detail: 'El registro se actualizó correctamente',
-        });
+        this.productTypeService
+          .update(this.config.data?.id, this.productTypeForm.value)
+          .subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Operación exitosa',
+                detail: 'El registro se actualizó',
+              });
+            },
+            error: (e: any) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Operación fallida',
+                detail: e.error?.errorMessage,
+              });
+            },
+            complete: () => {
+              this.ref.close();
+            },
+          });
       },
       reject: () => {
         this.messageService.add({
           severity: 'info',
-          summary: 'Operación cancelada',
+          summary: 'Opernación cancelada',
           detail: 'El registro no se actualizó',
         });
       },
     });
-  }
-
-  public validateInput(controlName: string): boolean | undefined {
-    const control = this.productTypeForm.get(controlName);
-    return control?.invalid && (control?.dirty || control?.touched);
   }
 }

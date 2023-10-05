@@ -30,7 +30,7 @@ export class ProductFormComponent {
 
   public ngOnInit(): void {
     this.clientDropdown = [];
-    this.productTypeDropdown = this.productTypeService.findAll();
+    this.productTypeDropdown = [];
     if (this.config.data) this.loadForm(this.config.data);
   }
 

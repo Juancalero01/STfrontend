@@ -30,7 +30,7 @@ export class ProductTableComponent {
 
   public ngOnInit(): void {
     this.productData = this.productService.findAll();
-    this.productTypeData = this.productTypeService.findAll();
+    this.productTypeData = [];
     this.clientData = [];
   }
 

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Table } from 'primeng/table';
 import { ProductTypeFormComponent } from '../form/product-type-form.component';
@@ -13,7 +13,6 @@ import { IProductType } from 'src/app/demo/api/interfaces/product-type.interface
 export class ProductTypeTableComponent {
   constructor(
     private readonly productTypeService: ProductTypeService,
-    private readonly confirmationService: ConfirmationService,
     private readonly messageService: MessageService,
     private readonly dialogService: DialogService
   ) {}
@@ -22,16 +21,31 @@ export class ProductTypeTableComponent {
   public ref: DynamicDialogRef = new DynamicDialogRef();
 
   public ngOnInit(): void {
-    this.productTypeData = this.productTypeService.findAll();
+    this.loadProductTypes();
   }
 
   public ngDestroy(): void {
     if (this.ref) this.ref.close();
   }
 
+  private loadProductTypes(): void {
+    this.productTypeService.findAll().subscribe({
+      next: (productTypes: IProductType[]) => {
+        this.productTypeData = productTypes;
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar los tipos de productos',
+        });
+      },
+    });
+  }
+
   public createProductType() {
     this.ref = this.dialogService.open(ProductTypeFormComponent, {
-      header: 'Formulario de registro',
+      header: 'FORMULARIO DE REGISTRO DE TIPO DE PRODUCTO',
       width: '50%',
       closable: false,
       closeOnEscape: false,
@@ -39,11 +53,15 @@ export class ProductTypeTableComponent {
       showHeader: true,
       position: 'center',
     });
+
+    this.ref.onClose.subscribe(() => {
+      this.loadProductTypes();
+    });
   }
 
   public updateProductType(productType: IProductType) {
     this.ref = this.dialogService.open(ProductTypeFormComponent, {
-      header: 'Formulario de actualización',
+      header: 'FORMULARIO DE ACTUALIZACIÓN DE TIPO DE PRODUCTO',
       width: '50%',
       closable: false,
       closeOnEscape: false,
@@ -52,33 +70,9 @@ export class ProductTypeTableComponent {
       position: 'center',
       data: productType,
     });
-  }
 
-  public deleteProductType(productTypeId: IProductType) {
-    this.confirmationService.confirm({
-      message: 'Estas seguro de eliminar este registro?',
-      header: 'Confirmar',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Confirmar',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
-      rejectLabel: 'Cancelar',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
-      accept: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Operación exitosa',
-          detail: `El registro se elimino`,
-        });
-      },
-      reject: () => {
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Operación cancelada',
-          detail: 'El registro no se elimino',
-        });
-      },
+    this.ref.onClose.subscribe(() => {
+      this.loadProductTypes();
     });
   }
 
