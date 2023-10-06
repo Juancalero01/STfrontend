@@ -49,7 +49,10 @@ export class ProductFormComponent {
     this.productForm.patchValue(product);
     this.productForm.get('client')?.setValue(product.client.id);
     this.productForm.get('productType')?.setValue(product.productType.id);
-    this.buttonLabel = 'Actualizar';
+    this.productForm
+      .get('deliveryDate')
+      ?.setValue(new Date(product.deliveryDate));
+    this.buttonLabel = 'ACTUALIZAR';
   }
 
   private loadDropdowns(): void {
