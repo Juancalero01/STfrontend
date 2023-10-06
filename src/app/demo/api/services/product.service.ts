@@ -1,14 +1,29 @@
 import { Injectable } from '@angular/core';
 import { IProduct } from '../interfaces/product.interface';
-import { PRODUCTS } from '../data/product.data';
-
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment.development';
+import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
-  constructor() {}
+  constructor(private httpClient: HttpClient) {}
 
-  findAll(): IProduct[] {
-    return PRODUCTS;
+  private readonly URL = environment.apiUrl + '/product';
+
+  public findAll(): Observable<IProduct[]> {
+    return this.httpClient.get<IProduct[]>(this.URL);
+  }
+
+  public findOne(id: number): Observable<IProduct> {
+    return this.httpClient.get<IProduct>(`${this.URL}/${id}`);
+  }
+
+  public create(product: IProduct): Observable<IProduct> {
+    return this.httpClient.post<IProduct>(this.URL, product);
+  }
+
+  public update(id: number, product: IProduct): Observable<IProduct> {
+    return this.httpClient.put<IProduct>(`${this.URL}/${id}`, product);
   }
 }

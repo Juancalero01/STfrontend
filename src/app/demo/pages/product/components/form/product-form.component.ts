@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-// import { Client } from 'src/app/demo/api/interfaces/client.interface';
+import { IClient } from 'src/app/demo/api/interfaces/client.interface';
 import { IProductType } from 'src/app/demo/api/interfaces/product-type.interface';
 import { IProduct } from 'src/app/demo/api/interfaces/product.interface';
 import { ClientService } from 'src/app/demo/api/services/client.service';
 import { ProductTypeService } from 'src/app/demo/api/services/product-type.service';
+import { ProductService } from 'src/app/demo/api/services/product.service';
 
 @Component({
   selector: 'app-product-form',
@@ -20,17 +21,17 @@ export class ProductFormComponent {
     private readonly messageService: MessageService,
     private readonly clientService: ClientService,
     private readonly productTypeService: ProductTypeService,
+    private readonly productService: ProductService,
     private readonly formBuilder: FormBuilder
   ) {}
 
   public productForm: FormGroup = this.buildForm();
-  public buttonLabel: string = 'Registrar';
-  public clientDropdown: any[] = [];
+  public buttonLabel: string = 'REGISTRAR';
+  public clientDropdown: IClient[] = [];
   public productTypeDropdown: IProductType[] = [];
 
   public ngOnInit(): void {
-    this.clientDropdown = [];
-    this.productTypeDropdown = [];
+    this.loadDropdowns();
     if (this.config.data) this.loadForm(this.config.data);
   }
 
@@ -44,11 +45,46 @@ export class ProductFormComponent {
     });
   }
 
-  public loadForm(product: IProduct): void {
+  private loadForm(product: IProduct): void {
     this.productForm.patchValue(product);
     this.productForm.get('client')?.setValue(product.client.id);
     this.productForm.get('productType')?.setValue(product.productType.id);
     this.buttonLabel = 'Actualizar';
+  }
+
+  private loadDropdowns(): void {
+    this.clientService.findAll().subscribe({
+      next: (clients: IClient[]) => {
+        this.clientDropdown = clients;
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar los clientes',
+        });
+      },
+    });
+
+    this.productTypeService.findAll().subscribe({
+      next: (productTypes: IProductType[]) => {
+        this.productTypeDropdown = productTypes;
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar los tipos de productos',
+        });
+      },
+    });
+  }
+
+  public validateForm(controlName: string): boolean | undefined {
+    return (
+      this.productForm.get(controlName)?.invalid &&
+      this.productForm.get(controlName)?.touched
+    );
   }
 
   public submitForm(): void {
@@ -59,19 +95,19 @@ export class ProductFormComponent {
   public cancelForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea cancelar la operación?',
-      header: 'Confirmar',
+      header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
-      acceptLabel: 'Confirmar',
+      acceptLabel: 'CONFIRMAR',
       acceptButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
-      rejectLabel: 'Cancelar',
+      rejectLabel: 'CANCELAR',
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
       accept: () => {
         this.ref.close();
         this.messageService.add({
-          severity: 'success',
-          summary: 'Operación exitosa',
+          severity: 'info',
+          summary: 'Operación cancelada',
           detail: 'La operación se canceló',
         });
       },
@@ -88,20 +124,33 @@ export class ProductFormComponent {
   public createProduct(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea crear el registro?',
-      header: 'Confirmar',
+      header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
-      acceptLabel: 'Confirmar',
+      acceptLabel: 'CONFIRMAR',
       acceptButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
-      rejectLabel: 'Cancelar',
+      rejectLabel: 'CANCELAR',
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
       accept: () => {
-        this.ref.close();
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Operación exitosa',
-          detail: 'El registro se creó',
+        this.productService.create(this.productForm.value).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Operación exitosa',
+              detail: 'El registro se creó',
+            });
+          },
+          error: (e: any) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Operación fallida',
+              detail: e.error?.errorMessage,
+            });
+          },
+          complete: () => {
+            this.ref.close();
+          },
         });
       },
       reject: () => {
@@ -117,33 +166,47 @@ export class ProductFormComponent {
   public updateProduct(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea actualizar el registro?',
-      header: 'Confirmar',
+      header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
-      acceptLabel: 'Confirmar',
+      acceptLabel: 'CONFIRMAR',
       acceptButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
-      rejectLabel: 'Cancelar',
+      rejectLabel: 'CANCELAR',
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
       accept: () => {
-        this.ref.close();
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Operación exitosa',
-          detail: 'El registro se actualizó correctamente',
-        });
+        this.productService
+          .update(this.config.data?.id, this.productForm.value)
+          .subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Operación exitosa',
+                detail: 'El registro se actualizó',
+              });
+            },
+            error: (e: any) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Operación fallida',
+                detail: e.error?.errorMessage,
+              });
+            },
+            complete: () => {
+              this.ref.close();
+            },
+          });
       },
       reject: () => {
         this.messageService.add({
           severity: 'info',
-          summary: 'Operación cancelada',
+          summary: 'Opernación cancelada',
           detail: 'El registro no se actualizó',
         });
       },
     });
   }
 
-  // TODO: Refactorizar
   public onProductTypeChange(): void {
     const productTypeId = this.productForm.get('productType')?.value;
     const productType = this.productTypeDropdown.find((productType) => {
@@ -161,7 +224,7 @@ export class ProductFormComponent {
       }`;
       this.productForm.get('serial')?.setValue(newSerialValue);
     } else {
-      this.productForm.get('serial')?.setValue(null);
+      this.productForm.get('serial')?.setValue('');
     }
   }
 }

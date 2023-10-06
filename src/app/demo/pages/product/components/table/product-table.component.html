@@ -19,14 +19,13 @@
           #fi
           pInputText
           type="text"
-          placeholder="Buscar..."
+          placeholder="Buscar por número de serie..."
           class="w-20rem"
           (input)="dt.filterGlobal($any($event.target).value, 'contains')"
         />
       </div>
     </div>
   </div>
-
   <p-table
     #dt
     [value]="productData"
@@ -34,19 +33,21 @@
     [rowHover]="true"
     [paginator]="true"
     [globalFilterFields]="['serial']"
-    [scrollable]="true"
     [rowsPerPageOptions]="[10, 25, 50, 100]"
+    [scrollable]="true"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Mostrando {first} a {last}"
     scrollHeight="640px"
-    styleClass="p-datatable-striped p-datatable-gridlines"
+    styleClass="p-datatable-striped p-datatable-gridlines p-datatable-sm"
   >
     <ng-template pTemplate="header">
       <tr>
-        <th class="w-15rem">Número de serie</th>
+        <th class="w-15rem">NÚMERO DE SERIE</th>
         <th>
           <div class="flex align-items-center justify-content-between">
-            Razón Social
+            <span>CLIENTE</span>
             <p-columnFilter
-              field="client"
+              field="product.client"
               matchMode="in"
               display="chip"
               [showMatchModes]="false"
@@ -64,13 +65,13 @@
                   [ngModel]="value"
                   [options]="clientData"
                   [showToggleAll]="false"
-                  optionLabel="name"
+                  optionLabel="taxpayerName"
                   placeholder="Filtrar por razón social"
                   emptyFilterMessage="No hay resultados"
                   (onChange)="filter($event.value)"
                 >
                   <ng-template let-client pTemplate="item">
-                    <span>{{ client.name }}</span>
+                    <span>{{ client.taxpayerName }}</span>
                   </ng-template>
                 </p-multiSelect>
               </ng-template>
@@ -79,7 +80,7 @@
         </th>
         <th>
           <div class="flex align-items-center justify-content-between">
-            <span>Tipo de producto</span>
+            <span>TIPO DE PRODUCTO</span>
             <p-columnFilter
               field="productType"
               matchMode="in"
@@ -112,38 +113,23 @@
             </p-columnFilter>
           </div>
         </th>
-        <th class="w-15rem">Fecha de envio</th>
-        <th class="w-15rem">Acciones</th>
+        <th class="w-15rem">FECHA DE ENVIO</th>
+        <th class="w-1">ACCIONES</th>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="body" let-product>
       <tr>
         <td>{{ product.serial }}</td>
-        <td>{{ product.client.name }}</td>
+        <td>{{ product.client.taxpayerName }}</td>
         <td>{{ product.productType.name }}</td>
         <td>{{ product.deliveryDate | date : "dd/MM/yyyy" }}</td>
         <td>
-          <button
-            pButton
-            type="button"
+          <p-button
             icon="pi pi-pencil"
-            class="p-button-rounded p-button-text font-medium p-button-secondary"
+            styleClass="p-button-text p-button-secondary w-full"
             (click)="updateProduct(product)"
-          ></button>
-          <button
-            pButton
-            type="button"
-            icon="pi pi-trash"
-            class="p-button-rounded p-button-text font-medium p-button-danger"
-            (click)="deleteProduct(product.id)"
-          ></button>
-          <button
-            pButton
-            type="button"
-            icon="pi pi-history"
-            class="p-button-rounded p-button-text font-medium p-button-help"
-          ></button>
+          />
         </td>
       </tr>
     </ng-template>
