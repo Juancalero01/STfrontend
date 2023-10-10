@@ -4,14 +4,14 @@
       <p-button
         icon="pi pi-plus"
         styleClass="p-button-rounded p-button-text font-medium"
-        (click)="createProductType()"
+        (onClick)="createProductType()"
       />
     </div>
     <div class="flex gap-2">
       <p-button
         icon="pi pi-filter-slash"
         styleClass="p-button-rounded p-button-text p-button-danger font-medium"
-        (click)="cleanFilters(dt, fi)"
+        (onClick)="cleanFilters(dt, fi)"
       />
       <span class="p-input-icon-right">
         <i class="pi pi-search"></i>
@@ -55,7 +55,7 @@
           <p-button
             icon="pi pi-pencil"
             styleClass="p-button-text p-button-secondary w-full"
-            (click)="updateProductType(productType)"
+            (onClick)="updateProductType(productType)"
           />
         </td>
       </tr>

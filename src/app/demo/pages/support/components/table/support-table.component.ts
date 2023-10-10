@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Table } from 'primeng/table';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { ISupport } from 'src/app/demo/api/interfaces/support.interface';
@@ -15,14 +14,18 @@ export class SupportTableComponent {
     private readonly messageService: MessageService
   ) {}
 
-  supportData: ISupport[] = [];
-  ref: DynamicDialogRef = new DynamicDialogRef();
+  public supportData: ISupport[] = [];
+  public ref: DynamicDialogRef = new DynamicDialogRef();
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 
-  openCreateDialog() {
+  public ngDestroy(): void {
+    if (this.ref) this.ref.close();
+  }
+
+  public createSupport() {
     this.ref = this.dialogService.open(SupportFormComponent, {
-      header: 'Nuevo Ingreso',
+      header: 'FORMULARIO DE REGISTRO DE SOPORTE TÉCNICO',
       width: '50%',
       closable: false,
       closeOnEscape: false,
@@ -31,4 +34,7 @@ export class SupportTableComponent {
       position: 'center',
     });
   }
+
+  // Add logic to update the supportData array
+  public updateSupport(): void {}
 }

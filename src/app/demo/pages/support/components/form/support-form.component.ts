@@ -21,8 +21,12 @@ export class SupportFormComponent {
   public supportForm: FormGroup = this.buildForm();
   public buttonLabel: string = 'REGISTRAR';
   public productFinded!: IProduct;
+  public securityStrapDropdown: any = [
+    { value: true, label: 'Si' },
+    { value: false, label: 'No' },
+  ];
 
-  ngOnInit() {
+  public ngOnInit() {
     // load states
     // load priorities
     if (this.config.data) {
@@ -34,7 +38,7 @@ export class SupportFormComponent {
     let dateDay = new Date().toLocaleDateString();
     return this.formBuilder.group({
       reclaim: [
-        { value: '11111', disabled: true },
+        { value: 'CNET-20230101-100', disabled: true },
         [Validators.maxLength(255)],
       ],
       failure: [null, [Validators.maxLength(255)]],
@@ -43,7 +47,10 @@ export class SupportFormComponent {
       dateEntry: [{ value: dateDay, disabled: true }, [Validators.required]],
       warranty: [null],
       product: [null],
-      state: [null],
+      state: [
+        { value: 'ENVIADO A CONTROLNET', disabled: true },
+        [Validators.required],
+      ],
       priority: [null],
     });
   }
@@ -106,7 +113,6 @@ export class SupportFormComponent {
       },
     });
   }
-
   // 1. añadir logica para el create
   // 2. añadir logica para el update
   // 3. añadir logica para pintar de colores por prioridad

@@ -82,20 +82,16 @@
   </div>
 
   <div class="flex justify-content-end gap-2 w-full">
-    <button
-      pButton
-      type="button"
+    <p-button
       label="CANCELAR"
-      class="p-button-secondary p-button-text"
-      (click)="cancelForm()"
-    ></button>
-    <button
-      pButton
-      type="button"
-      label="{{ buttonLabel }}"
-      class="p-button-info p-button-text"
+      styleClass="p-button-secondary p-button-text"
+      (onClick)="cancelForm()"
+    />
+    <p-button
+      [label]="buttonLabel"
       [disabled]="productForm.invalid"
-      (click)="submitForm()"
-    ></button>
+      styleClass="p-button-info p-button-text "
+      (onClick)="submitForm()"
+    />
   </div>
 </form>

@@ -11,42 +11,109 @@
 
   <div class="w-full flex gap-2">
     <div class="w-full">
-      <label>Fecha de registro</label>
+      <label>FECHA DE REGISTRO</label>
       <input
         type="text"
         pInputText
-        class="w-full"
+        class="w-full font-bold"
         formControlName="dateEntry"
       />
     </div>
     <div class="w-full">
-      <label>Número de reclamo</label>
-      <input type="text" pInputText class="w-full" formControlName="reclaim" />
+      <label>NÚMERO DE RECLAMO</label>
+      <input
+        type="text"
+        pInputText
+        class="w-full font-bold"
+        formControlName="reclaim"
+      />
     </div>
     <div class="w-full">
-      <label>Estado</label>
-      <input type="text" pInputText class="w-full" />
+      <label>ESTADO DEL INGRESO</label>
+      <input
+        type="text"
+        pInputText
+        class="w-full font-bold"
+        formControlName="state"
+      />
     </div>
   </div>
 
   <div class="w-full flex gap-2">
     <div class="w-full">
-      <label>Tipo de producto</label>
+      <label>TIPO DE PRODUCTO</label>
       <input type="text" pInputText class="w-full" [disabled]="true" />
     </div>
     <div class="w-full">
-      <label>Cliente</label>
+      <label>CLIENTE</label>
       <input type="text" pInputText class="w-full" [disabled]="true" />
     </div>
   </div>
-  <!--  -->
+
+  <div class="w-full flex gap-2">
+    <div class="flex flex-column w-full">
+      <label>GARANTÍA DE PRODUCCIÓN</label>
+      <input type="text" pInputText class="w-full" [disabled]="true" />
+    </div>
+    <div class="flex flex-column w-full">
+      <label>GARANTÍA DE SERVICIO TÉCNICO</label>
+      <input type="text" pInputText class="w-full" [disabled]="true" />
+    </div>
+  </div>
+
+  <div class="w-full flex gap-2">
+    <div class="flex flex-column w-full">
+      <label>REMITO DE LLEGADA (Cliente)</label>
+      <input type="text" pInputText class="w-full" />
+    </div>
+    <div class="flex flex-column w-full">
+      <label>FAJA DE SEGURIDAD</label>
+      <p-dropdown
+        [options]="securityStrapDropdown"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Seleccionar..."
+        styleClass="w-full"
+      ></p-dropdown>
+    </div>
+  </div>
+
+  <div class="w-full flex gap-2">
+    <div class="flex flex-column w-full">
+      <label>FALLA REPORTADA</label>
+      <input type="text" pInputText class="w-full" />
+    </div>
+    <div class="flex flex-column w-full">
+      <label>TIPO DE FALLA</label>
+      <p-dropdown
+        [options]="[]"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Seleccionar..."
+        styleClass="w-full"
+      >
+      </p-dropdown>
+    </div>
+  </div>
+
+  <div class="flex flex-column w-full">
+    <label>OBSERVACIONES</label>
+    <textarea
+      pInputTextarea
+      maxlength="250"
+      class="w-full"
+      [autoResize]="true"
+    ></textarea>
+  </div>
+
+  <!-- News changes for form servTec -->
+
   <div class="flex justify-content-end gap-2 w-full">
     <p-button
       label="CANCELAR"
       styleClass="p-button-secondary p-button-text"
       (onClick)="cancelForm()"
     />
-
     <p-button
       [label]="buttonLabel"
       [disabled]="supportForm.invalid"

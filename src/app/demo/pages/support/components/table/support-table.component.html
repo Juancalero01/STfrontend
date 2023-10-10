@@ -4,7 +4,7 @@
       <p-button
         icon="pi pi-plus"
         styleClass="p-button-info p-button-text p-button-rounded"
-        (onClick)="openCreateDialog()"
+        (onClick)="createSupport()"
       />
     </div>
     <div class="flex gap-2">
@@ -79,3 +79,5 @@
     </ng-template>
   </p-table>
 </div>
+<p-confirmDialog />
+<p-toast position="bottom-right" />

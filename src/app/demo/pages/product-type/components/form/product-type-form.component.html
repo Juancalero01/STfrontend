@@ -31,13 +31,13 @@
     <p-button
       label="CANCELAR"
       styleClass="p-button-secondary p-button-text"
-      (click)="cancelForm()"
+      (onClick)="cancelForm()"
     />
     <p-button
       [label]="buttonLabel"
       [disabled]="productTypeForm.invalid"
       styleClass="p-button-info p-button-text"
-      (click)="submitForm()"
+      (onClick)="submitForm()"
     />
   </div>
 </form>
