@@ -41,7 +41,7 @@
     styleClass="p-datatable-striped p-datatable-gridlines p-datatable-sm"
   >
     <ng-template pTemplate="header">
-      <tr>
+      <tr class="text-sm h-3rem">
         <th class="w-10rem">CUIT</th>
         <th>CLIENTE</th>
         <th>CORREO ELECTRÓNICO</th>
@@ -50,7 +50,7 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-client>
-      <tr>
+      <tr class="text-sm h-3rem">
         <td>{{ client.taxpayerId | null }}</td>
         <td>{{ client.taxpayerName }}</td>
         <td>{{ client.taxpayerEmail | null }}</td>
@@ -65,7 +65,7 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">
-      <tr>
+      <tr class="text-sm w-full">
         <td colspan="6">
           <div class="flex gap-2 align-items-center">
             <i class="pi pi-info-circle"></i>
