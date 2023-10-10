@@ -72,7 +72,6 @@ export class ProductTableComponent {
     this.clientService.findAll().subscribe({
       next: (clients: IClient[]) => {
         this.clientData = clients;
-        console.log(this.clientData);
       },
       error: () => {
         this.messageService.add({
