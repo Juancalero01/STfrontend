@@ -41,7 +41,7 @@
     styleClass="p-datatable-striped p-datatable-gridlines p-datatable-sm"
   >
     <ng-template pTemplate="header">
-      <tr>
+      <tr class="text-sm h-3rem">
         <th class="w-15rem">NÚMERO DE SERIE</th>
         <th>
           <div class="flex align-items-center justify-content-between">
@@ -119,7 +119,7 @@
     </ng-template>
 
     <ng-template pTemplate="body" let-product>
-      <tr>
+      <tr class="text-sm h-3rem">
         <td>{{ product.serial }}</td>
         <td>{{ product.client.taxpayerName }}</td>
         <td>{{ product.productType.name }}</td>
@@ -134,7 +134,7 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">
-      <tr>
+      <tr class="text-sm w-full">
         <td colspan="5">
           <div class="flex gap-2 align-items-center">
             <i class="pi pi-info-circle"></i>
