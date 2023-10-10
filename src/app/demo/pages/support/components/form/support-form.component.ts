@@ -2,8 +2,14 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { IFailureType } from 'src/app/demo/api/interfaces/failure-type.interface';
 import { IProduct } from 'src/app/demo/api/interfaces/product.interface';
+import { ISupportPriority } from 'src/app/demo/api/interfaces/support-priority.interface';
+import { ISupportState } from 'src/app/demo/api/interfaces/support-state.interface';
 import { ISupport } from 'src/app/demo/api/interfaces/support.interface';
+import { FailureTypeService } from 'src/app/demo/api/services/failure-type.service';
+import { SupportPriorityService } from 'src/app/demo/api/services/support-priority.service';
+import { SupportStateService } from 'src/app/demo/api/services/support-state.service';
 
 @Component({
   selector: 'app-support-form',
@@ -15,20 +21,27 @@ export class SupportFormComponent {
     private readonly config: DynamicDialogConfig,
     private readonly confirmationService: ConfirmationService,
     private readonly messageService: MessageService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly failureTypeService: FailureTypeService,
+    private readonly supportStateService: SupportStateService,
+    private readonly supportPriorityService: SupportPriorityService
   ) {}
 
   public supportForm: FormGroup = this.buildForm();
   public buttonLabel: string = 'REGISTRAR';
   public productFinded!: IProduct;
-  public securityStrapDropdown: any = [
+  public securityStrapDropdown: any[] = [
     { value: true, label: 'Si' },
     { value: false, label: 'No' },
   ];
+  public failureTypesDropdown: IFailureType[] = [];
+  public supportStatesDropdown: ISupportState[] = [];
+  public supportPrioritiesDropdown: ISupportPriority[] = [];
 
   public ngOnInit() {
-    // load states
-    // load priorities
+    this.loadStates();
+    this.loadPriorities();
+    this.loadFailureTypes();
     if (this.config.data) {
       this.loadForm(this.config.data);
     }
@@ -37,20 +50,14 @@ export class SupportFormComponent {
   private buildForm(): FormGroup {
     let dateDay = new Date().toLocaleDateString();
     return this.formBuilder.group({
-      reclaim: [
-        { value: 'CNET-20230101-100', disabled: true },
-        [Validators.maxLength(255)],
-      ],
+      dateEntry: [{ value: dateDay, disabled: true }],
+      reclaim: [{ value: 'CNET-20230101-100', disabled: true }],
+      state: [{ value: 'ENVIADO A CONTROLNET', disabled: true }],
       failure: [null, [Validators.maxLength(255)]],
       reference: [null, [Validators.maxLength(255)]],
       remarks: [null, [Validators.maxLength(255)]],
-      dateEntry: [{ value: dateDay, disabled: true }, [Validators.required]],
       warranty: [null],
       product: [null],
-      state: [
-        { value: 'ENVIADO A CONTROLNET', disabled: true },
-        [Validators.required],
-      ],
       priority: [null],
     });
   }
@@ -60,14 +67,51 @@ export class SupportFormComponent {
     this.buttonLabel = 'ACTUALIZAR';
   }
 
-  // load states/priorities
-  // private loadStates() {}
-  // private loadPriorities() {}
-
-  // search product
-  public searchProduct() {
-    // implement search product with service.
+  private loadStates(): void {
+    this.supportStateService.findAll().subscribe({
+      next: (supportStates: ISupportState[]) => {
+        this.supportStatesDropdown = supportStates;
+      },
+      error: (e: Error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error al cargar los estados',
+          detail: e.message,
+        });
+      },
+    });
   }
+  private loadPriorities(): void {
+    this.supportPriorityService.findAll().subscribe({
+      next: (supportPriorities: ISupportPriority[]) => {
+        this.supportPrioritiesDropdown = supportPriorities;
+      },
+      error: (e: Error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error al cargar las prioridades',
+          detail: e.message,
+        });
+      },
+    });
+  }
+
+  private loadFailureTypes(): void {
+    this.failureTypeService.findAll().subscribe({
+      next: (failureTypes: IFailureType[]) => {
+        this.failureTypesDropdown = failureTypes;
+      },
+      error: (e: Error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error al cargar los tipos de falla',
+          detail: e.message,
+        });
+      },
+    });
+  }
+  // TODO: Implementar la logica de busqueda de productos
+  public searchProduct() {}
 
   public validateForm(controlName: string): boolean | undefined {
     return (

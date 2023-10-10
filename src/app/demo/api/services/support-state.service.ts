@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
-import { ISupportState } from '../../interfaces/support-state.interface';
+import { ISupportState } from '../interfaces/support-state.interface';
 
 @Injectable({
   providedIn: 'root',

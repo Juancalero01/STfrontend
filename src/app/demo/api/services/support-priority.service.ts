@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
-import { ISupportPriority } from '../../interfaces/support-priority.interface';
+import { ISupportPriority } from '../interfaces/support-priority.interface';
 
 @Injectable({
   providedIn: 'root',

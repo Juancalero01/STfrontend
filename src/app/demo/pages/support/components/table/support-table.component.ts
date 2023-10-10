@@ -26,7 +26,8 @@ export class SupportTableComponent {
   public createSupport() {
     this.ref = this.dialogService.open(SupportFormComponent, {
       header: 'FORMULARIO DE REGISTRO DE SOPORTE TÉCNICO',
-      width: '50%',
+      width: '100vw',
+      style: { 'min-width': '100vw', 'min-height': '100vh' },
       closable: false,
       closeOnEscape: false,
       dismissableMask: false,

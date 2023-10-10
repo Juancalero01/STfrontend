@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
-import { IProvince } from '../../interfaces/province.interface';
+import { IProvince } from '../interfaces/province.interface';
 
 @Injectable({
   providedIn: 'root',

@@ -5,8 +5,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { IClient } from 'src/app/demo/api/interfaces/client.interface';
 import { IProvince } from 'src/app/demo/api/interfaces/province.interface';
 import { ITaxCondition } from 'src/app/demo/api/interfaces/tax-condition.interface';
-import { TaxConditionService } from 'src/app/demo/api/services/shared/tax-condition.service';
-import { ProvinceService } from 'src/app/demo/api/services/shared/province.service';
+import { TaxConditionService } from 'src/app/demo/api/services/tax-condition.service';
+import { ProvinceService } from 'src/app/demo/api/services/province.service';
 import { ClientService } from 'src/app/demo/api/services/client.service';
 
 @Component({
