@@ -5,8 +5,13 @@
       pInputText
       class="w-full"
       placeholder="Buscar por número de serie..."
+      formControlName="search"
     />
-    <p-button icon="pi pi-search" styleClass="p-button-info" />
+    <p-button
+      icon="pi pi-search"
+      styleClass="p-button-info"
+      (onClick)="searchProduct()"
+    />
   </div>
 
   <div class="w-full flex gap-2">
@@ -42,35 +47,83 @@
   <div class="w-full flex gap-2">
     <div class="w-full">
       <label>TIPO DE PRODUCTO</label>
-      <input type="text" pInputText class="w-full" [disabled]="true" />
+      <input
+        type="text"
+        pInputText
+        class="w-full font-bold"
+        formControlName="productType"
+      />
     </div>
     <div class="w-full">
       <label>CLIENTE</label>
-      <input type="text" pInputText class="w-full" [disabled]="true" />
+      <input
+        type="text"
+        pInputText
+        class="w-full font-bold"
+        formControlName="client"
+      />
     </div>
   </div>
 
   <div class="w-full flex gap-2">
     <div class="w-full">
       <label>GARANTÍA DE PRODUCCIÓN</label>
-      <input type="text" pInputText class="w-full" [disabled]="true" />
+      <input
+        type="text"
+        pInputText
+        class="w-full font-bold"
+        formControlName="warrantyProduction"
+        [ngClass]="{
+          'bg-red-100 text-red-600':
+            supportForm.get('warrantyProduction')?.value ===
+            'GARANTÍA DE PRODUCCIÓN VENCIDA',
+          'bg-green-100 text-green-600':
+            supportForm.get('warrantyProduction')?.value ===
+            'GARANTÍA DE PRODUCCIÓN VÁLIDA'
+        }"
+      />
     </div>
     <div class="w-full">
       <label>GARANTÍA DE SERVICIO TÉCNICO</label>
-      <input type="text" pInputText class="w-full" [disabled]="true" />
+      <input
+        type="text"
+        pInputText
+        class="w-full font-bold"
+        formControlName="warrantyService"
+        [ngClass]="{
+          'bg-red-100 text-red-600':
+            supportForm.get('warrantyService')?.value ===
+            'GARANTÍA DE SERVICIO TÉCNICO VENCIDA',
+          'bg-green-100 text-green-600':
+            supportForm.get('warrantyService')?.value ===
+            'GARANTÍA DE SERVICIO TÉCNICO VÁLIDA'
+        }"
+      />
     </div>
   </div>
-
-  <div class="w-full">
-    <label>TIPO DE PRIORIDAD</label>
-    <p-dropdown
-      [options]="supportPrioritiesDropdown"
-      optionLabel="name"
-      optionValue="id"
-      placeholder="Seleccionar..."
-      styleClass="w-full"
-      formControlName="priority"
-    ></p-dropdown>
+  <div class="w-full flex gap-2">
+    <div class="w-full">
+      <label>GARANTIA</label>
+      <p-dropdown
+        [options]="warrantyDropdown"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Seleccionar..."
+        styleClass="w-full"
+        formControlName="warranty"
+      ></p-dropdown>
+    </div>
+    <div class="w-full">
+      <label>TIPO DE PRIORIDAD</label>
+      <p-dropdown
+        [options]="supportPrioritiesDropdown"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="Seleccionar..."
+        styleClass="w-full"
+        formControlName="priority"
+      ></p-dropdown>
+    </div>
   </div>
 
   <div class="w-full flex gap-2">
@@ -120,6 +173,7 @@
       maxlength="250"
       class="w-full"
       [autoResize]="true"
+      rows="6"
       formControlName="remarks"
     ></textarea>
   </div>

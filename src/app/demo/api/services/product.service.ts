@@ -19,6 +19,10 @@ export class ProductService {
     return this.httpClient.get<IProduct>(`${this.URL}/${id}`);
   }
 
+  public findOneSerial(serial: string) {
+    return this.httpClient.get<IProduct>(`${this.URL}/serial/${serial}`);
+  }
+
   public create(product: IProduct): Observable<IProduct> {
     return this.httpClient.post<IProduct>(this.URL, product);
   }

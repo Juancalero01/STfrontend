@@ -8,6 +8,7 @@ import { ISupportPriority } from 'src/app/demo/api/interfaces/support-priority.i
 import { ISupportState } from 'src/app/demo/api/interfaces/support-state.interface';
 import { ISupport } from 'src/app/demo/api/interfaces/support.interface';
 import { FailureTypeService } from 'src/app/demo/api/services/failure-type.service';
+import { ProductService } from 'src/app/demo/api/services/product.service';
 import { SupportPriorityService } from 'src/app/demo/api/services/support-priority.service';
 import { SupportStateService } from 'src/app/demo/api/services/support-state.service';
 
@@ -24,13 +25,17 @@ export class SupportFormComponent {
     private readonly formBuilder: FormBuilder,
     private readonly failureTypeService: FailureTypeService,
     private readonly supportStateService: SupportStateService,
-    private readonly supportPriorityService: SupportPriorityService
+    private readonly supportPriorityService: SupportPriorityService,
+    private readonly productService: ProductService
   ) {}
 
   public supportForm: FormGroup = this.buildForm();
   public buttonLabel: string = 'REGISTRAR';
-  public productFinded!: IProduct;
   public securityStrapDropdown: any[] = [
+    { value: true, label: 'Si' },
+    { value: false, label: 'No' },
+  ];
+  public warrantyDropdown: any[] = [
     { value: true, label: 'Si' },
     { value: false, label: 'No' },
   ];
@@ -50,15 +55,22 @@ export class SupportFormComponent {
   private buildForm(): FormGroup {
     let dateDay = new Date().toLocaleDateString();
     return this.formBuilder.group({
+      search: [null],
+      productType: [{ value: null, disabled: true }],
+      client: [{ value: null, disabled: true }],
+      warrantyProduction: [{ value: null, disabled: true }],
+      warrantyService: [{ value: null, disabled: true }],
       dateEntry: [{ value: dateDay, disabled: true }],
       reclaim: [{ value: 'CNET-20230101-100', disabled: true }],
       state: [{ value: 'ENVIADO A CONTROLNET', disabled: true }],
-      failure: [null, [Validators.maxLength(255)]],
-      reference: [null, [Validators.maxLength(255)]],
-      remarks: [null, [Validators.maxLength(255)]],
-      warranty: [null],
-      product: [null],
       priority: [null],
+      reference: [null, [Validators.maxLength(255)]],
+      securityStrap: [null],
+      failure: [null, [Validators.maxLength(255)]],
+      failureType: [null],
+      remarks: [null, [Validators.maxLength(255)]],
+      product: [null, [Validators.required]],
+      warranty: [null],
     });
   }
 
@@ -110,8 +122,66 @@ export class SupportFormComponent {
       },
     });
   }
-  // TODO: Implementar la logica de busqueda de productos
-  public searchProduct() {}
+
+  public searchProduct() {
+    const serial = this.supportForm.get('search')?.value;
+
+    if (!serial || serial > 10) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error al buscar el producto',
+        detail: 'Debe ingresar un serial',
+      });
+      return;
+    }
+
+    this.productService.findOneSerial(serial).subscribe({
+      next: (product: IProduct) => {
+        this.supportForm.patchValue({
+          product: product.id,
+          productType: product.productType.name,
+          client: product.client.taxpayerName,
+        });
+
+        const deliveryDate = new Date(product.deliveryDate);
+        const today = new Date();
+
+        const oneYearLater = new Date(deliveryDate);
+        oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
+
+        if (today >= oneYearLater) {
+          this.supportForm.patchValue({
+            warrantyProduction: 'GARANTÍA DE PRODUCCIÓN VENCIDA',
+          });
+
+          const sixMonthsLater = new Date(oneYearLater);
+          sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
+
+          if (today <= sixMonthsLater) {
+            this.supportForm.patchValue({
+              warrantyService: 'GARANTÍA DE SERVICIO TÉCNICO VÁLIDA',
+            });
+          } else {
+            this.supportForm.patchValue({
+              warrantyService: 'GARANTÍA DE SERVICIO TÉCNICO VENCIDA',
+            });
+          }
+        } else {
+          this.supportForm.patchValue({
+            warrantyProduction: 'GARANTÍA DE PRODUCCIÓN VÁLIDA',
+          });
+          this.supportForm.patchValue({ warrantyService: 'N/A' });
+        }
+      },
+      error: (e: Error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error al buscar el producto',
+          detail: e.message,
+        });
+      },
+    });
+  }
 
   public validateForm(controlName: string): boolean | undefined {
     return (
@@ -157,8 +227,4 @@ export class SupportFormComponent {
       },
     });
   }
-  // 1. añadir logica para el create
-  // 2. añadir logica para el update
-  // 3. añadir logica para pintar de colores por prioridad
-  // 4. añadir logica para pintar de colores por estado
 }
