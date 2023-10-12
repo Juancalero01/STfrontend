@@ -6,10 +6,12 @@
       class="w-full"
       placeholder="Buscar por número de serie..."
       formControlName="search"
+      [pKeyFilter]="blockSpace"
+      maxlength="10"
     />
     <p-button
       icon="pi pi-search"
-      styleClass="p-button-info"
+      styleClass=" p-button-secondary"
       (onClick)="searchProduct()"
     />
   </div>
@@ -20,7 +22,7 @@
       <input
         type="text"
         pInputText
-        class="w-full font-bold"
+        class="w-full font-bold bg-gray-100"
         formControlName="dateEntry"
       />
     </div>
@@ -29,18 +31,20 @@
       <input
         type="text"
         pInputText
-        class="w-full font-bold"
+        class="w-full font-bold bg-gray-100"
         formControlName="reclaim"
       />
     </div>
     <div class="w-full">
       <label>ESTADO DEL INGRESO</label>
-      <input
-        type="text"
-        pInputText
-        class="w-full font-bold"
+      <p-dropdown
+        [options]="supportStatesDropdown"
+        optionLabel="name"
+        optionValue="id"
+        styleClass="w-full font-bold bg-gray-100 uppercase"
         formControlName="state"
-      />
+        dropdownIcon="none"
+      ></p-dropdown>
     </div>
   </div>
 
@@ -50,7 +54,7 @@
       <input
         type="text"
         pInputText
-        class="w-full font-bold"
+        class="w-full font-bold bg-gray-100"
         formControlName="productType"
       />
     </div>
@@ -59,7 +63,7 @@
       <input
         type="text"
         pInputText
-        class="w-full font-bold"
+        class="w-full font-bold bg-gray-100"
         formControlName="client"
       />
     </div>
@@ -105,7 +109,7 @@
     <div class="w-full">
       <label>GARANTIA</label>
       <p-dropdown
-        [options]="warrantyDropdown"
+        [options]="booleanDropdown"
         optionLabel="label"
         optionValue="value"
         placeholder="Seleccionar..."
@@ -139,7 +143,7 @@
     <div class="w-full">
       <label>FAJA DE SEGURIDAD</label>
       <p-dropdown
-        [options]="securityStrapDropdown"
+        [options]="booleanDropdown"
         optionLabel="label"
         optionValue="value"
         placeholder="Seleccionar..."
@@ -178,17 +182,27 @@
     ></textarea>
   </div>
 
-  <div class="flex justify-content-end gap-2 w-full">
-    <p-button
-      label="CANCELAR"
-      styleClass="p-button-secondary p-button-text"
-      (onClick)="cancelForm()"
-    />
-    <p-button
-      [label]="buttonLabel"
-      [disabled]="supportForm.invalid"
-      styleClass="p-button-info p-button-text"
-      (onClick)="submitForm()"
-    />
+  <div class="flex justify-content-between w-full">
+    <div>
+      <p-button
+        label="LIMPIAR"
+        styleClass="p-button-secondary p-button-text"
+        (onClick)="cleanForm()"
+      />
+    </div>
+
+    <div class="flex gap-2">
+      <p-button
+        label="CANCELAR"
+        styleClass="p-button-secondary p-button-text"
+        (onClick)="cancelForm()"
+      />
+      <p-button
+        [label]="buttonLabel"
+        [disabled]="supportForm.invalid"
+        styleClass="p-button-info p-button-text"
+        (onClick)="submitForm()"
+      />
+    </div>
   </div>
 </form>

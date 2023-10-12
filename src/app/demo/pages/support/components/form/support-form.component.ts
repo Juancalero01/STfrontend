@@ -31,17 +31,16 @@ export class SupportFormComponent {
 
   public supportForm: FormGroup = this.buildForm();
   public buttonLabel: string = 'REGISTRAR';
-  public securityStrapDropdown: any[] = [
-    { value: true, label: 'Si' },
-    { value: false, label: 'No' },
-  ];
-  public warrantyDropdown: any[] = [
+
+  public booleanDropdown: any[] = [
     { value: true, label: 'Si' },
     { value: false, label: 'No' },
   ];
   public failureTypesDropdown: IFailureType[] = [];
   public supportStatesDropdown: ISupportState[] = [];
   public supportPrioritiesDropdown: ISupportPriority[] = [];
+
+  public blockSpace: RegExp = /[^\s]/;
 
   public ngOnInit() {
     this.loadStates();
@@ -55,14 +54,14 @@ export class SupportFormComponent {
   private buildForm(): FormGroup {
     let dateDay = new Date().toLocaleDateString();
     return this.formBuilder.group({
-      search: [null],
+      search: [null, [Validators.required]],
       productType: [{ value: null, disabled: true }],
       client: [{ value: null, disabled: true }],
       warrantyProduction: [{ value: null, disabled: true }],
       warrantyService: [{ value: null, disabled: true }],
       dateEntry: [{ value: dateDay, disabled: true }],
       reclaim: [{ value: 'CNET-20230101-100', disabled: true }],
-      state: [{ value: 'ENVIADO A CONTROLNET', disabled: true }],
+      state: [{ value: null, disabled: true }],
       priority: [null],
       reference: [null, [Validators.maxLength(255)]],
       securityStrap: [null],
@@ -83,6 +82,7 @@ export class SupportFormComponent {
     this.supportStateService.findAll().subscribe({
       next: (supportStates: ISupportState[]) => {
         this.supportStatesDropdown = supportStates;
+        this.supportForm.patchValue({ state: supportStates[0].id });
       },
       error: (e: Error) => {
         this.messageService.add({
@@ -122,6 +122,8 @@ export class SupportFormComponent {
       },
     });
   }
+
+  private loadReclaimNumber(): void {}
 
   public searchProduct() {
     const serial = this.supportForm.get('search')?.value;
@@ -173,7 +175,16 @@ export class SupportFormComponent {
           this.supportForm.patchValue({ warrantyService: 'N/A' });
         }
       },
-      error: (e: Error) => {
+      error: (e: any) => {
+        if (e.status === 404) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error al buscar el producto',
+            detail: 'No se encontró el producto',
+          });
+          return;
+        }
+
         this.messageService.add({
           severity: 'error',
           summary: 'Error al buscar el producto',
@@ -223,6 +234,35 @@ export class SupportFormComponent {
           severity: 'info',
           summary: 'Operación cancelada',
           detail: 'La operación no se canceló',
+        });
+      },
+    });
+  }
+
+  public cleanForm(): void {
+    this.confirmationService.confirm({
+      message: '¿Está seguro que desea limpiar el formulario?',
+      header: 'CONFIRMAR',
+      icon: 'pi pi-info-circle',
+      acceptLabel: 'CONFIRMAR',
+      acceptButtonStyleClass:
+        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
+      rejectLabel: 'CANCELAR',
+      rejectButtonStyleClass:
+        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      accept: () => {
+        this.supportForm.reset();
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Operación exitosa',
+          detail: 'El formulario se limpió',
+        });
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Operación cancelada',
+          detail: 'El formulario no se limpió',
         });
       },
     });
