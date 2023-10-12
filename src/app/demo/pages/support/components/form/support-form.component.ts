@@ -36,6 +36,7 @@ export class SupportFormComponent {
     { value: true, label: 'Si' },
     { value: false, label: 'No' },
   ];
+
   public failureTypesDropdown: IFailureType[] = [];
   public supportStatesDropdown: ISupportState[] = [];
   public supportPrioritiesDropdown: ISupportPriority[] = [];
@@ -93,6 +94,7 @@ export class SupportFormComponent {
       },
     });
   }
+
   private loadPriorities(): void {
     this.supportPriorityService.findAll().subscribe({
       next: (supportPriorities: ISupportPriority[]) => {
@@ -123,7 +125,7 @@ export class SupportFormComponent {
     });
   }
 
-  private loadReclaimNumber(): void {}
+  // private loadReclaimNumber(): void {}
 
   public searchProduct() {
     const serial = this.supportForm.get('search')?.value;

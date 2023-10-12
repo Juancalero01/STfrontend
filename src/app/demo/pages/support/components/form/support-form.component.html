@@ -148,13 +148,14 @@
         optionValue="value"
         placeholder="Seleccionar..."
         styleClass="w-full"
+        formControlName="securityStrap"
       ></p-dropdown>
     </div>
   </div>
 
   <div class="w-full">
     <label>FALLA REPORTADA</label>
-    <input type="text" pInputText class="w-full" />
+    <input type="text" pInputText class="w-full" formControlName="failure" />
   </div>
 
   <div class="w-full">
@@ -166,6 +167,7 @@
       [filter]="true"
       placeholder="Seleccionar..."
       styleClass="w-full"
+      formControlName="failureType"
     >
     </p-dropdown>
   </div>
