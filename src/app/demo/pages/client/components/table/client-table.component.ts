@@ -31,12 +31,21 @@ export class ClientTableComponent {
   private loadClients(): void {
     this.clientService.findAll().subscribe({
       next: (clients: IClient[]) => (this.clientData = clients),
-      error: (e: Error) =>
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: e.message,
-        }),
+      error: (e: any) => {
+        if (e.status === 0) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error de conexión con el servidor',
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al cargar los clientes',
+          });
+        }
+      },
     });
   }
 

@@ -69,12 +69,20 @@ export class ClientFormComponent {
       next: (provinces: IProvince[]) => {
         this.provincesDropdown = provinces;
       },
-      error: (e: Error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: e.message,
-        });
+      error: (e: any) => {
+        if (e.status === 0) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error de conexión con el servidor',
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al cargar las provincias',
+          });
+        }
       },
     });
   }
@@ -84,12 +92,20 @@ export class ClientFormComponent {
       next: (taxConditions: ITaxCondition[]) => {
         this.taxConditionsDropdown = taxConditions;
       },
-      error: (e: Error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: e.message,
-        });
+      error: (e: any) => {
+        if (e.status === 0) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error de conexión con el servidor',
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al cargar las condiciones de impuestos',
+          });
+        }
       },
     });
   }
@@ -159,7 +175,7 @@ export class ClientFormComponent {
             this.messageService.add({
               severity: 'error',
               summary: 'Operación fallida',
-              detail: e.error?.errorMessage,
+              detail: 'El registro no se creó, compruebe los datos',
             });
           },
           complete: () => {
@@ -203,7 +219,7 @@ export class ClientFormComponent {
               this.messageService.add({
                 severity: 'error',
                 summary: 'Operación fallida',
-                detail: e.error?.errorMessage,
+                detail: 'El registro no se actualizó, compruebe los datos',
               });
             },
             complete: () => {
