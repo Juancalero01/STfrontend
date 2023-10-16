@@ -85,12 +85,20 @@ export class SupportFormComponent {
         this.supportStatesDropdown = supportStates;
         this.supportForm.patchValue({ state: supportStates[0].id });
       },
-      error: (e: Error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error al cargar los estados',
-          detail: e.message,
-        });
+      error: (e: any) => {
+        if (e.status === 0) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error de conexión con el servidor',
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error al cargar los estados',
+            detail: 'Error al cargar los estados',
+          });
+        }
       },
     });
   }
@@ -100,12 +108,20 @@ export class SupportFormComponent {
       next: (supportPriorities: ISupportPriority[]) => {
         this.supportPrioritiesDropdown = supportPriorities;
       },
-      error: (e: Error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error al cargar las prioridades',
-          detail: e.message,
-        });
+      error: (e: any) => {
+        if (e.status === 0) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error de conexión con el servidor',
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error al cargar las prioridades',
+            detail: 'Error al cargar las prioridades',
+          });
+        }
       },
     });
   }
@@ -115,12 +131,20 @@ export class SupportFormComponent {
       next: (failureTypes: IFailureType[]) => {
         this.failureTypesDropdown = failureTypes;
       },
-      error: (e: Error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error al cargar los tipos de falla',
-          detail: e.message,
-        });
+      error: (e: any) => {
+        if (e.status === 0) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error de conexión con el servidor',
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error al cargar los tipos de falla',
+            detail: 'Error al cargar los tipos de falla',
+          });
+        }
       },
     });
   }
@@ -178,20 +202,26 @@ export class SupportFormComponent {
         }
       },
       error: (e: any) => {
+        if (e.status === 0) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error al buscar el producto',
+            detail: 'Error de conexión con el servidor',
+          });
+        }
         if (e.status === 404) {
           this.messageService.add({
             severity: 'error',
             summary: 'Error al buscar el producto',
             detail: 'No se encontró el producto',
           });
-          return;
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error al buscar el producto',
+            detail: 'Error al buscar el producto',
+          });
         }
-
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error al buscar el producto',
-          detail: e.message,
-        });
       },
     });
   }
