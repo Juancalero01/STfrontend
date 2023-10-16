@@ -60,12 +60,20 @@ export class ProductFormComponent {
       next: (clients: IClient[]) => {
         this.clientDropdown = clients;
       },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cargar los clientes',
-        });
+      error: (e: any) => {
+        if (e.status === 0) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error de conexión con el servidor',
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al cargar los clientes',
+          });
+        }
       },
     });
 
@@ -73,12 +81,20 @@ export class ProductFormComponent {
       next: (productTypes: IProductType[]) => {
         this.productTypeDropdown = productTypes;
       },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cargar los tipos de productos',
-        });
+      error: (e: any) => {
+        if (e.status === 0) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error de conexión con el servidor',
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al cargar los tipos de productos',
+          });
+        }
       },
     });
   }
@@ -148,7 +164,7 @@ export class ProductFormComponent {
             this.messageService.add({
               severity: 'error',
               summary: 'Operación fallida',
-              detail: e.error?.errorMessage,
+              detail: 'El registro no se creó, compruebe los datos',
             });
           },
           complete: () => {
@@ -192,7 +208,7 @@ export class ProductFormComponent {
               this.messageService.add({
                 severity: 'error',
                 summary: 'Operación fallida',
-                detail: e.error?.errorMessage,
+                detail: 'El registro no se actualizó, compruebe los datos',
               });
             },
             complete: () => {

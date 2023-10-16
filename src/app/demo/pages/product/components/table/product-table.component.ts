@@ -43,12 +43,20 @@ export class ProductTableComponent {
       next: (products: IProduct[]) => {
         this.productData = products;
       },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cargar los productos',
-        });
+      error: (e: any) => {
+        if (e.status === 0) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error de conexión con el servidor',
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al cargar los productos',
+          });
+        }
       },
     });
   }
@@ -58,12 +66,20 @@ export class ProductTableComponent {
       next: (productTypes: IProductType[]) => {
         this.productTypeData = productTypes;
       },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cargar los tipos de productos',
-        });
+      error: (e: any) => {
+        if (e.status === 0) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error de conexión con el servidor',
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al cargar los tipos de productos',
+          });
+        }
       },
     });
   }
@@ -73,12 +89,20 @@ export class ProductTableComponent {
       next: (clients: IClient[]) => {
         this.clientData = clients;
       },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cargar los clientes',
-        });
+      error: (e: any) => {
+        if (e.status === 0) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error de conexión con el servidor',
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al cargar los clientes',
+          });
+        }
       },
     });
   }
