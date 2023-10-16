@@ -33,12 +33,20 @@ export class ProductTypeTableComponent {
       next: (productTypes: IProductType[]) => {
         this.productTypeData = productTypes;
       },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cargar los tipos de productos',
-        });
+      error: (e: any) => {
+        if (e.status === 0) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error de conexión con el servidor',
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al cargar los tipos de productos',
+          });
+        }
       },
     });
   }

@@ -104,7 +104,7 @@ export class ProductTypeFormComponent {
             this.messageService.add({
               severity: 'error',
               summary: 'Operación fallida',
-              detail: e.error?.errorMessage,
+              detail: 'El registro no se creó, compruebe los datos',
             });
           },
           complete: () => {
@@ -148,7 +148,7 @@ export class ProductTypeFormComponent {
               this.messageService.add({
                 severity: 'error',
                 summary: 'Operación fallida',
-                detail: e.error?.errorMessage,
+                detail: 'El registro no se actualizó, compruebe los datos',
               });
             },
             complete: () => {
