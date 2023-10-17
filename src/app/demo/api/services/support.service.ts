@@ -7,10 +7,10 @@ import { ISupport } from '../interfaces/support.interface';
 @Injectable({
   providedIn: 'root',
 })
-export class ClientService {
+export class SupportService {
   constructor(private httpClient: HttpClient) {}
 
-  private readonly URL = environment.apiUrl + '/support';
+  private readonly URL = environment.apiUrl + '/service';
 
   public findAll(): Observable<ISupport[]> {
     return this.httpClient.get<ISupport[]>(this.URL);
@@ -18,6 +18,11 @@ export class ClientService {
 
   public findOne(id: number): Observable<ISupport> {
     return this.httpClient.get<ISupport>(`${this.URL}/${id}`);
+  }
+
+  // obtener el ultimo registro
+  public findLastReclaimNumber(): Observable<string> {
+    return this.httpClient.get<string>(`${this.URL}/last-reclaim-number`);
   }
 
   public create(support: ISupport): Observable<ISupport> {

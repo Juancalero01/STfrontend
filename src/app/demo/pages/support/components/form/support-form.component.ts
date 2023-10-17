@@ -11,6 +11,7 @@ import { FailureTypeService } from 'src/app/demo/api/services/failure-type.servi
 import { ProductService } from 'src/app/demo/api/services/product.service';
 import { SupportPriorityService } from 'src/app/demo/api/services/support-priority.service';
 import { SupportStateService } from 'src/app/demo/api/services/support-state.service';
+import { SupportService } from 'src/app/demo/api/services/support.service';
 
 @Component({
   selector: 'app-support-form',
@@ -26,11 +27,15 @@ export class SupportFormComponent {
     private readonly failureTypeService: FailureTypeService,
     private readonly supportStateService: SupportStateService,
     private readonly supportPriorityService: SupportPriorityService,
-    private readonly productService: ProductService
+    private readonly productService: ProductService,
+    private readonly supportService: SupportService
   ) {}
 
   public supportForm: FormGroup = this.buildForm();
   public buttonLabel: string = 'REGISTRAR';
+  public showButtonState: boolean = false;
+  public showButtonClean: boolean = true;
+  public showSearch: boolean = true;
 
   public booleanDropdown: any[] = [
     { value: true, label: 'Si' },
@@ -47,8 +52,12 @@ export class SupportFormComponent {
     this.loadStates();
     this.loadPriorities();
     this.loadFailureTypes();
+    this.loadReclaimNumber();
     if (this.config.data) {
       this.loadForm(this.config.data);
+      this.showButtonState = true;
+      this.showButtonClean = false;
+      this.showSearch = false;
     }
   }
 
@@ -61,7 +70,7 @@ export class SupportFormComponent {
       warrantyProduction: [{ value: null, disabled: true }],
       warrantyService: [{ value: null, disabled: true }],
       dateEntry: [{ value: dateDay, disabled: true }],
-      reclaim: [{ value: 'CNET-20230101-100', disabled: true }],
+      reclaim: [{ value: null, disabled: true }],
       state: [{ value: null, disabled: true }],
       priority: [null],
       reference: [null, [Validators.maxLength(255)]],
@@ -149,7 +158,24 @@ export class SupportFormComponent {
     });
   }
 
-  // private loadReclaimNumber(): void {}
+  private loadReclaimNumber(): void {
+    this.supportService.findLastReclaimNumber().subscribe({
+      next: (reclaim: string) => {
+        this.generateReclaimNumber(reclaim);
+      },
+      error: (e: any) => {
+        if (e.status === 404) {
+          this.generateReclaimNumber();
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error al cargar el número de reclamo',
+            detail: 'Error al cargar el número de reclamo',
+          });
+        }
+      },
+    });
+  }
 
   public searchProduct() {
     const serial = this.supportForm.get('search')?.value;
@@ -234,11 +260,55 @@ export class SupportFormComponent {
   }
 
   public submitForm() {
-    if (!this.config.data) this.createForm();
+    if (!this.config.data) this.createSupport();
     else this.updateForm();
   }
 
-  public createForm(): void {}
+  public createSupport(): void {
+    const {
+      search,
+      warrantyProduction,
+      warrantyService,
+      client,
+      productType,
+      ...dataToSend
+    } = this.supportForm.getRawValue();
+
+    this.confirmationService.confirm({
+      message: '¿Está seguro que desea crear el registro?',
+      header: 'CONFIRMAR',
+      icon: 'pi pi-info-circle',
+      acceptLabel: 'CONFIRMAR',
+      acceptButtonStyleClass:
+        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
+      rejectLabel: 'CANCELAR',
+
+      rejectButtonStyleClass:
+        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      accept: () => {
+        this.supportService.create(dataToSend).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Operación exitosa',
+              detail: 'El registro se creó correctamente',
+            });
+            this.ref.close();
+          },
+          error: (e: any) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error al crear el registro',
+              detail: 'Error al crear el registro',
+            });
+          },
+          complete: () => {
+            this.ref.close();
+          },
+        });
+      },
+    });
+  }
 
   public updateForm(): void {}
 
@@ -283,7 +353,9 @@ export class SupportFormComponent {
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
       accept: () => {
-        this.supportForm.reset();
+        this.supportForm.reset({
+          dateEntry: this.supportForm.get('dateEntry')?.value,
+        });
         this.messageService.add({
           severity: 'info',
           summary: 'Operación exitosa',
@@ -298,5 +370,20 @@ export class SupportFormComponent {
         });
       },
     });
+  }
+
+  private generateReclaimNumber(reclaimNumber?: string): void {
+    const dateDay = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    if (reclaimNumber) {
+      const reclaimLastNumber = parseInt(reclaimNumber.split('-')[1]);
+      const reclaimNewNumber = reclaimLastNumber + 1;
+      this.supportForm.patchValue({
+        reclaim: `CNET-${dateDay}-${reclaimNewNumber}`,
+      });
+    } else {
+      this.supportForm.patchValue({
+        reclaim: `CNET-${dateDay}-${1}`,
+      });
+    }
   }
 }
