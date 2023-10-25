@@ -20,7 +20,7 @@ export class ProductService {
   }
 
   public findOneSerial(serial: string) {
-    return this.httpClient.get<IProduct>(`${this.URL}/serial/${serial}`);
+    return this.httpClient.get<IProduct>(`${this.URL}/s/${serial}`);
   }
 
   public create(product: IProduct): Observable<IProduct> {

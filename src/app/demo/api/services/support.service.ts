@@ -20,10 +20,10 @@ export class SupportService {
     return this.httpClient.get<ISupport>(`${this.URL}/${id}`);
   }
 
-  // obtener el ultimo registro
-  public findLastReclaimNumber(): Observable<string> {
-    return this.httpClient.get<string>(`${this.URL}/last-reclaim-number`);
-  }
+  //TODO revisar el endpoint
+  // public findLastReclaimNumber(): Observable<string> {
+  //   return this.httpClient.get<string>(`${this.URL}/reclaim`);
+  // }
 
   public create(support: ISupport): Observable<ISupport> {
     return this.httpClient.post<ISupport>(this.URL, support);
