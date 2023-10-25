@@ -26,7 +26,7 @@
   </div>
   <p-table
     #dt
-    [value]="[]"
+    [value]="supportData"
     [rows]="10"
     [rowHover]="true"
     [paginator]="true"
@@ -40,25 +40,40 @@
   >
     <ng-template pTemplate="header">
       <tr class="text-sm h-3rem">
-        <th class="w-15rem">PRIORIDAD</th>
+        <th>N° DE RECLAMO</th>
+        <th>PRIORIDAD</th>
         <th class="w-15rem">ESTADO</th>
-        <th class="w-15rem">PRODUCTO</th>
-        <th class="w-15rem">CLIENTE</th>
-        <th class="w-15rem">FECHA DE INGRESO</th>
+        <th>N° DE SERIE</th>
+        <th>TIPO DE PRODUCTO</th>
+        <th>CLIENTE</th>
+        <th>FECHA DE INGRESO</th>
         <th class="w-1">ACCIONES</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-support>
       <tr class="text-sm h-3rem">
-        <td class="w-15rem">
-          <span class="p-tag p-tag-rounded p-tag-info">Baja</span>
+        <td>{{ support.reclaim }}</td>
+        <td>
+          <p-tag
+            styleClass="w-full"
+            [severity]="getPriorityClass(support.priority?.name)"
+            [value]="support.priority?.name"
+            [rounded]="true"
+          />
         </td>
-        <td class="w-15rem">
-          <span class="p-tag p-tag-rounded p-tag-success">En proceso</span>
+        <td>
+          <p-tag
+            styleClass="w-full bg-gray-500"
+            [value]="support.state?.name"
+            [rounded]="true"
+          />
         </td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>{{ support.product.serial }}</td>
+        <td>{{ support.product.serial }}</td>
+        <td>{{ support.product.serial }}</td>
+        <td>
+          {{ support.dateEntry }}
+        </td>
         <td>
           <p-button
             icon="pi pi-pencil"

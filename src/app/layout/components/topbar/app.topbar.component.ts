@@ -13,7 +13,7 @@ import { MenuItem } from 'primeng/api';
 export class AppTopbarComponent {
   items: MenuItem[] = [
     {
-      label: 'FERNANDO MARTINEZ',
+      label: 'CONTROLNET S.A.',
       icon: 'pi pi-fw pi-user',
       items: [
         {

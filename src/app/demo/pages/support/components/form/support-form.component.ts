@@ -52,7 +52,7 @@ export class SupportFormComponent {
     this.loadStates();
     this.loadPriorities();
     this.loadFailureTypes();
-    this.loadReclaimNumber();
+    // this.loadReclaimNumber();
     if (this.config.data) {
       this.loadForm(this.config.data);
       this.showButtonState = true;
@@ -62,7 +62,7 @@ export class SupportFormComponent {
   }
 
   private buildForm(): FormGroup {
-    let dateDay = new Date().toLocaleDateString();
+    let dateDay = new Date().toISOString().slice(0, 10);
     return this.formBuilder.group({
       search: [null, [Validators.required]],
       productType: [{ value: null, disabled: true }],
@@ -158,24 +158,24 @@ export class SupportFormComponent {
     });
   }
 
-  private loadReclaimNumber(): void {
-    this.supportService.findLastReclaimNumber().subscribe({
-      next: (reclaim: string) => {
-        this.generateReclaimNumber(reclaim);
-      },
-      error: (e: any) => {
-        if (e.status === 404) {
-          this.generateReclaimNumber();
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error al cargar el número de reclamo',
-            detail: 'Error al cargar el número de reclamo',
-          });
-        }
-      },
-    });
-  }
+  // private loadReclaimNumber(): void {
+  //   this.supportService.findLastReclaimNumber().subscribe({
+  //     next: (reclaim: string) => {
+  //       this.generateReclaimNumber(reclaim);
+  //     },
+  //     error: (e: any) => {
+  //       if (e.status === 404) {
+  //         this.generateReclaimNumber();
+  //       } else {
+  //         this.messageService.add({
+  //           severity: 'error',
+  //           summary: 'Error al cargar el número de reclamo',
+  //           detail: 'Error al cargar el número de reclamo',
+  //         });
+  //       }
+  //     },
+  //   });
+  // }
 
   public searchProduct() {
     const serial = this.supportForm.get('search')?.value;
@@ -265,14 +265,10 @@ export class SupportFormComponent {
   }
 
   public createSupport(): void {
-    const {
-      search,
-      warrantyProduction,
-      warrantyService,
-      client,
-      productType,
-      ...dataToSend
-    } = this.supportForm.getRawValue();
+    const { search, ...dataToSend } = this.supportForm.value;
+    dataToSend.reclaim = `CNET-20231025-3`;
+    dataToSend.state = this.supportForm.get('state')?.value;
+    dataToSend.dateEntry = this.supportForm.get('dateEntry')?.value;
 
     this.confirmationService.confirm({
       message: '¿Está seguro que desea crear el registro?',
@@ -286,6 +282,7 @@ export class SupportFormComponent {
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
       accept: () => {
+        console.log(dataToSend);
         this.supportService.create(dataToSend).subscribe({
           next: () => {
             this.messageService.add({
@@ -372,18 +369,22 @@ export class SupportFormComponent {
     });
   }
 
-  private generateReclaimNumber(reclaimNumber?: string): void {
-    const dateDay = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    if (reclaimNumber) {
-      const reclaimLastNumber = parseInt(reclaimNumber.split('-')[1]);
-      const reclaimNewNumber = reclaimLastNumber + 1;
-      this.supportForm.patchValue({
-        reclaim: `CNET-${dateDay}-${reclaimNewNumber}`,
-      });
-    } else {
-      this.supportForm.patchValue({
-        reclaim: `CNET-${dateDay}-${1}`,
-      });
-    }
-  }
+  // private generateReclaimNumber(reclaimNumber?: string): void {
+  //   const dateDay = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  //   if (reclaimNumber) {
+  //     const reclaimLastNumber = parseInt(reclaimNumber.split('-')[1]);
+  //     const reclaimNewNumber = reclaimLastNumber + 1;
+  //     this.supportForm.patchValue({
+  //       reclaim: `CNET-${dateDay}-${reclaimNewNumber}`,
+  //     });
+  //   } else {
+  //     this.supportForm.patchValue({
+  //       reclaim: `CNET-${dateDay}-${1}`,
+  //     });
+  //   }
+  // }
+
+  // private converDateForMySQL(date: Date): string {
+  //   return date.toISOString().slice(0, 10).replace(/-/g, '-');
+  // }
 }

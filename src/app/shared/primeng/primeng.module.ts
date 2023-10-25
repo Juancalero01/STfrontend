@@ -19,6 +19,8 @@ import { TooltipModule } from 'primeng/tooltip';
 import { MenubarModule } from 'primeng/menubar';
 import { DividerModule } from 'primeng/divider';
 import { TabViewModule } from 'primeng/tabview';
+import { TagModule } from 'primeng/tag';
+import { ChipModule } from 'primeng/chip';
 
 @NgModule({
   imports: [
@@ -41,6 +43,8 @@ import { TabViewModule } from 'primeng/tabview';
     TooltipModule,
     DividerModule,
     TabViewModule,
+    TagModule,
+    ChipModule,
   ],
   exports: [
     ButtonModule,
@@ -62,6 +66,8 @@ import { TabViewModule } from 'primeng/tabview';
     TooltipModule,
     DividerModule,
     TabViewModule,
+    TagModule,
+    ChipModule,
   ],
   providers: [ConfirmationService, DialogService, MessageService],
 })
