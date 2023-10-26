@@ -4,6 +4,7 @@ import { MessageService } from 'primeng/api';
 import { ISupport } from 'src/app/demo/api/interfaces/support.interface';
 import { SupportFormComponent } from '../form/support-form.component';
 import { SupportService } from 'src/app/demo/api/services/support.service';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'app-support-table',
@@ -31,7 +32,6 @@ export class SupportTableComponent {
     this.supportService.findAll().subscribe({
       next: (supports: ISupport[]) => {
         this.supportData = supports;
-        console.log(supports);
       },
       error: (e: any) => {
         if (e.status === 0) {
@@ -62,20 +62,32 @@ export class SupportTableComponent {
       showHeader: true,
       position: 'center',
     });
+
+    this.ref.onClose.subscribe(() => {
+      this.loadSupports();
+    });
   }
 
-  public updateSupport(): void {}
+  public updateSupport(support: ISupport): void {
+    this.ref = this.dialogService.open(SupportFormComponent, {
+      header: 'FORMULARIO DE ACTUALIZACIÓN DE SOPORTE TÉCNICO',
+      width: '100vw',
+      style: { 'min-width': '100vw', 'min-height': '100vh' },
+      closable: false,
+      closeOnEscape: false,
+      dismissableMask: false,
+      showHeader: true,
+      position: 'center',
+      data: support,
+    });
 
-  public getPriorityClass(priority: string): string {
-    switch (priority) {
-      case 'INMEDIATA':
-        return 'danger';
-      case 'ALTA':
-        return 'danger';
-      case 'MEDIA':
-        return 'warning';
-      default:
-        return 'info';
-    }
+    this.ref.onClose.subscribe(() => {
+      this.loadSupports();
+    });
+  }
+
+  public cleanFilters(table: Table, filter: any) {
+    table.clear();
+    filter.value = '';
   }
 }

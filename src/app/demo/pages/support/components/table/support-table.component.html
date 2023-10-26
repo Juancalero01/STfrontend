@@ -11,6 +11,7 @@
       <p-button
         icon="pi pi-filter-slash"
         styleClass="p-button-danger p-button-text p-button-rounded"
+        (onClick)="cleanFilters(dt, fi)"
       />
       <div class="p-input-icon-right">
         <i class="pi pi-search"></i>
@@ -20,6 +21,7 @@
           type="text"
           placeholder="Buscar..."
           class="w-20rem"
+          (input)="dt.filterGlobal($any($event.target).value, 'contains')"
         />
       </div>
     </div>
@@ -55,16 +57,25 @@
         <td>{{ support.reclaim }}</td>
         <td>
           <p-tag
-            styleClass="w-full"
-            [severity]="getPriorityClass(support.priority?.name)"
-            [value]="support.priority?.name"
+            [styleClass]="
+              support.priority.name === 'INMEDIATA'
+                ? 'bg-red-500 w-full'
+                : support.priority.name === 'ALTA'
+                ? 'bg-orange-500 w-full'
+                : support.priority.name === 'MEDIA'
+                ? 'bg-yellow-500 w-full'
+                : support.priority.name === 'BAJA'
+                ? 'bg-green-500 w-full'
+                : 'w-full'
+            "
+            [value]="support.priority.name"
             [rounded]="true"
           />
         </td>
         <td>
           <p-tag
             styleClass="w-full bg-gray-500"
-            [value]="support.state?.name"
+            [value]="support.state.name"
             [rounded]="true"
           />
         </td>
@@ -78,6 +89,7 @@
           <p-button
             icon="pi pi-pencil"
             styleClass="p-button-text p-button-secondary w-full"
+            (onClick)="updateSupport(support)"
           />
         </td>
       </tr>
