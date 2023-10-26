@@ -31,6 +31,7 @@ export class SupportTableComponent {
     this.supportService.findAll().subscribe({
       next: (supports: ISupport[]) => {
         this.supportData = supports;
+        console.log(supports);
       },
       error: (e: any) => {
         if (e.status === 0) {
