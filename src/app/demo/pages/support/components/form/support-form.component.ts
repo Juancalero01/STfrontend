@@ -79,12 +79,21 @@ export class SupportFormComponent {
       failureType: [null],
       remarks: [null, [Validators.maxLength(255)]],
       product: [null, [Validators.required]],
-      warranty: [null],
+      warranty: [null, [Validators.required]],
     });
   }
 
   private loadForm(data: ISupport) {
     this.supportForm.patchValue(data);
+    this.supportForm.get('search')?.clearValidators();
+    this.supportForm.get('state')?.setValue(data.state.id);
+    this.supportForm
+      .get('productType')
+      ?.setValue(data.product.productType.name);
+    this.supportForm.get('client')?.setValue(data.product.client.taxpayerName);
+    this.supportForm.get('priority')?.setValue(data.priority.id);
+    this.supportForm.get('failureType')?.setValue(data.failureType.id);
+    this.calculateWarranty(data.product.deliveryDate);
     this.buttonLabel = 'ACTUALIZAR';
   }
 
@@ -158,28 +167,8 @@ export class SupportFormComponent {
     });
   }
 
-  // private loadReclaimNumber(): void {
-  //   this.supportService.findLastReclaimNumber().subscribe({
-  //     next: (reclaim: string) => {
-  //       this.generateReclaimNumber(reclaim);
-  //     },
-  //     error: (e: any) => {
-  //       if (e.status === 404) {
-  //         this.generateReclaimNumber();
-  //       } else {
-  //         this.messageService.add({
-  //           severity: 'error',
-  //           summary: 'Error al cargar el número de reclamo',
-  //           detail: 'Error al cargar el número de reclamo',
-  //         });
-  //       }
-  //     },
-  //   });
-  // }
-
   public searchProduct() {
     const serial = this.supportForm.get('search')?.value;
-
     if (!serial || serial > 10) {
       this.messageService.add({
         severity: 'error',
@@ -188,7 +177,6 @@ export class SupportFormComponent {
       });
       return;
     }
-
     this.productService.findOneSerial(serial).subscribe({
       next: (product: IProduct) => {
         this.supportForm.patchValue({
@@ -196,36 +184,7 @@ export class SupportFormComponent {
           productType: product.productType.name,
           client: product.client.taxpayerName,
         });
-
-        const deliveryDate = new Date(product.deliveryDate);
-        const today = new Date();
-
-        const oneYearLater = new Date(deliveryDate);
-        oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
-
-        if (today >= oneYearLater) {
-          this.supportForm.patchValue({
-            warrantyProduction: 'GARANTÍA DE PRODUCCIÓN VENCIDA',
-          });
-
-          const sixMonthsLater = new Date(oneYearLater);
-          sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
-
-          if (today <= sixMonthsLater) {
-            this.supportForm.patchValue({
-              warrantyService: 'GARANTÍA DE SERVICIO TÉCNICO VÁLIDA',
-            });
-          } else {
-            this.supportForm.patchValue({
-              warrantyService: 'GARANTÍA DE SERVICIO TÉCNICO VENCIDA',
-            });
-          }
-        } else {
-          this.supportForm.patchValue({
-            warrantyProduction: 'GARANTÍA DE PRODUCCIÓN VÁLIDA',
-          });
-          this.supportForm.patchValue({ warrantyService: 'N/A' });
-        }
+        this.calculateWarranty(product.deliveryDate);
       },
       error: (e: any) => {
         if (e.status === 0) {
@@ -263,7 +222,7 @@ export class SupportFormComponent {
     if (!this.config.data) this.createSupport();
     else this.updateForm();
   }
-
+  //TODO REFACTORIZAR
   public createSupport(): void {
     const { search, ...dataToSend } = this.supportForm.value;
     dataToSend.reclaim = `CNET-20231025-3`;
@@ -369,22 +328,72 @@ export class SupportFormComponent {
     });
   }
 
-  // private generateReclaimNumber(reclaimNumber?: string): void {
-  //   const dateDay = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-  //   if (reclaimNumber) {
-  //     const reclaimLastNumber = parseInt(reclaimNumber.split('-')[1]);
-  //     const reclaimNewNumber = reclaimLastNumber + 1;
-  //     this.supportForm.patchValue({
-  //       reclaim: `CNET-${dateDay}-${reclaimNewNumber}`,
-  //     });
-  //   } else {
-  //     this.supportForm.patchValue({
-  //       reclaim: `CNET-${dateDay}-${1}`,
-  //     });
-  //   }
-  // }
+  private calculateWarranty(deliveryDate: Date): void {
+    const today = new Date();
 
-  // private converDateForMySQL(date: Date): string {
-  //   return date.toISOString().slice(0, 10).replace(/-/g, '-');
-  // }
+    const oneYearLater = new Date(deliveryDate);
+    oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
+
+    if (today >= oneYearLater) {
+      this.supportForm.patchValue({
+        warrantyProduction: 'GARANTÍA DE PRODUCCIÓN VENCIDA',
+      });
+
+      const sixMonthsLater = new Date(oneYearLater);
+      sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
+
+      if (today <= sixMonthsLater) {
+        this.supportForm.patchValue({
+          warrantyService: 'GARANTÍA DE SERVICIO TÉCNICO VÁLIDA',
+        });
+      } else {
+        this.supportForm.patchValue({
+          warrantyService: 'GARANTÍA DE SERVICIO TÉCNICO VENCIDA',
+        });
+      }
+    } else {
+      this.supportForm.patchValue({
+        warrantyProduction: 'GARANTÍA DE PRODUCCIÓN VÁLIDA',
+      });
+      this.supportForm.patchValue({ warrantyService: 'N/A' });
+    }
+  }
 }
+
+// private generateReclaimNumber(reclaimNumber?: string): void {
+//   const dateDay = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+//   if (reclaimNumber) {
+//     const reclaimLastNumber = parseInt(reclaimNumber.split('-')[1]);
+//     const reclaimNewNumber = reclaimLastNumber + 1;
+//     this.supportForm.patchValue({
+//       reclaim: `CNET-${dateDay}-${reclaimNewNumber}`,
+//     });
+//   } else {
+//     this.supportForm.patchValue({
+//       reclaim: `CNET-${dateDay}-${1}`,
+//     });
+//   }
+// }
+
+// private converDateForMySQL(date: Date): string {
+//   return date.toISOString().slice(0, 10).replace(/-/g, '-');
+// }
+
+// private loadReclaimNumber(): void {
+//   this.supportService.findLastReclaimNumber().subscribe({
+//     next: (reclaim: string) => {
+//       this.generateReclaimNumber(reclaim);
+//     },
+//     error: (e: any) => {
+//       if (e.status === 404) {
+//         this.generateReclaimNumber();
+//       } else {
+//         this.messageService.add({
+//           severity: 'error',
+//           summary: 'Error al cargar el número de reclamo',
+//           detail: 'Error al cargar el número de reclamo',
+//         });
+//       }
+//     },
+//   });
+// }

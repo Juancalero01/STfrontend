@@ -77,14 +77,16 @@
         pInputText
         class="w-full font-bold"
         formControlName="warrantyProduction"
-        [ngClass]="{
-          'bg-red-100 text-red-600':
-            supportForm.get('warrantyProduction')?.value ===
-            'GARANTÍA DE PRODUCCIÓN VENCIDA',
-          'bg-green-100 text-green-600':
-            supportForm.get('warrantyProduction')?.value ===
-            'GARANTÍA DE PRODUCCIÓN VÁLIDA'
-        }"
+        [class]="
+          supportForm.get('warrantyProduction')?.value ===
+          'GARANTÍA DE PRODUCCIÓN VENCIDA'
+            ? 'bg-red-100 text-red-600'
+            : supportForm.get('warrantyProduction')?.value === 'N/A'
+            ? 'bg-gray-100 text-gray-600'
+            : supportForm.get('warrantyProduction')?.value
+            ? 'bg-green-100 text-green-600'
+            : 'bg-gray-100 text-gray-600'
+        "
       />
     </div>
     <div class="w-full">
@@ -94,14 +96,16 @@
         pInputText
         class="w-full font-bold"
         formControlName="warrantyService"
-        [ngClass]="{
-          'bg-red-100 text-red-600':
-            supportForm.get('warrantyService')?.value ===
-            'GARANTÍA DE SERVICIO TÉCNICO VENCIDA',
-          'bg-green-100 text-green-600':
-            supportForm.get('warrantyService')?.value ===
-            'GARANTÍA DE SERVICIO TÉCNICO VÁLIDA'
-        }"
+        [class]="
+          supportForm.get('warrantyService')?.value ===
+          'GARANTÍA DE SERVICIO TÉCNICO VENCIDA'
+            ? 'bg-red-100 text-red-600'
+            : supportForm.get('warrantyService')?.value === 'N/A'
+            ? 'bg-gray-100 text-gray-600'
+            : supportForm.get('warrantyService')?.value
+            ? 'bg-green-100 text-green-600'
+            : 'bg-gray-100 text-gray-600'
+        "
       />
     </div>
   </div>
@@ -188,7 +192,7 @@
     <div>
       <p-button
         *ngIf="showButtonClean"
-        label="LIMPIAR"
+        label="LIMPIAR CAMPOS"
         styleClass="p-button-secondary p-button-text"
         (onClick)="cleanForm()"
       />
