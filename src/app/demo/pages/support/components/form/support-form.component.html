@@ -41,7 +41,7 @@
       />
     </div>
     <div class="w-full">
-      <label>ESTADO DEL INGRESO</label>
+      <label>ESTADO DEL SERVICIO</label>
       <p-dropdown
         [options]="supportStatesDropdown"
         optionLabel="name"
@@ -135,7 +135,11 @@
         placeholder="Seleccionar..."
         styleClass="w-full"
         formControlName="priority"
-      ></p-dropdown>
+        [ngClass]="{ 'ng-invalid ng-dirty': validateForm('priority') }"
+      />
+      <small *ngIf="validateForm('priority')" class="p-error">
+        Campo requerido*
+      </small>
     </div>
   </div>
 
@@ -205,6 +209,7 @@
         *ngIf="showButtonState"
         label="CANCELAR SERVICIO"
         styleClass="p-button-danger p-button-text"
+        (onClick)="cancelForm()"
       />
       <p-button
         *ngIf="showButtonState"
