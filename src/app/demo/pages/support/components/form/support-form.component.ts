@@ -42,7 +42,7 @@ export class SupportFormComponent {
   public showButtonState: boolean = false;
   public showButtonClean: boolean = true;
   public showSearch: boolean = true;
-  public disabledChange: boolean = true;
+  public showButtonCancel!: boolean;
   public booleanDropdown: any[] = [
     { value: true, label: 'Si' },
     { value: false, label: 'No' },
@@ -51,8 +51,6 @@ export class SupportFormComponent {
   public supportStatesDropdown: ISupportState[] = [];
   public supportPrioritiesDropdown: ISupportPriority[] = [];
   public blockSpace: RegExp = /[^\s]/;
-
-  //ref open history
   public refHistory: DynamicDialogRef = new DynamicDialogRef();
 
   public ngOnInit() {
@@ -65,6 +63,7 @@ export class SupportFormComponent {
       this.showButtonState = true;
       this.showButtonClean = false;
       this.showSearch = false;
+      this.config.data.state.id < 3 ? (this.showButtonCancel = true) : false;
     } else {
       this.getLastReclaimNumber();
     }
@@ -405,13 +404,14 @@ export class SupportFormComponent {
 
   public openHistoryForm(): void {
     this.refHistory = this.dialogService.open(SupportFormHistoryComponent, {
-      header: 'REGISTRO DE CAMBIO DE ESTADO',
+      header: 'ACTUALIZAR ESTADO DEL SERVICIO',
       width: '50%',
       closable: false,
       closeOnEscape: false,
       dismissableMask: false,
       showHeader: true,
       position: 'center',
+      data: this.config.data,
     });
   }
 

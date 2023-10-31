@@ -1,0 +1,57 @@
+<form
+  class="w-full flex flex-column gap-3 py-2"
+  [formGroup]="supportHistoryForm"
+>
+  <div class="w-full">
+    <label>N° DE REFERENCIA DEL SERVICIO</label>
+    <input
+      pInputText
+      class="w-full font-bold bg-gray-100 uppercase"
+      formControlName="reclaim"
+    />
+  </div>
+
+  <div class="w-full">
+    <label>ESTADO ACTUAL</label>
+    <p-dropdown
+      [options]="supportStatesDropdown"
+      optionLabel="name"
+      optionValue="id"
+      styleClass="w-full font-bold bg-gray-100 uppercase"
+      formControlName="stateCurrent"
+      dropdownIcon="none"
+    ></p-dropdown>
+  </div>
+  <div class="w-full">
+    <label>ESTADO SIGUIENTE</label>
+    <p-dropdown
+      [options]="supportStatesDropdown"
+      optionLabel="name"
+      optionValue="id"
+      styleClass="w-full uppercase"
+      formControlName="stateNext"
+      placeholder="Seleccionar..."
+    ></p-dropdown>
+  </div>
+  <div class="w-full">
+    <label>COMENTARIOS</label>
+    <textarea
+      pInputTextarea
+      maxlength="250"
+      class="w-full"
+      [autoResize]="true"
+      rows="6"
+    ></textarea>
+  </div>
+  <div class="flex justify-content-end gap-2 w-full">
+    <p-button
+      label="SALIR SIN GUARDAR"
+      styleClass="p-button-secondary p-button-text"
+      (onClick)="exitForm()"
+    />
+    <p-button
+      styleClass="p-button-info p-button-text"
+      label="REGISTRAR CAMBIO DE ESTADO"
+    />
+  </div>
+</form>
