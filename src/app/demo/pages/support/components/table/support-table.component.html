@@ -43,18 +43,31 @@
     <ng-template pTemplate="header">
       <tr class="text-sm h-3rem">
         <th>N° DE RECLAMO</th>
-        <th>PRIORIDAD</th>
-        <th class="w-15rem">ESTADO</th>
+        <th>FECHA DE INGRESO</th>
         <th>N° DE SERIE</th>
         <th>TIPO DE PRODUCTO</th>
         <th>CLIENTE</th>
-        <th>FECHA DE INGRESO</th>
+        <th class="w-15rem">ESTADO DEL SERVICIO</th>
+        <th>PRIORIDAD</th>
         <th class="w-1">ACCIONES</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-support>
       <tr class="text-sm h-3rem">
         <td>{{ support.reclaim }}</td>
+        <td>
+          {{ support.dateEntry }}
+        </td>
+        <td>{{ support.product.serial }}</td>
+        <td>{{ support.product.productType.name | uppercase }}</td>
+        <td>{{ support.product.client.taxpayerName | uppercase }}</td>
+        <td>
+          <p-tag
+            styleClass="w-full bg-gray-500"
+            [value]="support.state.name"
+            [rounded]="true"
+          />
+        </td>
         <td>
           <p-tag
             [styleClass]="
@@ -72,19 +85,7 @@
             [rounded]="true"
           />
         </td>
-        <td>
-          <p-tag
-            styleClass="w-full bg-gray-500"
-            [value]="support.state.name"
-            [rounded]="true"
-          />
-        </td>
-        <td>{{ support.product.serial }}</td>
-        <td>{{ support.product.productType.name }}</td>
-        <td>{{ support.product.client.taxpayerName }}</td>
-        <td>
-          {{ support.dateEntry }}
-        </td>
+
         <td>
           <p-button
             icon="pi pi-pencil"
@@ -96,7 +97,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr class="text-sm w-full">
-        <td colspan="6">
+        <td colspan="8">
           <div class="flex gap-2 align-items-center">
             <i class="pi pi-info-circle"></i>
             <span class="font-medium">No hay solicitudes nuevas.</span>

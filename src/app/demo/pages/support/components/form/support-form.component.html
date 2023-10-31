@@ -1,21 +1,26 @@
 <form class="w-full flex flex-column gap-3 py-2" [formGroup]="supportForm">
-  <div class="w-full flex gap-2" *ngIf="showSearch">
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      placeholder="Buscar por número de serie..."
-      formControlName="search"
-      [pKeyFilter]="blockSpace"
-      maxlength="10"
-    />
-    <p-button
-      icon="pi pi-search"
-      styleClass=" p-button-secondary"
-      (onClick)="searchProduct()"
-    />
+  <div class="w-full flex flex-column" *ngIf="showSearch">
+    <label>BUSCADOR DEL PRODUCTO</label>
+    <div class="w-full flex gap-2">
+      <input
+        type="text"
+        pInputText
+        class="w-full"
+        formControlName="search"
+        [pKeyFilter]="blockSpace"
+        maxlength="10"
+        [ngClass]="{ 'ng-invalid ng-dirty': validateForm('search') }"
+      />
+      <p-button
+        icon="pi pi-search"
+        styleClass=" p-button-secondary"
+        (onClick)="searchProduct()"
+      />
+    </div>
+    <small *ngIf="validateForm('search')" class="p-error">
+      Campo requerido*
+    </small>
   </div>
-
   <div class="w-full flex gap-2">
     <div class="w-full">
       <label>FECHA DE REGISTRO</label>
@@ -192,25 +197,29 @@
     <div>
       <p-button
         *ngIf="showButtonClean"
-        label="LIMPIAR CAMPOS"
+        label="LIMPIAR FORMULARIO"
         styleClass="p-button-secondary p-button-text"
         (onClick)="cleanForm()"
+      />
+      <p-button
+        *ngIf="showButtonState"
+        label="CANCELAR SERVICIO"
+        styleClass="p-button-danger p-button-text"
+      />
+      <p-button
+        *ngIf="showButtonState"
+        label="ESTADO SIGUIENTE"
+        styleClass="p-button-secondary p-button-text"
       />
     </div>
     <div class="flex gap-2">
       <p-button
-        *ngIf="showButtonState"
-        label="SIGUIENTE ESTADO"
+        label="SALIR DEL FORMULARIO"
         styleClass="p-button-secondary p-button-text"
-      />
-
-      <p-button
-        label="CANCELAR"
-        styleClass="p-button-secondary p-button-text"
-        (onClick)="cancelForm()"
+        (onClick)="exitForm()"
       />
       <p-button
-        [label]="buttonLabel"
+        [label]="mainButtonLabel"
         [disabled]="supportForm.invalid"
         styleClass="p-button-info p-button-text"
         (onClick)="submitForm()"

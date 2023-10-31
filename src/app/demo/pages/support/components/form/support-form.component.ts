@@ -32,44 +32,50 @@ export class SupportFormComponent {
   ) {}
 
   public supportForm: FormGroup = this.buildForm();
-  public buttonLabel: string = 'REGISTRAR';
+  public mainButtonLabel: string = 'REGISTRAR FORMULARIO';
   public showButtonState: boolean = false;
   public showButtonClean: boolean = true;
   public showSearch: boolean = true;
-
+  public disabledChange: boolean = true;
   public booleanDropdown: any[] = [
     { value: true, label: 'Si' },
     { value: false, label: 'No' },
   ];
-
   public failureTypesDropdown: IFailureType[] = [];
   public supportStatesDropdown: ISupportState[] = [];
   public supportPrioritiesDropdown: ISupportPriority[] = [];
-
   public blockSpace: RegExp = /[^\s]/;
 
   public ngOnInit() {
+    this.setDefaultFormData();
     this.loadStates();
     this.loadPriorities();
     this.loadFailureTypes();
-    // this.loadReclaimNumber();
     if (this.config.data) {
       this.loadForm(this.config.data);
       this.showButtonState = true;
       this.showButtonClean = false;
       this.showSearch = false;
+    } else {
+      this.getLastReclaimNumber();
     }
   }
 
+  private setDefaultFormData(): void {
+    // verificar si el dia de hoy es el actual
+    const today = new Date().toISOString().split('T')[0];
+    this.supportForm.get('state')?.setValue(1);
+    this.supportForm.get('dateEntry')?.setValue(today);
+  }
+
   private buildForm(): FormGroup {
-    let dateDay = new Date().toISOString().slice(0, 10);
     return this.formBuilder.group({
       search: [null, [Validators.required]],
       productType: [{ value: null, disabled: true }],
       client: [{ value: null, disabled: true }],
       warrantyProduction: [{ value: null, disabled: true }],
       warrantyService: [{ value: null, disabled: true }],
-      dateEntry: [{ value: dateDay, disabled: true }],
+      dateEntry: [{ value: null, disabled: true }],
       reclaim: [{ value: null, disabled: true }],
       state: [{ value: null, disabled: true }],
       priority: [null],
@@ -79,7 +85,7 @@ export class SupportFormComponent {
       failureType: [null],
       remarks: [null, [Validators.maxLength(255)]],
       product: [null, [Validators.required]],
-      warranty: [null, [Validators.required]],
+      warranty: [null],
     });
   }
 
@@ -87,21 +93,20 @@ export class SupportFormComponent {
     this.supportForm.patchValue(data);
     this.supportForm.get('search')?.clearValidators();
     this.supportForm.get('state')?.setValue(data.state.id);
+    this.supportForm.get('client')?.setValue(data.product.client.taxpayerName);
     this.supportForm
       .get('productType')
       ?.setValue(data.product.productType.name);
-    this.supportForm.get('client')?.setValue(data.product.client.taxpayerName);
     this.supportForm.get('priority')?.setValue(data.priority.id);
     this.supportForm.get('failureType')?.setValue(data.failureType.id);
     this.calculateWarranty(data.product.deliveryDate);
-    this.buttonLabel = 'ACTUALIZAR';
+    this.mainButtonLabel = 'ACTUALIZAR FORMULARIO';
   }
 
   private loadStates(): void {
     this.supportStateService.findAll().subscribe({
       next: (supportStates: ISupportState[]) => {
         this.supportStatesDropdown = supportStates;
-        this.supportForm.patchValue({ state: supportStates[0].id });
       },
       error: (e: any) => {
         if (e.status === 0) {
@@ -222,10 +227,10 @@ export class SupportFormComponent {
     if (!this.config.data) this.createSupport();
     else this.updateForm();
   }
-  //TODO REFACTORIZAR
+
   public createSupport(): void {
     const { search, ...dataToSend } = this.supportForm.value;
-    dataToSend.reclaim = `CNET-20231025-3`;
+    dataToSend.reclaim = this.supportForm.get('reclaim')?.value;
     dataToSend.state = this.supportForm.get('state')?.value;
     dataToSend.dateEntry = this.supportForm.get('dateEntry')?.value;
 
@@ -241,7 +246,6 @@ export class SupportFormComponent {
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
       accept: () => {
-        console.log(dataToSend);
         this.supportService.create(dataToSend).subscribe({
           next: () => {
             this.messageService.add({
@@ -266,11 +270,12 @@ export class SupportFormComponent {
     });
   }
 
-  public updateForm(): void {}
-
-  public cancelForm(): void {
+  public updateForm(): void {
+    const { search, ...dataToSend } = this.supportForm.value;
+    dataToSend.state = this.supportForm.get('state')?.value;
+    dataToSend.dateEntry = this.supportForm.get('dateEntry')?.value;
     this.confirmationService.confirm({
-      message: '¿Está seguro que desea cancelar la operación?',
+      message: '¿Está seguro que desea actualizar el registro?',
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
@@ -280,20 +285,48 @@ export class SupportFormComponent {
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
       accept: () => {
-        this.ref.close();
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Operación cancelada',
-          detail: 'La operación se canceló',
+        this.supportService.update(this.config.data?.id, dataToSend).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Operación exitosa',
+              detail: 'El registro se actualizó correctamente',
+            });
+          },
+          error: (e: any) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error al actualizar el registro',
+              detail: 'Error al actualizar el registro',
+            });
+          },
+          complete: () => {
+            this.ref.close();
+          },
         });
       },
       reject: () => {
         this.messageService.add({
           severity: 'info',
           summary: 'Operación cancelada',
-          detail: 'La operación no se canceló',
+          detail: 'El registro no se actualizó',
         });
       },
+    });
+  }
+
+  public exitForm(): void {
+    this.confirmationService.confirm({
+      message: '¿Está seguro que desea salir del formulario?',
+      header: 'CONFIRMAR',
+      icon: 'pi pi-info-circle',
+      acceptLabel: 'CONFIRMAR',
+      acceptButtonStyleClass:
+        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
+      rejectLabel: 'CANCELAR',
+      rejectButtonStyleClass:
+        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      accept: () => this.ref.close(),
     });
   }
 
@@ -311,6 +344,8 @@ export class SupportFormComponent {
       accept: () => {
         this.supportForm.reset({
           dateEntry: this.supportForm.get('dateEntry')?.value,
+          reclaim: this.supportForm.get('reclaim')?.value,
+          state: this.supportForm.get('state')?.value,
         });
         this.messageService.add({
           severity: 'info',
@@ -358,42 +393,32 @@ export class SupportFormComponent {
       this.supportForm.patchValue({ warrantyService: 'N/A' });
     }
   }
+
+  private getLastReclaimNumber(): void {
+    this.supportService.findAll().subscribe({
+      next: (support: ISupport[]) => {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const lastReclaimNumber = support[support.length - 1].reclaim
+          .split('-')
+          .pop();
+        const reclaim = `CNET-${year}${month}${day}-${
+          Number(lastReclaimNumber) + 1
+        }`;
+        this.supportForm.get('reclaim')?.setValue(reclaim);
+      },
+    });
+  }
+
+  private getNowDate(): string {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+  }
 }
-
-// private generateReclaimNumber(reclaimNumber?: string): void {
-//   const dateDay = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-//   if (reclaimNumber) {
-//     const reclaimLastNumber = parseInt(reclaimNumber.split('-')[1]);
-//     const reclaimNewNumber = reclaimLastNumber + 1;
-//     this.supportForm.patchValue({
-//       reclaim: `CNET-${dateDay}-${reclaimNewNumber}`,
-//     });
-//   } else {
-//     this.supportForm.patchValue({
-//       reclaim: `CNET-${dateDay}-${1}`,
-//     });
-//   }
-// }
-
-// private converDateForMySQL(date: Date): string {
-//   return date.toISOString().slice(0, 10).replace(/-/g, '-');
-// }
-
-// private loadReclaimNumber(): void {
-//   this.supportService.findLastReclaimNumber().subscribe({
-//     next: (reclaim: string) => {
-//       this.generateReclaimNumber(reclaim);
-//     },
-//     error: (e: any) => {
-//       if (e.status === 404) {
-//         this.generateReclaimNumber();
-//       } else {
-//         this.messageService.add({
-//           severity: 'error',
-//           summary: 'Error al cargar el número de reclamo',
-//           detail: 'Error al cargar el número de reclamo',
-//         });
-//       }
-//     },
-//   });
-// }
