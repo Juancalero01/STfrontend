@@ -213,8 +213,9 @@
       />
       <p-button
         *ngIf="showButtonState"
-        label="ESTADO SIGUIENTE"
-        styleClass="p-button-secondary p-button-text"
+        label="ACTUALIZAR ESTADO DEL SERVICIO"
+        styleClass="p-button-success p-button-text"
+        (onClick)="openHistoryForm()"
       />
     </div>
     <div class="flex gap-2">

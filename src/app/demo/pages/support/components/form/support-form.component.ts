@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import {
+  DialogService,
+  DynamicDialogConfig,
+  DynamicDialogRef,
+} from 'primeng/dynamicdialog';
 import { IFailureType } from 'src/app/demo/api/interfaces/failure-type.interface';
 import { IProduct } from 'src/app/demo/api/interfaces/product.interface';
 import { ISupportPriority } from 'src/app/demo/api/interfaces/support-priority.interface';
@@ -12,6 +16,7 @@ import { ProductService } from 'src/app/demo/api/services/product.service';
 import { SupportPriorityService } from 'src/app/demo/api/services/support-priority.service';
 import { SupportStateService } from 'src/app/demo/api/services/support-state.service';
 import { SupportService } from 'src/app/demo/api/services/support.service';
+import { SupportFormHistoryComponent } from '../form-history/support-form-history.component';
 
 @Component({
   selector: 'app-support-form',
@@ -28,7 +33,8 @@ export class SupportFormComponent {
     private readonly supportStateService: SupportStateService,
     private readonly supportPriorityService: SupportPriorityService,
     private readonly productService: ProductService,
-    private readonly supportService: SupportService
+    private readonly supportService: SupportService,
+    private readonly dialogService: DialogService
   ) {}
 
   public supportForm: FormGroup = this.buildForm();
@@ -45,6 +51,9 @@ export class SupportFormComponent {
   public supportStatesDropdown: ISupportState[] = [];
   public supportPrioritiesDropdown: ISupportPriority[] = [];
   public blockSpace: RegExp = /[^\s]/;
+
+  //ref open history
+  public refHistory: DynamicDialogRef = new DynamicDialogRef();
 
   public ngOnInit() {
     this.setDefaultFormData();
@@ -391,6 +400,18 @@ export class SupportFormComponent {
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
       accept: () => this.ref.close(),
+    });
+  }
+
+  public openHistoryForm(): void {
+    this.refHistory = this.dialogService.open(SupportFormHistoryComponent, {
+      header: 'REGISTRO DE CAMBIO DE ESTADO',
+      width: '50%',
+      closable: false,
+      closeOnEscape: false,
+      dismissableMask: false,
+      showHeader: true,
+      position: 'center',
     });
   }
 
