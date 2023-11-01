@@ -34,8 +34,8 @@
     [paginator]="true"
     [globalFilterFields]="['reclaim']"
     [rowsPerPageOptions]="[10, 25, 50, 100]"
-    [showCurrentPageReport]="true"
     [scrollable]="true"
+    [showCurrentPageReport]="true"
     currentPageReportTemplate="Mostrando {first} a {last}"
     scrollHeight="640px"
     styleClass="p-datatable-striped p-datatable-gridlines p-datatable-sm"
@@ -54,7 +54,16 @@
     </ng-template>
     <ng-template pTemplate="body" let-support>
       <tr class="text-sm h-3rem">
-        <td>{{ support.reclaim }}</td>
+        <td>
+          <div class="flex align-items-center justify-content-between">
+            {{ support.reclaim }}
+            <p-tag
+              *ngIf="support.dateEntry === today"
+              styleClass="w-full bg-green-500"
+              value="NUEVO"
+            />
+          </div>
+        </td>
         <td>
           {{ support.dateEntry }}
         </td>
@@ -62,30 +71,14 @@
         <td>{{ support.product.productType.name | uppercase }}</td>
         <td>{{ support.product.client.taxpayerName | uppercase }}</td>
         <td>
-          <p-tag
-            styleClass="w-full bg-gray-500"
-            [value]="support.state.name"
-            [rounded]="true"
-          />
+          <p-tag styleClass="w-full bg-gray-500" [value]="support.state.name" />
         </td>
         <td>
           <p-tag
-            [styleClass]="
-              support.priority.name === 'INMEDIATA'
-                ? 'bg-red-500 w-full'
-                : support.priority.name === 'ALTA'
-                ? 'bg-orange-500 w-full'
-                : support.priority.name === 'MEDIA'
-                ? 'bg-yellow-500 w-full'
-                : support.priority.name === 'BAJA'
-                ? 'bg-green-500 w-full'
-                : 'w-full'
-            "
+            [styleClass]="priorityColors[support.priority.name] || 'w-full'"
             [value]="support.priority.name"
-            [rounded]="true"
           />
         </td>
-
         <td>
           <p-button
             icon="pi pi-pencil"

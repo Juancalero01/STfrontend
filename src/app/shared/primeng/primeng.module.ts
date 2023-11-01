@@ -21,6 +21,7 @@ import { DividerModule } from 'primeng/divider';
 import { TabViewModule } from 'primeng/tabview';
 import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
+import { BadgeModule } from 'primeng/badge';
 
 @NgModule({
   imports: [
@@ -45,6 +46,7 @@ import { ChipModule } from 'primeng/chip';
     TabViewModule,
     TagModule,
     ChipModule,
+    BadgeModule,
   ],
   exports: [
     ButtonModule,
@@ -68,6 +70,7 @@ import { ChipModule } from 'primeng/chip';
     TabViewModule,
     TagModule,
     ChipModule,
+    BadgeModule,
   ],
   providers: [ConfirmationService, DialogService, MessageService],
 })

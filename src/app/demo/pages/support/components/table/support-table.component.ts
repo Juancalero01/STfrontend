@@ -19,6 +19,14 @@ export class SupportTableComponent {
 
   public supportData: ISupport[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
+  public today: string = new Date().toISOString().split('T')[0];
+
+  public priorityColors: any = {
+    INMEDIATA: 'bg-red-500 w-full',
+    ALTA: 'bg-orange-500 w-full',
+    MEDIA: 'bg-yellow-500 w-full',
+    BAJA: 'bg-green-500 w-full',
+  };
 
   public ngOnInit(): void {
     this.loadSupports();
