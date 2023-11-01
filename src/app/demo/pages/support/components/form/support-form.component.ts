@@ -480,16 +480,15 @@ export class SupportFormComponent {
   }
 
   private getLastReclaimNumber(): void {
+    const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
     this.supportService.findLastReclaim().subscribe({
-      next: (reclaimFound: string) => {
-        const date = new Date();
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
+      next: (reclaimFound: string | null) => {
+        if (!reclaimFound) {
+          this.supportForm.get('reclaim')?.setValue(`CNET-${today}-1`);
+          return;
+        }
         const lastReclaimNumber = reclaimFound.split('-').pop();
-        const reclaim = `CNET-${year}${month}${day}-${
-          Number(lastReclaimNumber) + 1
-        }`;
+        const reclaim = `CNET-${today}-${Number(lastReclaimNumber) + 1}`;
         this.supportForm.get('reclaim')?.setValue(reclaim);
       },
     });
