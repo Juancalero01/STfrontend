@@ -93,7 +93,13 @@
         <td colspan="8">
           <div class="flex gap-2 align-items-center">
             <i class="pi pi-info-circle"></i>
-            <span class="font-medium">No hay solicitudes nuevas.</span>
+            <span class="font-medium"
+              >{{
+                dt.filteredValue
+                  ? "No se encontraron servicios con los criterios de búsqueda"
+                  : "No hay servicios nuevos para mostrar"
+              }}
+            </span>
           </div>
         </td>
       </tr>
