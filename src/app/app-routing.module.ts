@@ -14,10 +14,18 @@ import { NotfoundComponent } from './demo/pages/notfound/notfound.component';
             {
               path: '',
               loadChildren: () =>
+                import('./demo/pages/home/home.module').then(
+                  (m) => m.HomeModule
+                ),
+            },
+            {
+              path: 'support',
+              loadChildren: () =>
                 import('./demo/pages/support/support.module').then(
                   (m) => m.SupportModule
                 ),
             },
+
             {
               path: 'client',
               loadChildren: () =>

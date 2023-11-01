@@ -6,6 +6,7 @@ import { MenuItem } from 'primeng/api';
   template: `
     <p-menubar
       [model]="items"
+      class="flex-"
       styleClass="bg-white border-none border-noround shadow-1 w-full text-sm"
     />
   `,
@@ -13,7 +14,7 @@ import { MenuItem } from 'primeng/api';
 export class AppTopbarComponent {
   items: MenuItem[] = [
     {
-      label: 'CONTROLNET S.A.',
+      label: 'FERNANDO MARTINEZ',
       icon: 'pi pi-fw pi-user',
       items: [
         {
@@ -29,9 +30,14 @@ export class AppTopbarComponent {
       ],
     },
     {
+      label: 'Inicio',
+      icon: 'pi pi-fw pi-home',
+      routerLink: ['/'],
+    },
+    {
       label: 'Servicio Técnico',
       icon: 'pi pi-fw pi-wrench',
-      routerLink: ['/'],
+      routerLink: ['support'],
     },
     {
       label: 'Producción',
@@ -53,12 +59,12 @@ export class AppTopbarComponent {
     {
       label: 'Clientes',
       icon: 'pi pi-fw pi-users',
-      routerLink: ['/client'],
+      routerLink: ['client'],
     },
     {
       label: 'Usuarios',
       icon: 'pi pi-fw pi-users',
-      routerLink: ['/users'],
+      routerLink: ['users'],
     },
   ];
 }
