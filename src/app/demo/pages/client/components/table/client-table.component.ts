@@ -51,7 +51,7 @@ export class ClientTableComponent {
     });
   }
 
-  public openClientForm(client: IClient | null = null) {
+  public openClientForm(client?: IClient) {
     const header = client
       ? 'FORMULARIO DE ACTUALIZACIÓN DE CLIENTE'
       : 'FORMULARIO DE REGISTRO DE CLIENTE';

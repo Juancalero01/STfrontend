@@ -43,10 +43,10 @@
     <ng-template pTemplate="header">
       <tr class="text-sm h-3rem">
         <th class="w-10rem">CUIT</th>
-        <th>CLIENTE</th>
-        <th>PERSONA DE CONTACTO</th>
+        <th>NOMBRE / RAZÓN SOCIAL</th>
         <th>CORREO ELECTRÓNICO</th>
         <th>TELÉFONO</th>
+        <th>PERSONA DE CONTACTO</th>
         <th class="w-1">ACCIONES</th>
       </tr>
     </ng-template>
@@ -54,9 +54,9 @@
       <tr class="text-sm h-3rem">
         <td>{{ client.taxpayerId | null }}</td>
         <td>{{ client.taxpayerName }}</td>
-        <td>{{ client.contactName | null }}</td>
         <td>{{ client.taxpayerEmail | null }}</td>
         <td>{{ client.taxpayerPhone | null }}</td>
+        <td>{{ client.contactName | null }}</td>
         <td>
           <p-button
             icon="pi pi-pencil"
