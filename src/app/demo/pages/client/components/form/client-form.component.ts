@@ -28,15 +28,12 @@ export class ClientFormComponent {
   public clientForm: FormGroup = this.buildForm();
   public provinces: IProvince[] = [];
   public taxConditions: ITaxCondition[] = [];
-
-  //
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
-  public blockSpace: RegExp = /[^\s]/;
 
   public ngOnInit(): void {
     this.getProvinces();
     this.getTaxConditions();
-    if (this.config.data) this.loadForm(this.config.data);
+    this.config.data ? this.loadForm(this.config.data) : null;
   }
 
   private buildForm(): FormGroup {
@@ -87,8 +84,7 @@ export class ClientFormComponent {
   }
 
   public submitForm(): void {
-    if (!this.config.data) this.createClient();
-    else this.updateClient();
+    !this.config.data ? this.createClient() : this.updateClient();
   }
 
   public closeForm(): void {
@@ -123,19 +119,17 @@ export class ClientFormComponent {
             this.messageService.add({
               severity: 'success',
               summary: 'Operación exitosa',
-              detail: 'El registro se creó',
+              detail: 'Registro creado correctamente',
             });
           },
           error: (e: any) => {
             this.messageService.add({
               severity: 'error',
               summary: 'Operación fallida',
-              detail: 'El registro no se creó, compruebe los datos',
+              detail: 'Registro no creado, compruebe los datos',
             });
           },
-          complete: () => {
-            this.ref.close();
-          },
+          complete: () => this.ref.close(),
         });
       },
       reject: () => {
