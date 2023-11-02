@@ -22,9 +22,9 @@ export class ProductTableComponent {
   ) {}
 
   public products: IProduct[] = [];
-  public ref: DynamicDialogRef = new DynamicDialogRef();
   public clients: IClient[] = [];
   public productTypes: IProductType[] = [];
+  public ref: DynamicDialogRef = new DynamicDialogRef();
 
   public ngOnInit(): void {
     this.getClients();
@@ -70,6 +70,8 @@ export class ProductTableComponent {
       position: 'center',
       data: product,
     });
+
+    this.ref.onClose.subscribe(() => this.getProducts());
   }
 
   public cleanFilters(table: Table, filter: any) {

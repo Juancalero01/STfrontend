@@ -37,7 +37,23 @@ export class AppTopbarComponent {
     {
       label: 'Servicio Técnico',
       icon: 'pi pi-fw pi-wrench',
-      routerLink: ['support'],
+      items: [
+        {
+          label: 'Ingresos',
+          icon: 'pi pi-fw pi-plus',
+          routerLink: ['support'],
+        },
+        {
+          label: 'Historial',
+          icon: 'pi pi-fw pi-clock',
+          routerLink: ['support-history'],
+        },
+        {
+          label: 'Fallas',
+          icon: 'pi pi-fw pi-exclamation-triangle',
+          routerLink: ['support-fail'],
+        },
+      ],
     },
     {
       label: 'Productos',
