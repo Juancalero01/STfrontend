@@ -26,14 +26,16 @@ export class ClientFormComponent {
   ) {}
 
   public clientForm: FormGroup = this.buildForm();
-  public provincesDropdown: IProvince[] = [];
-  public taxConditionsDropdown: ITaxCondition[] = [];
-  public buttonLabel: string = 'REGISTRAR';
+  public provinces: IProvince[] = [];
+  public taxConditions: ITaxCondition[] = [];
+
+  //
+  public buttonLabel: string = 'REGISTRAR FORMULARIO';
   public blockSpace: RegExp = /[^\s]/;
 
   public ngOnInit(): void {
-    this.loadProvinces();
-    this.loadTaxConditions();
+    this.getProvinces();
+    this.getTaxConditions();
     if (this.config.data) this.loadForm(this.config.data);
   }
 
@@ -61,52 +63,19 @@ export class ClientFormComponent {
     this.clientForm.patchValue(client);
     this.clientForm.get('taxCondition')?.setValue(client.taxCondition?.id);
     this.clientForm.get('province')?.setValue(client.province?.id);
-    this.buttonLabel = 'ACTUALIZAR';
+    this.buttonLabel = 'ACTUALIZAR FORMULARIO';
   }
 
-  private loadProvinces(): void {
+  private getProvinces(): void {
     this.provinceService.findAll().subscribe({
-      next: (provinces: IProvince[]) => {
-        this.provincesDropdown = provinces;
-      },
-      error: (e: any) => {
-        if (e.status === 0) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error de conexión con el servidor',
-          });
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al cargar las provincias',
-          });
-        }
-      },
+      next: (provinces: IProvince[]) => (this.provinces = provinces),
     });
   }
 
-  private loadTaxConditions(): void {
+  private getTaxConditions(): void {
     this.taxConditionService.findAll().subscribe({
-      next: (taxConditions: ITaxCondition[]) => {
-        this.taxConditionsDropdown = taxConditions;
-      },
-      error: (e: any) => {
-        if (e.status === 0) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error de conexión con el servidor',
-          });
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al cargar las condiciones de impuestos',
-          });
-        }
-      },
+      next: (taxConditions: ITaxCondition[]) =>
+        (this.taxConditions = taxConditions),
     });
   }
 
@@ -122,7 +91,7 @@ export class ClientFormComponent {
     else this.updateClient();
   }
 
-  public cancelForm(): void {
+  public closeForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea cancelar la operación?',
       header: 'CONFIRMAR',
@@ -133,21 +102,7 @@ export class ClientFormComponent {
       rejectLabel: 'CANCELAR',
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
-      accept: () => {
-        this.ref.close();
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Operación cancelada',
-          detail: 'La operación se canceló',
-        });
-      },
-      reject: () => {
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Operación cancelada',
-          detail: 'La operación no se canceló',
-        });
-      },
+      accept: () => this.ref.close(),
     });
   }
 

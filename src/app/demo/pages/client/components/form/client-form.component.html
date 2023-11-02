@@ -5,6 +5,7 @@
       pInputText
       formControlName="taxpayerName"
       maxlength="150"
+      placeholder="Ingrese el nombre o razón social del cliente"
       class="w-full"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('taxpayerName') }"
     />
@@ -20,6 +21,7 @@
         formControlName="taxpayerId"
         mask="99-99999999-9"
         pKeyFilter="num"
+        placeholder="Ingrese el CUIT del cliente"
         styleClass="w-full"
       />
     </div>
@@ -27,11 +29,12 @@
       <label>CONDICIÓN FISCAL</label>
       <p-dropdown
         formControlName="taxCondition"
-        [options]="taxConditionsDropdown"
+        [options]="taxConditions"
         optionLabel="name"
         optionValue="id"
         [filter]="true"
-        placeholder="Seleccionar..."
+        placeholder="Seleccionar condición fiscal del cliente"
+        filterPlaceholder="Buscar condición fiscal"
         styleClass="w-full"
       >
       </p-dropdown>
@@ -45,6 +48,7 @@
         pInputText
         formControlName="taxpayerEmail"
         maxlength="120"
+        placeholder="Ingrese el correo electrónico del cliente"
         pKeyFilter="email"
       />
     </div>
@@ -54,6 +58,7 @@
         pInputText
         formControlName="taxpayerPhone"
         maxlength="20"
+        placeholder="Ingrese el teléfono o celular del cliente"
         pKeyFilter="num"
       />
     </div>
@@ -64,11 +69,11 @@
       <label>PROVINCIA</label>
       <p-dropdown
         formControlName="province"
-        [options]="provincesDropdown"
+        [options]="provinces"
         optionLabel="name"
         optionValue="id"
         [filter]="true"
-        placeholder="Seleccionar..."
+        placeholder="Seleccionar provincia del cliente"
         styleClass="w-full"
       >
       </p-dropdown>
@@ -79,6 +84,7 @@
         pInputText
         formControlName="street"
         maxlength="150"
+        placeholder="Ingrese la calle del cliente"
         class="w-full"
       />
     </div>
@@ -91,12 +97,19 @@
         pInputText
         formControlName="number"
         maxlength="10"
+        placeholder="Ingrese el número del domicilio del cliente"
         class="w-full"
       />
     </div>
     <div class="flex flex-column w-full">
       <label>PISO</label>
-      <input pInputText formControlName="floor" maxlength="10" class="w-full" />
+      <input
+        pInputText
+        formControlName="floor"
+        maxlength="10"
+        placeholder="Ingrese el piso del domicilio del cliente"
+        class="w-full"
+      />
     </div>
     <div class="flex flex-column w-full">
       <label>DEPARTAMENTO / OFICINA</label>
@@ -104,6 +117,7 @@
         pInputText
         formControlName="office"
         maxlength="10"
+        placeholder="Ingrese el departamento u oficina del cliente"
         class="w-full"
       />
     </div>
@@ -113,6 +127,7 @@
         pInputText
         formControlName="postalCode"
         maxlength="8"
+        placeholder="Ingrese el código postal del cliente"
         class="w-full"
       />
     </div>
@@ -124,6 +139,7 @@
       pInputText
       formControlName="contactName"
       maxlength="120"
+      placeholder="Ingrese el nombre de la persona de contacto"
       class="w-full"
     />
   </div>
@@ -135,6 +151,7 @@
         pInputText
         formControlName="contactEmail"
         maxlength="120"
+        placeholder="Ingrese el correo electrónico de la persona de contacto"
         pKeyFilter="email"
       />
     </div>
@@ -144,6 +161,7 @@
         pInputText
         formControlName="contactPhone"
         maxlength="20"
+        placeholder="Ingrese el teléfono o celular de la persona de contacto"
         pKeyFilter="num"
       />
     </div>
@@ -155,16 +173,18 @@
       pInputTextarea
       formControlName="comment"
       maxlength="250"
+      placeholder="Ingrese un comentario adicional"
       class="w-full"
       [autoResize]="true"
+      rows="5"
     ></textarea>
   </div>
 
   <div class="flex justify-content-end gap-2 w-full">
     <p-button
-      label="CANCELAR"
+      label="SALIR DEL FORMULARIO"
       styleClass="p-button-secondary p-button-text"
-      (onClick)="cancelForm()"
+      (onClick)="closeForm()"
     />
     <p-button
       [label]="buttonLabel"

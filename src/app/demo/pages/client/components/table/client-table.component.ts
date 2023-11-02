@@ -58,7 +58,7 @@ export class ClientTableComponent {
 
     this.ref = this.dialogService.open(ClientFormComponent, {
       header: header,
-      width: '50%',
+      width: '80%',
       closable: false,
       closeOnEscape: false,
       dismissableMask: false,
