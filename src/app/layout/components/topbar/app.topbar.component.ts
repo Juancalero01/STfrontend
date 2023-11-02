@@ -40,16 +40,16 @@ export class AppTopbarComponent {
       routerLink: ['support'],
     },
     {
-      label: 'Producción',
+      label: 'Productos',
       icon: 'pi pi-fw pi-cog',
       items: [
         {
-          label: 'Productos',
+          label: 'Inventario',
           icon: 'pi pi-fw pi-box',
           routerLink: ['product'],
         },
         {
-          label: 'Tipo de Productos',
+          label: 'Categorías',
           icon: 'pi pi-fw pi-tags',
           routerLink: ['product-type'],
         },
