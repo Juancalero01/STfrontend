@@ -4,7 +4,7 @@
       <p-button
         icon="pi pi-plus"
         styleClass="p-button-info p-button-text p-button-rounded"
-        (onClick)="createProduct()"
+        (onClick)="openProductForm()"
       />
     </div>
     <div class="flex gap-2">
@@ -28,7 +28,7 @@
   </div>
   <p-table
     #dt
-    [value]="productData"
+    [value]="products"
     [rows]="10"
     [rowHover]="true"
     [paginator]="true"
@@ -129,7 +129,7 @@
           <p-button
             icon="pi pi-pencil"
             styleClass="p-button-text p-button-secondary w-full"
-            (onClick)="updateProduct(product)"
+            (onClick)="openProductForm(product)"
           />
         </td>
       </tr>
@@ -139,7 +139,13 @@
         <td colspan="5">
           <div class="flex gap-2 align-items-center">
             <i class="pi pi-info-circle"></i>
-            <span class="font-medium">Sin resultados</span>
+            <span class="font-medium">
+              {{
+                dt.filteredValue
+                  ? "No se encontraron productos con los criterios de búsqueda ingresados."
+                  : "No hay productos cargados."
+              }}
+            </span>
           </div>
         </td>
       </tr>

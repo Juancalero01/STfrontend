@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Table } from 'primeng/table';
 import { IProductType } from 'src/app/demo/api/interfaces/product-type.interface';
@@ -19,29 +18,22 @@ export class ProductTableComponent {
     private readonly productService: ProductService,
     private readonly productTypeService: ProductTypeService,
     private readonly clientService: ClientService,
-    private readonly messageService: MessageService,
     private readonly dialogService: DialogService
   ) {}
 
-  public productData: IProduct[] = [];
+  public products: IProduct[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
-
-  //clients
-  // productTypes
-
   public clients: IClient[] = [];
   public productTypes: IProductType[] = [];
-
-  //
 
   public ngOnInit(): void {
     this.getClients();
     this.getProductTypes();
-    this.loadProducts();
+    this.getProducts();
   }
 
   public ngDestroy(): void {
-    if (this.ref) this.ref.close();
+    this.ref ? this.ref.close() : null;
   }
 
   private getClients(): void {
@@ -57,105 +49,26 @@ export class ProductTableComponent {
     });
   }
 
-  private loadProducts(): void {
+  private getProducts(): void {
     this.productService.findAll().subscribe({
-      next: (products: IProduct[]) => {
-        this.productData = products;
-      },
-      error: (e: any) => {
-        if (e.status === 0) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error de conexión con el servidor',
-          });
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al cargar los productos',
-          });
-        }
-      },
+      next: (products: IProduct[]) => (this.products = products),
     });
   }
 
-  // private loadProductTypes(): void {
-  //   this.productTypeService.findAll().subscribe({
-  //     next: (productTypes: IProductType[]) => {
-  //       this.productTypeData = productTypes;
-  //     },
-  //     error: (e: any) => {
-  //       if (e.status === 0) {
-  //         this.messageService.add({
-  //           severity: 'error',
-  //           summary: 'Error',
-  //           detail: 'Error de conexión con el servidor',
-  //         });
-  //       } else {
-  //         this.messageService.add({
-  //           severity: 'error',
-  //           summary: 'Error',
-  //           detail: 'Error al cargar los tipos de productos',
-  //         });
-  //       }
-  //     },
-  //   });
-  // }
+  public openProductForm(product?: IProduct) {
+    const header = product
+      ? 'FORMULARIO DE ACTUALIZACIÓN DE PRODUCTO'
+      : 'FORMULARIO DE REGISTRO DE PRODUCTO';
 
-  // private loadClients(): void {
-  //   this.clientService.findAll().subscribe({
-  //     next: (clients: IClient[]) => {
-  //       this.clientData = clients;
-  //     },
-  //     error: (e: any) => {
-  //       if (e.status === 0) {
-  //         this.messageService.add({
-  //           severity: 'error',
-  //           summary: 'Error',
-  //           detail: 'Error de conexión con el servidor',
-  //         });
-  //       } else {
-  //         this.messageService.add({
-  //           severity: 'error',
-  //           summary: 'Error',
-  //           detail: 'Error al cargar los clientes',
-  //         });
-  //       }
-  //     },
-  //   });
-  // }
-
-  public createProduct() {
     this.ref = this.dialogService.open(ProductFormComponent, {
-      header: 'FORMULARIO DE REGISTRO DE PRODUCTO',
-      width: '50%',
-      closable: false,
-      closeOnEscape: false,
-      dismissableMask: false,
-      showHeader: true,
-      position: 'center',
-    });
-
-    this.ref.onClose.subscribe(() => {
-      this.loadProducts();
-    });
-  }
-
-  public updateProduct(product: IProduct) {
-    this.ref = this.dialogService.open(ProductFormComponent, {
-      header: 'FORMULARIO DE ACTUALIZACIÓN DE PRODUCTO',
-      width: '50%',
+      header: header,
+      width: '80%',
       closable: false,
       closeOnEscape: false,
       dismissableMask: false,
       showHeader: true,
       position: 'center',
       data: product,
-    });
-
-    this.ref.onClose.subscribe(() => {
-      this.loadProducts();
     });
   }
 
