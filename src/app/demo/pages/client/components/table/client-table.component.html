@@ -4,7 +4,7 @@
       <p-button
         icon="pi pi-plus"
         styleClass="p-button-info p-button-text p-button-rounded"
-        (onClick)="createClient()"
+        (onClick)="openClientForm()"
       />
     </div>
     <div class="flex gap-2">
@@ -44,6 +44,7 @@
       <tr class="text-sm h-3rem">
         <th class="w-10rem">CUIT</th>
         <th>CLIENTE</th>
+        <th>PERSONA DE CONTACTO</th>
         <th>CORREO ELECTRÓNICO</th>
         <th>TELÉFONO</th>
         <th class="w-1">ACCIONES</th>
@@ -53,13 +54,14 @@
       <tr class="text-sm h-3rem">
         <td>{{ client.taxpayerId | null }}</td>
         <td>{{ client.taxpayerName }}</td>
+        <td>{{ client.contactName | null }}</td>
         <td>{{ client.taxpayerEmail | null }}</td>
         <td>{{ client.taxpayerPhone | null }}</td>
         <td>
           <p-button
             icon="pi pi-pencil"
             styleClass="p-button-text p-button-secondary w-full"
-            (onClick)="updateClient(client)"
+            (onClick)="openClientForm(client)"
           />
         </td>
       </tr>
@@ -69,7 +71,13 @@
         <td colspan="6">
           <div class="flex gap-2 align-items-center">
             <i class="pi pi-info-circle"></i>
-            <span class="font-medium">Sin resultados</span>
+            <span class="font-medium">
+              {{
+                dt.filteredValue
+                  ? "No se encontraron clientes con los criterios de búsqueda ingresados."
+                  : "No hay clientes cargados."
+              }}
+            </span>
           </div>
         </td>
       </tr>

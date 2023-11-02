@@ -30,7 +30,9 @@ export class ClientTableComponent {
 
   private loadClients(): void {
     this.clientService.findAll().subscribe({
-      next: (clients: IClient[]) => (this.clientData = clients),
+      next: (clients: IClient[]) => {
+        this.clientData = clients;
+      },
       error: (e: any) => {
         if (e.status === 0) {
           this.messageService.add({
@@ -49,25 +51,13 @@ export class ClientTableComponent {
     });
   }
 
-  public createClient() {
-    this.ref = this.dialogService.open(ClientFormComponent, {
-      header: 'FORMULARIO DE REGISTRO DE CLIENTE',
-      width: '50%',
-      closable: false,
-      closeOnEscape: false,
-      dismissableMask: false,
-      showHeader: true,
-      position: 'center',
-    });
+  public openClientForm(client: IClient | null = null) {
+    const header = client
+      ? 'FORMULARIO DE ACTUALIZACIÓN DE CLIENTE'
+      : 'FORMULARIO DE REGISTRO DE CLIENTE';
 
-    this.ref.onClose.subscribe(() => {
-      this.loadClients();
-    });
-  }
-
-  public updateClient(client: IClient) {
     this.ref = this.dialogService.open(ClientFormComponent, {
-      header: 'FORMULARIO DE ACTUALIZACIÓN DE CLIENTE',
+      header: header,
       width: '50%',
       closable: false,
       closeOnEscape: false,
