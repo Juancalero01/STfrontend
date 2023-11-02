@@ -24,18 +24,37 @@ export class ProductTableComponent {
   ) {}
 
   public productData: IProduct[] = [];
-  public productTypeData: IProductType[] = [];
-  public clientData: IClient[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
 
+  //clients
+  // productTypes
+
+  public clients: IClient[] = [];
+  public productTypes: IProductType[] = [];
+
+  //
+
   public ngOnInit(): void {
+    this.getClients();
+    this.getProductTypes();
     this.loadProducts();
-    this.loadProductTypes();
-    this.loadClients();
   }
 
   public ngDestroy(): void {
     if (this.ref) this.ref.close();
+  }
+
+  private getClients(): void {
+    this.clientService.findAll().subscribe({
+      next: (clients: IClient[]) => (this.clients = clients),
+    });
+  }
+
+  private getProductTypes(): void {
+    this.productTypeService.findAll().subscribe({
+      next: (productTypes: IProductType[]) =>
+        (this.productTypes = productTypes),
+    });
   }
 
   private loadProducts(): void {
@@ -61,51 +80,51 @@ export class ProductTableComponent {
     });
   }
 
-  private loadProductTypes(): void {
-    this.productTypeService.findAll().subscribe({
-      next: (productTypes: IProductType[]) => {
-        this.productTypeData = productTypes;
-      },
-      error: (e: any) => {
-        if (e.status === 0) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error de conexión con el servidor',
-          });
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al cargar los tipos de productos',
-          });
-        }
-      },
-    });
-  }
+  // private loadProductTypes(): void {
+  //   this.productTypeService.findAll().subscribe({
+  //     next: (productTypes: IProductType[]) => {
+  //       this.productTypeData = productTypes;
+  //     },
+  //     error: (e: any) => {
+  //       if (e.status === 0) {
+  //         this.messageService.add({
+  //           severity: 'error',
+  //           summary: 'Error',
+  //           detail: 'Error de conexión con el servidor',
+  //         });
+  //       } else {
+  //         this.messageService.add({
+  //           severity: 'error',
+  //           summary: 'Error',
+  //           detail: 'Error al cargar los tipos de productos',
+  //         });
+  //       }
+  //     },
+  //   });
+  // }
 
-  private loadClients(): void {
-    this.clientService.findAll().subscribe({
-      next: (clients: IClient[]) => {
-        this.clientData = clients;
-      },
-      error: (e: any) => {
-        if (e.status === 0) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error de conexión con el servidor',
-          });
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al cargar los clientes',
-          });
-        }
-      },
-    });
-  }
+  // private loadClients(): void {
+  //   this.clientService.findAll().subscribe({
+  //     next: (clients: IClient[]) => {
+  //       this.clientData = clients;
+  //     },
+  //     error: (e: any) => {
+  //       if (e.status === 0) {
+  //         this.messageService.add({
+  //           severity: 'error',
+  //           summary: 'Error',
+  //           detail: 'Error de conexión con el servidor',
+  //         });
+  //       } else {
+  //         this.messageService.add({
+  //           severity: 'error',
+  //           summary: 'Error',
+  //           detail: 'Error al cargar los clientes',
+  //         });
+  //       }
+  //     },
+  //   });
+  // }
 
   public createProduct() {
     this.ref = this.dialogService.open(ProductFormComponent, {

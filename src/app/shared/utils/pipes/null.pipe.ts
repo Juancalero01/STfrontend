@@ -5,6 +5,8 @@ import { Pipe } from '@angular/core';
 })
 export class NullPipe {
   transform(value: any, ...args: any[]): any {
-    return value === null || value === undefined ? 'N/A' : value;
+    return value === null || value === undefined || value === ''
+      ? 'N/A'
+      : value;
   }
 }

@@ -47,7 +47,7 @@
           <div class="flex align-items-center justify-content-between">
             <span>CLIENTE</span>
             <p-columnFilter
-              field="client"
+              field="client.taxpayerName"
               matchMode="in"
               display="chip"
               [showMatchModes]="false"
@@ -62,10 +62,10 @@
                 let-filter="filterCallback"
               >
                 <p-multiSelect
-                  [ngModel]="value"
-                  [options]="clientData"
+                  [options]="clients"
                   [showToggleAll]="false"
                   optionLabel="taxpayerName"
+                  optionValue="taxpayerName"
                   placeholder="Filtrar por razón social"
                   emptyFilterMessage="No hay resultados"
                   (onChange)="filter($event.value)"
@@ -82,7 +82,7 @@
           <div class="flex align-items-center justify-content-between">
             <span>TIPO DE PRODUCTO</span>
             <p-columnFilter
-              field="productType"
+              field="productType.name"
               matchMode="in"
               display="chip"
               [showMatchModes]="false"
@@ -97,12 +97,13 @@
                 let-filter="filterCallback"
               >
                 <p-multiSelect
-                  [ngModel]="value"
-                  [options]="productTypeData"
+                  [options]="productTypes"
                   [showToggleAll]="false"
                   optionLabel="name"
+                  optionValue="name"
                   placeholder="Filtrar por tipo de producto"
                   emptyFilterMessage="No hay resultados"
+                  filterPlaceHolder="Buscar..."
                   (onChange)="filter($event.value)"
                 >
                   <ng-template let-productType pTemplate="item">
