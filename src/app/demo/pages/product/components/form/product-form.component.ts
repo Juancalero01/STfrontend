@@ -26,12 +26,14 @@ export class ProductFormComponent {
   ) {}
 
   public productForm: FormGroup = this.buildForm();
-  public buttonLabel: string = 'REGISTRAR';
-  public clientDropdown: IClient[] = [];
-  public productTypeDropdown: IProductType[] = [];
+  public buttonLabel: string = 'REGISTRAR FORMULARIO';
+  public clients: IClient[] = [];
+  public productTypes: IProductType[] = [];
 
   public ngOnInit(): void {
-    this.loadDropdowns();
+    this.getClients();
+    this.getProductTypes();
+
     if (this.config.data) this.loadForm(this.config.data);
   }
 
@@ -46,56 +48,25 @@ export class ProductFormComponent {
   }
 
   private loadForm(product: IProduct): void {
-    this.productForm.patchValue(product);
-    this.productForm.get('client')?.setValue(product.client.id);
-    this.productForm.get('productType')?.setValue(product.productType.id);
-    this.productForm
-      .get('deliveryDate')
-      ?.setValue(new Date(product.deliveryDate));
-    this.buttonLabel = 'ACTUALIZAR';
+    this.productForm.patchValue({
+      ...product,
+      client: product.client.id,
+      productType: product.productType.id,
+      deliveryDate: new Date(product.deliveryDate),
+    });
+    this.buttonLabel = 'ACTUALIZAR FORMULARIO';
   }
 
-  private loadDropdowns(): void {
+  private getClients(): void {
     this.clientService.findAll().subscribe({
-      next: (clients: IClient[]) => {
-        this.clientDropdown = clients;
-      },
-      error: (e: any) => {
-        if (e.status === 0) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error de conexión con el servidor',
-          });
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al cargar los clientes',
-          });
-        }
-      },
+      next: (clients: IClient[]) => (this.clients = clients),
     });
+  }
 
+  private getProductTypes(): void {
     this.productTypeService.findAll().subscribe({
-      next: (productTypes: IProductType[]) => {
-        this.productTypeDropdown = productTypes;
-      },
-      error: (e: any) => {
-        if (e.status === 0) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error de conexión con el servidor',
-          });
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al cargar los tipos de productos',
-          });
-        }
-      },
+      next: (productTypes: IProductType[]) =>
+        (this.productTypes = productTypes),
     });
   }
 
@@ -107,11 +78,13 @@ export class ProductFormComponent {
   }
 
   public submitForm(): void {
-    if (!this.config.data) this.createProduct();
-    else this.updateProduct();
+    !this.config.data ? this.createProduct() : this.updateProduct();
+
+    // if (!this.config.data) this.createProduct();
+    // else this.updateProduct();
   }
 
-  public cancelForm(): void {
+  public closeForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea cancelar la operación?',
       header: 'CONFIRMAR',
@@ -228,7 +201,7 @@ export class ProductFormComponent {
 
   public onProductTypeChange(): void {
     const productTypeId = this.productForm.get('productType')?.value;
-    const productType = this.productTypeDropdown.find((productType) => {
+    const productType = this.productTypes.find((productType) => {
       return (
         productType.id === productTypeId &&
         productType.prefix !== null &&

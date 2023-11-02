@@ -1,14 +1,13 @@
 <form class="flex flex-wrap gap-4" [formGroup]="productForm">
   <div class="flex flex-column w-full">
-    <label for="client">CLIENTE</label>
+    <label>CLIENTE</label>
     <p-dropdown
-      id="client"
-      [options]="clientDropdown"
+      [options]="clients"
       formControlName="client"
       optionLabel="taxpayerName"
       optionValue="id"
       [filter]="true"
-      placeholder="Seleccionar..."
+      placeholder="Seleccionar cliente del producto"
       styleClass="w-full"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('client') }"
     >
@@ -19,15 +18,14 @@
   </div>
 
   <div class="flex flex-column w-full">
-    <label for="productType">TIPO DE PRODUCTO</label>
+    <label>TIPO DE PRODUCTO</label>
     <p-dropdown
-      id="productType"
-      [options]="productTypeDropdown"
+      [options]="productTypes"
       formControlName="productType"
       optionLabel="name"
       optionValue="id"
       [filter]="true"
-      placeholder="Seleccionar..."
+      placeholder="Seleccionar tipo de producto del cliente"
       styleClass="w-full"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('productType') }"
       (onChange)="onProductTypeChange()"
@@ -45,6 +43,7 @@
       type="text"
       pInputText
       formControlName="serial"
+      placeholder="Ingresar número de serie del producto"
       class="w-full"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('serial') }"
       maxlength="10"
@@ -60,19 +59,22 @@
       type="text"
       pInputText
       formControlName="reference"
+      placeholder="Ingresar número de remito del producto"
       class="w-full"
     />
-    <small id="reference-help">Ingresar remito</small>
   </div>
 
   <div class="flex flex-column w-full">
-    <label for="deliveryDate">FECHA DE ENVIO</label>
+    <label
+      >FECHA DE DESPACHO (Fecha en la que se envio el producto al
+      cliente)</label
+    >
     <p-calendar
-      id="deliveryDate"
       formControlName="deliveryDate"
-      dateFormat="dd/mm/yy"
+      dateFormat="dd-mm-yy"
       styleClass="w-full"
       appendTo="body"
+      placeholder="Seleccionar o ingresar fecha de despacho del producto"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('deliveryDate') }"
     >
     </p-calendar>
@@ -83,9 +85,9 @@
 
   <div class="flex justify-content-end gap-2 w-full">
     <p-button
-      label="CANCELAR"
+      label="SALIR DEL FORMULARIO"
       styleClass="p-button-secondary p-button-text"
-      (onClick)="cancelForm()"
+      (onClick)="closeForm()"
     />
     <p-button
       [label]="buttonLabel"
