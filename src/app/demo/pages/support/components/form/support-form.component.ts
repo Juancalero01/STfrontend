@@ -63,7 +63,7 @@ export class SupportFormComponent {
       this.showButtonState = true;
       this.showButtonClean = false;
       this.showSearch = false;
-      this.config.data.state.id < 3 ? (this.showButtonCancel = true) : false;
+      this.config.data.state.id < 3 ? (this.showButtonCancel = true) : false; //TODO: Arreglar dependiendo el tipo de estado ya que puede estar en espera de cotización o en espera de aprobación
     } else {
       this.getLastReclaimNumber();
     }
