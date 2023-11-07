@@ -3,6 +3,15 @@
   [formGroup]="supportHistoryForm"
 >
   <div class="w-full">
+    <label>FECHA DE CAMBIO DE ESTADO</label>
+    <input
+      type="text"
+      pInputText
+      class="w-full font-bold bg-gray-100"
+      formControlName="dateEntry"
+    />
+  </div>
+  <div class="w-full">
     <label>N° DE REFERENCIA DEL SERVICIO</label>
     <input
       pInputText
@@ -13,24 +22,24 @@
   <div class="w-full">
     <label>ESTADO ACTUAL</label>
     <p-dropdown
-      [options]="supportStatesDropdown"
+      [options]="currentStates"
       optionLabel="name"
       optionValue="id"
       styleClass="w-full font-bold bg-gray-100 uppercase"
       formControlName="stateCurrent"
       dropdownIcon="none"
-    ></p-dropdown>
+    />
   </div>
   <div class="w-full">
     <label>ESTADO SIGUIENTE</label>
     <p-dropdown
-      [options]="supportStatesDropdown"
+      [options]="nextStates"
       optionLabel="name"
       optionValue="id"
       styleClass="w-full uppercase"
       formControlName="stateNext"
       placeholder="Seleccionar..."
-    ></p-dropdown>
+    />
   </div>
   <div class="w-full">
     <label>COMENTARIOS</label>
@@ -51,6 +60,7 @@
     <p-button
       styleClass="p-button-info p-button-text"
       label="REGISTRAR CAMBIO DE ESTADO"
+      (onClick)="saveForm()"
     />
   </div>
 </form>

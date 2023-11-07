@@ -7,4 +7,5 @@ export interface ISupportHistory {
   stateNext: ISupportState;
   remarks: string;
   service: ISupport;
+  user: number;
 }
