@@ -49,6 +49,7 @@
         <th>CLIENTE</th>
         <th class="w-15rem">ESTADO DEL SERVICIO</th>
         <th>PRIORIDAD</th>
+        <th>ACTIVIDAD</th>
         <th class="w-1">ACCIONES</th>
       </tr>
     </ng-template>
@@ -71,12 +72,26 @@
         <td>{{ support.product.productType.name | uppercase }}</td>
         <td>{{ support.product.client.taxpayerName | uppercase }}</td>
         <td>
-          <p-tag styleClass="w-full bg-gray-500" [value]="support.state.name" />
+          <p-tag
+            styleClass="w-full bg-gray-500"
+            [value]="support.state.name"
+            [ngClass]="{
+              'bg-yellow-500': support.state.name === 'EN REPARACIÓN',
+              'bg-blue-500': support.state.name === 'REPARADO',
+              'bg-green-500': support.state.name === 'LISTO PARA ENTREGAR',
+            }"
+          />
         </td>
         <td>
           <p-tag
             [styleClass]="priorityColors[support.priority.name] || 'w-full'"
             [value]="support.priority.name"
+          />
+        </td>
+        <td>
+          <p-progressBar
+            [value]="getPercentage(support)"
+            styleClass="text-sm"
           />
         </td>
         <td>

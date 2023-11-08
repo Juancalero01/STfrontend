@@ -96,6 +96,22 @@ export class SupportTableComponent {
     });
   }
 
+  public getPercentage(support: ISupport): number {
+    const percentages: any = {
+      1: 0,
+      2: 20,
+      3: 30,
+      4: 30,
+      5: 50,
+      6: 90,
+      7: 99,
+      8: 0,
+      9: 0,
+    };
+
+    return percentages[support.state.id];
+  }
+
   public cleanFilters(table: Table, filter: any) {
     table.clear();
     filter.value = '';
