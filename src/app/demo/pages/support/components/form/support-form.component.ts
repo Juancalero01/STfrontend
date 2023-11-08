@@ -184,7 +184,7 @@ export class SupportFormComponent {
 
   public searchProduct() {
     const serial = this.supportForm.get('search')?.value;
-    if (!serial || serial > 10) {
+    if (!serial || serial < 3) {
       this.messageService.add({
         severity: 'error',
         summary: 'Error al buscar el producto',
@@ -412,6 +412,10 @@ export class SupportFormComponent {
       showHeader: true,
       position: 'center',
       data: this.config.data,
+    });
+
+    this.refHistory.onClose.subscribe(() => {
+      this.ref.close();
     });
   }
 
