@@ -162,7 +162,8 @@
         placeholder="Seleccionar..."
         styleClass="w-full"
         formControlName="securityStrap"
-      ></p-dropdown>
+        [showClear]="true"
+      />
     </div>
   </div>
 
@@ -181,8 +182,17 @@
       placeholder="Seleccionar..."
       styleClass="w-full"
       formControlName="failureType"
+      [showClear]="true"
     >
     </p-dropdown>
+    <!-- <p-multiSelect
+      display="chip"
+      [options]="failureTypesDropdown"
+      formControlName="failureType"
+      optionLabel="name"
+      placeholder="Seleccionar..."
+      styleClass="w-full"
+    ></p-multiSelect> -->
   </div>
 
   <div class="w-full">
