@@ -22,6 +22,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { BadgeModule } from 'primeng/badge';
+import { ProgressBarModule } from 'primeng/progressbar';
 
 @NgModule({
   imports: [
@@ -47,6 +48,7 @@ import { BadgeModule } from 'primeng/badge';
     TagModule,
     ChipModule,
     BadgeModule,
+    ProgressBarModule,
   ],
   exports: [
     ButtonModule,
@@ -71,6 +73,7 @@ import { BadgeModule } from 'primeng/badge';
     TagModule,
     ChipModule,
     BadgeModule,
+    ProgressBarModule,
   ],
   providers: [ConfirmationService, DialogService, MessageService],
 })
