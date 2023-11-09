@@ -256,17 +256,12 @@ export class SupportFormComponent {
     );
   }
 
-  public submitForm() {
-    if (!this.config.data) this.createSupport();
-    else this.updateForm();
+  public submitForm(): void {
+    !this.config.data ? this.createSupport() : this.updateSupport();
   }
 
   public createSupport(): void {
-    const { search, ...dataToSend } = this.supportForm.value;
-    dataToSend.reclaim = this.supportForm.get('reclaim')?.value;
-    dataToSend.state = this.supportForm.get('state')?.value;
-    dataToSend.dateEntry = this.supportForm.get('dateEntry')?.value;
-
+    //! REFACTORIZADO POSIBLE SOLUCIÓN AL PROBLEMA DE LOS CAMPOS DESHABILITADOS
     this.confirmationService.confirm({
       message: '¿Está seguro que desea crear el registro?',
       header: 'CONFIRMAR',
@@ -275,38 +270,30 @@ export class SupportFormComponent {
       acceptButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
       rejectLabel: 'CANCELAR',
-
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
-      accept: () => {
-        this.supportService.create(dataToSend).subscribe({
-          next: () => {
+      accept: () =>
+        this.supportService.create(this.getSupportData()).subscribe({
+          next: () =>
             this.messageService.add({
               severity: 'success',
               summary: 'Operación exitosa',
               detail: 'El registro se creó correctamente',
-            });
-            this.ref.close();
-          },
-          error: (e: any) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error al crear el registro',
-              detail: 'Error al crear el registro',
-            });
-          },
-          complete: () => {
-            this.ref.close();
-          },
-        });
-      },
+            }),
+          //TODO: Mostrar error cuando haya una falla de la API.
+          error: () => {},
+          complete: () => this.ref.close(),
+        }),
+      reject: () =>
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Operación cancelada',
+          detail: 'El registro no se creó',
+        }),
     });
   }
 
-  public updateForm(): void {
-    const { search, ...dataToSend } = this.supportForm.value;
-    dataToSend.state = this.supportForm.get('state')?.value;
-    dataToSend.dateEntry = this.supportForm.get('dateEntry')?.value;
+  public updateSupport(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea actualizar el registro?',
       header: 'CONFIRMAR',
@@ -318,33 +305,25 @@ export class SupportFormComponent {
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
       accept: () => {
-        this.supportService.update(this.config.data?.id, dataToSend).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Operación exitosa',
-              detail: 'El registro se actualizó correctamente',
-            });
-          },
-          error: (e: any) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error al actualizar el registro',
-              detail: 'Error al actualizar el registro',
-            });
-          },
-          complete: () => {
-            this.ref.close();
-          },
-        });
+        this.supportService
+          .update(this.config.data.id, this.getSupportData())
+          .subscribe({
+            next: () =>
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Operación exitosa',
+                detail: 'El registro se actualizó correctamente',
+              }),
+            error: () => {},
+            complete: () => this.ref.close(),
+          });
       },
-      reject: () => {
+      reject: () =>
         this.messageService.add({
           severity: 'info',
           summary: 'Operación cancelada',
           detail: 'El registro no se actualizó',
-        });
-      },
+        }),
     });
   }
 
@@ -442,13 +421,6 @@ export class SupportFormComponent {
           detail: 'El formulario se limpió',
         });
       },
-      reject: () => {
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Operación cancelada',
-          detail: 'El formulario no se limpió',
-        });
-      },
     });
   }
 
@@ -496,5 +468,17 @@ export class SupportFormComponent {
         this.supportForm.get('reclaim')?.setValue(reclaim);
       },
     });
+  }
+
+  private getSupportData(): ISupport {
+    const {
+      search,
+      client,
+      productType,
+      warrantyProduction,
+      warrantyService,
+      ...support
+    } = this.supportForm.getRawValue();
+    return support;
   }
 }
