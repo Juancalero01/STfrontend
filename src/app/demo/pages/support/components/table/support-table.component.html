@@ -4,7 +4,7 @@
       <p-button
         icon="pi pi-plus"
         styleClass="p-button-info p-button-text p-button-rounded"
-        (onClick)="createSupport()"
+        (onClick)="openSupportForm()"
       />
     </div>
     <div class="flex gap-2">
@@ -19,7 +19,7 @@
           #fi
           pInputText
           type="text"
-          placeholder="Buscar..."
+          placeholder="Buscar por número de reclamo"
           class="w-20rem"
           (input)="dt.filterGlobal($any($event.target).value, 'contains')"
         />
@@ -49,7 +49,6 @@
         <th>CLIENTE</th>
         <th class="w-15rem">ESTADO DEL SERVICIO</th>
         <th>PRIORIDAD</th>
-        <th>ACTIVIDAD</th>
         <th class="w-1">ACCIONES</th>
       </tr>
     </ng-template>
@@ -65,21 +64,14 @@
             />
           </div>
         </td>
-        <td>
-          {{ support.dateEntry }}
-        </td>
+        <td>{{ support.dateEntry }}</td>
         <td>{{ support.product.serial }}</td>
         <td>{{ support.product.productType.name | uppercase }}</td>
         <td>{{ support.product.client.taxpayerName | uppercase }}</td>
         <td>
           <p-tag
-            styleClass="w-full bg-gray-500"
+            styleClass="w-full bg-black-alpha-60"
             [value]="support.state.name"
-            [ngClass]="{
-              'bg-yellow-500': support.state.name === 'EN REPARACIÓN',
-              'bg-blue-500': support.state.name === 'REPARADO',
-              'bg-green-500': support.state.name === 'LISTO PARA ENTREGAR',
-            }"
           />
         </td>
         <td>
@@ -89,16 +81,10 @@
           />
         </td>
         <td>
-          <p-progressBar
-            [value]="getPercentage(support)"
-            styleClass="text-sm"
-          />
-        </td>
-        <td>
           <p-button
             icon="pi pi-pencil"
             styleClass="p-button-text p-button-secondary w-full"
-            (onClick)="updateSupport(support)"
+            (onClick)="openSupportForm(support)"
           />
         </td>
       </tr>
@@ -122,4 +108,4 @@
   </p-table>
 </div>
 <p-confirmDialog />
-<p-toast position="bottom-right" />
+<p-toast position="top-center" />
