@@ -98,7 +98,6 @@ export class SupportFormComponent {
   }
 
   private loadForm(data: ISupport) {
-    console.log(data);
     this.supportForm.patchValue(data);
     this.supportForm.get('search')?.clearValidators();
     this.supportForm.get('state')?.setValue(data.state.id);
@@ -290,29 +289,25 @@ export class SupportFormComponent {
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
       accept: () => {
-        const state: ISupportState = this.states[this.states.length - 1];
         this.supportService
-          .update(this.config.data?.id, { ...this.config.data, state })
+          .updateState(this.config.data.id, this.states[this.states.length - 1])
           .subscribe({
-            next: () => {
+            next: () =>
               this.messageService.add({
                 severity: 'success',
                 summary: 'Operación exitosa',
                 detail: 'El registro se canceló correctamente',
-              });
-            },
-            error: (e: any) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error al cancelar el registro',
-                detail: 'Error al cancelar el registro',
-              });
-            },
-            complete: () => {
-              this.ref.close();
-            },
+              }),
+            error: () => {},
+            complete: () => this.ref.close(),
           });
       },
+      reject: () =>
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Operación cancelada',
+          detail: 'El registro no se canceló',
+        }),
     });
   }
 
@@ -374,6 +369,7 @@ export class SupportFormComponent {
     });
   }
 
+  //TODO: REFACTORIZAR PARA QUE TAMBIEN OBTENGA EL HISTORIAL DE ESE SERVICIO (SI )
   private calculateWarranty(deliveryDate: Date): void {
     const today = new Date();
 

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { Observable } from 'rxjs';
 import { ISupport } from '../interfaces/support.interface';
+import { ISupportState } from '../interfaces/support-state.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -30,5 +31,12 @@ export class SupportService {
 
   public update(id: number, support: ISupport): Observable<ISupport> {
     return this.httpClient.put<ISupport>(`${this.URL}/${id}`, support);
+  }
+
+  public updateState(
+    id: number,
+    state: ISupportState
+  ): Observable<ISupportState> {
+    return this.httpClient.put<ISupportState>(`${this.URL}/s/${id}`, state);
   }
 }
