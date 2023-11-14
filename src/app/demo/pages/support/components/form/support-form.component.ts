@@ -47,9 +47,9 @@ export class SupportFormComponent {
     { value: true, label: 'Si' },
     { value: false, label: 'No' },
   ];
-  public failureTypesDropdown: IFailureType[] = [];
-  public supportStatesDropdown: ISupportState[] = [];
-  public supportPrioritiesDropdown: ISupportPriority[] = [];
+  public failureTypes: IFailureType[] = [];
+  public states: ISupportState[] = [];
+  public priorities: ISupportPriority[] = [];
   public blockSpace: RegExp = /[^\s]/;
   public refHistory: DynamicDialogRef = new DynamicDialogRef();
 
@@ -75,6 +75,7 @@ export class SupportFormComponent {
     this.supportForm.get('dateEntry')?.setValue(today);
   }
 
+  //TODO: REFACTORIZAR
   private buildForm(): FormGroup {
     return this.formBuilder.group({
       search: [null, [Validators.required]],
@@ -89,7 +90,7 @@ export class SupportFormComponent {
       reference: [null, [Validators.maxLength(255)]],
       securityStrap: [null],
       failure: [null, [Validators.maxLength(255)]],
-      failureType: [null],
+      failureTypes: [null],
       remarks: [null, [Validators.maxLength(255)]],
       product: [null, [Validators.required]],
       warranty: [null],
@@ -97,6 +98,7 @@ export class SupportFormComponent {
   }
 
   private loadForm(data: ISupport) {
+    console.log(data);
     this.supportForm.patchValue(data);
     this.supportForm.get('search')?.clearValidators();
     this.supportForm.get('state')?.setValue(data.state.id);
@@ -105,80 +107,29 @@ export class SupportFormComponent {
       .get('productType')
       ?.setValue(data.product.productType.name);
     this.supportForm.get('priority')?.setValue(data.priority.id);
-
-    data.failureType
-      ? this.supportForm.get('failureType')?.setValue(data.failureType.id)
-      : null;
+    this.supportForm
+      .get('failureTypes')
+      ?.setValue(data.failureTypes.map((failureType) => failureType.id));
     this.calculateWarranty(data.product.deliveryDate);
     this.mainButtonLabel = 'ACTUALIZAR FORMULARIO';
   }
 
   private loadStates(): void {
     this.supportStateService.findAll().subscribe({
-      next: (supportStates: ISupportState[]) => {
-        this.supportStatesDropdown = supportStates;
-      },
-      error: (e: any) => {
-        if (e.status === 0) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error de conexión con el servidor',
-          });
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error al cargar los estados',
-            detail: 'Error al cargar los estados',
-          });
-        }
-      },
+      next: (states: ISupportState[]) => (this.states = states),
     });
   }
 
   private loadPriorities(): void {
     this.supportPriorityService.findAll().subscribe({
-      next: (supportPriorities: ISupportPriority[]) => {
-        this.supportPrioritiesDropdown = supportPriorities;
-      },
-      error: (e: any) => {
-        if (e.status === 0) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error de conexión con el servidor',
-          });
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error al cargar las prioridades',
-            detail: 'Error al cargar las prioridades',
-          });
-        }
-      },
+      next: (priorities: ISupportPriority[]) => (this.priorities = priorities),
     });
   }
 
   private loadFailureTypes(): void {
     this.failureTypeService.findAll().subscribe({
-      next: (failureTypes: IFailureType[]) => {
-        this.failureTypesDropdown = failureTypes;
-      },
-      error: (e: any) => {
-        if (e.status === 0) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error de conexión con el servidor',
-          });
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error al cargar los tipos de falla',
-            detail: 'Error al cargar los tipos de falla',
-          });
-        }
-      },
+      next: (failureTypes: IFailureType[]) =>
+        (this.failureTypes = failureTypes),
     });
   }
 
@@ -339,8 +290,7 @@ export class SupportFormComponent {
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
       accept: () => {
-        const state: ISupportState =
-          this.supportStatesDropdown[this.supportStatesDropdown.length - 1];
+        const state: ISupportState = this.states[this.states.length - 1];
         this.supportService
           .update(this.config.data?.id, { ...this.config.data, state })
           .subscribe({

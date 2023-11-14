@@ -43,7 +43,7 @@
     <div class="w-full">
       <label>ESTADO DEL SERVICIO</label>
       <p-dropdown
-        [options]="supportStatesDropdown"
+        [options]="states"
         optionLabel="name"
         optionValue="id"
         styleClass="w-full font-bold bg-gray-100 uppercase"
@@ -124,17 +124,19 @@
         placeholder="Seleccionar..."
         styleClass="w-full"
         formControlName="warranty"
-      ></p-dropdown>
+        [showClear]="true"
+      />
     </div>
     <div class="w-full">
       <label>TIPO DE PRIORIDAD</label>
       <p-dropdown
-        [options]="supportPrioritiesDropdown"
+        [options]="priorities"
         optionLabel="name"
         optionValue="id"
         placeholder="Seleccionar..."
         styleClass="w-full"
         formControlName="priority"
+        [showClear]="true"
         [ngClass]="{ 'ng-invalid ng-dirty': validateForm('priority') }"
       />
       <small *ngIf="validateForm('priority')" class="p-error">
@@ -154,45 +156,53 @@
       />
     </div>
     <div class="w-full">
-      <label>FAJA DE SEGURIDAD</label>
-      <p-dropdown
-        [options]="booleanDropdown"
-        optionLabel="label"
-        optionValue="value"
-        placeholder="Seleccionar..."
-        styleClass="w-full"
-        formControlName="securityStrap"
-        [showClear]="true"
-      />
+      <label>REMITO DE PRODUCTO SALIENTE</label>
+      <input type="text" pInputText class="w-full" />
+    </div>
+  </div>
+
+  <div class="w-full flex gap-2">
+    <div class="w-full">
+      <label>NÚMERO DE COTIZACIÓN</label>
+      <input type="text" pInputText class="w-full" />
+    </div>
+    <div class="w-full">
+      <label>NÚMERO DE ORDEN</label>
+      <input type="text" pInputText class="w-full" />
     </div>
   </div>
 
   <div class="w-full">
-    <label>FALLA REPORTADA</label>
+    <label>FAJA DE SEGURIDAD</label>
+    <p-dropdown
+      [options]="booleanDropdown"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="Seleccionar..."
+      styleClass="w-full"
+      formControlName="securityStrap"
+      [showClear]="true"
+    />
+  </div>
+
+  <div class="w-full">
+    <label>FALLA REPORTADA POR EL CLIENTE</label>
     <input type="text" pInputText class="w-full" formControlName="failure" />
   </div>
 
   <div class="w-full">
-    <label>TIPO DE FALLA</label>
-    <p-dropdown
-      [options]="failureTypesDropdown"
+    <label>FALLAS ENCONTRADAS</label>
+    <p-multiSelect
+      display="chip"
+      [showToggleAll]="false"
+      [options]="failureTypes"
+      formControlName="failureTypes"
       optionLabel="name"
       optionValue="id"
-      [filter]="true"
       placeholder="Seleccionar..."
       styleClass="w-full"
-      formControlName="failureType"
       [showClear]="true"
-    >
-    </p-dropdown>
-    <!-- <p-multiSelect
-      display="chip"
-      [options]="failureTypesDropdown"
-      formControlName="failureType"
-      optionLabel="name"
-      placeholder="Seleccionar..."
-      styleClass="w-full"
-    ></p-multiSelect> -->
+    />
   </div>
 
   <div class="w-full">

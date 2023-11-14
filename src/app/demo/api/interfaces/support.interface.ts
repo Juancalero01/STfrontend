@@ -14,5 +14,5 @@ export interface ISupport {
   product: IProduct;
   state: ISupportState;
   priority: ISupportPriority;
-  failureType: IFailureType;
+  failureTypes: IFailureType[];
 }
