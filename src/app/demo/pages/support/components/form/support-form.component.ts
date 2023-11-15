@@ -52,6 +52,11 @@ export class SupportFormComponent {
   public priorities: ISupportPriority[] = [];
   public blockSpace: RegExp = /[^\s]/;
   public refHistory: DynamicDialogRef = new DynamicDialogRef();
+  public today: Date = new Date();
+  public minDate: Date = new Date(
+    new Date().setMonth(new Date().getMonth() - 1)
+  );
+  public maxDate: Date = new Date();
 
   public ngOnInit() {
     this.setDefaultFormData();
@@ -70,35 +75,46 @@ export class SupportFormComponent {
   }
 
   private setDefaultFormData(): void {
-    const today = new Date().toISOString().split('T')[0];
     this.supportForm.get('state')?.setValue(1);
-    this.supportForm.get('dateEntry')?.setValue(today);
+    this.supportForm.get('dateEntry')?.setValue(this.today);
   }
 
-  //TODO: REFACTORIZAR
+  //TODO: REFACTORIZAR PARA QUE SE CONSTRUYA EL VERDADERO FORMULARIO, POR MIENTRAS ESTAN TODOS LOS CAMPOS ACTUALES POSIBLE CAMBIOS EN EL FUTURO
   private buildForm(): FormGroup {
     return this.formBuilder.group({
       search: [null, [Validators.required]],
-      productType: [{ value: null, disabled: true }],
-      client: [{ value: null, disabled: true }],
+      // INPUTS DISABLED
       warrantyProduction: [{ value: null, disabled: true }],
       warrantyService: [{ value: null, disabled: true }],
-      dateEntry: [{ value: null, disabled: true }],
+      client: [{ value: null, disabled: true }],
+      productType: [{ value: null, disabled: true }],
+      productDateEntry: [{ value: null, disabled: true }],
       reclaim: [{ value: null, disabled: true }],
       state: [{ value: null, disabled: true }],
+
+      //------------------------------------------
+
+      dateEntry: [null, [Validators.required]],
       priority: [null, [Validators.required]],
-      reference: [null, [Validators.maxLength(255)]],
+      startReference: [null, [Validators.maxLength(255)]],
+      endReference: [null, [Validators.maxLength(255)]],
       securityStrap: [null],
       failure: [null, [Validators.maxLength(255)]],
       failureTypes: [null],
       remarks: [null, [Validators.maxLength(255)]],
       product: [null, [Validators.required]],
-      warranty: [null],
+      warranty: [null, [Validators.required]],
     });
   }
 
   private loadForm(data: ISupport) {
+    this.supportForm.get('dateEntry')?.disable();
     this.supportForm.patchValue(data);
+    this.supportForm.get('dateEntry')?.setValue(new Date(data.dateEntry));
+    // fecha de despacho setear
+    this.supportForm
+      .get('productDateEntry')
+      ?.setValue(data.product.deliveryDate);
     this.supportForm.get('search')?.clearValidators();
     this.supportForm.get('state')?.setValue(data.state.id);
     this.supportForm.get('client')?.setValue(data.product.client.taxpayerName);
@@ -132,13 +148,14 @@ export class SupportFormComponent {
     });
   }
 
+  //! REFACTORIZAR 14/11/2023
   public searchProduct() {
     const serial = this.supportForm.get('search')?.value;
-    if (!serial || serial < 3) {
+    if (!serial || serial <= 3 || /[a-zA-Z]/.test(serial)) {
       this.messageService.add({
         severity: 'error',
         summary: 'Error al buscar el producto',
-        detail: 'Debe ingresar un serial',
+        detail: 'Debe ingresar un número de serie válido',
       });
       return;
     }
@@ -165,9 +182,10 @@ export class SupportFormComponent {
               });
             } else {
               this.supportForm.patchValue({
+                client: product.client.taxpayerName,
                 product: product.id,
                 productType: product.productType.name,
-                client: product.client.taxpayerName,
+                productDateEntry: product.deliveryDate,
               });
               this.calculateWarranty(product.deliveryDate);
             }
@@ -278,37 +296,39 @@ export class SupportFormComponent {
   }
 
   public cancelForm(): void {
-    this.confirmationService.confirm({
-      message: '¿Está seguro que desea cancelar el formulario?',
-      header: 'CONFIRMAR',
-      icon: 'pi pi-info-circle',
-      acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
-      rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
-      accept: () => {
-        this.supportService
-          .updateState(this.config.data.id, this.states[this.states.length - 1])
-          .subscribe({
-            next: () =>
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Operación exitosa',
-                detail: 'El registro se canceló correctamente',
-              }),
-            error: () => {},
-            complete: () => this.ref.close(),
-          });
-      },
-      reject: () =>
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Operación cancelada',
-          detail: 'El registro no se canceló',
-        }),
-    });
+    // TODO : ADACTAR PARA QUE SE PUEDA CANCELAR EL FORMULARIO
+    this.openHistoryForm(this.states[this.states.length - 1]);
+    // this.confirmationService.confirm({
+    //   message: '¿Está seguro que desea cancelar el formulario?',
+    //   header: 'CONFIRMAR',
+    //   icon: 'pi pi-info-circle',
+    //   acceptLabel: 'CONFIRMAR',
+    //   acceptButtonStyleClass:
+    //     'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
+    //   rejectLabel: 'CANCELAR',
+    //   rejectButtonStyleClass:
+    //     'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+    //   accept: () => {
+    //     this.supportService
+    //       .updateState(this.config.data.id, this.states[this.states.length - 1])
+    //       .subscribe({
+    //         next: () =>
+    //           this.messageService.add({
+    //             severity: 'success',
+    //             summary: 'Operación exitosa',
+    //             detail: 'El registro se canceló correctamente',
+    //           }),
+    //         error: () => {},
+    //         complete: () => this.ref.close(),
+    //       });
+    //   },
+    //   reject: () =>
+    //     this.messageService.add({
+    //       severity: 'info',
+    //       summary: 'Operación cancelada',
+    //       detail: 'El registro no se canceló',
+    //     }),
+    // });
   }
 
   public exitForm(): void {
@@ -326,9 +346,14 @@ export class SupportFormComponent {
     });
   }
 
-  public openHistoryForm(): void {
+  // todo: REFACTORIZAR PARA QUE TAMBIEN LO PUEDA USAR EL CANCERLAR FORMULARIO
+  public openHistoryForm(state?: ISupportState): void {
+    const header = state
+      ? 'FORMULARIO DE CANCELACIÓN DE SOPORTE TÉCNICO'
+      : 'FORMULARIO DE ACTUALIZACIÓN DE ESTADO DEL SOPORTE TÉCNICO';
+
     this.refHistory = this.dialogService.open(SupportFormHistoryComponent, {
-      header: 'ACTUALIZAR ESTADO DEL SERVICIO',
+      header: header,
       width: '50%',
       closable: false,
       closeOnEscape: false,
@@ -338,9 +363,20 @@ export class SupportFormComponent {
       data: this.config.data,
     });
 
-    this.refHistory.onClose.subscribe(() => {
-      this.ref.close();
-    });
+    // this.refHistory = this.dialogService.open(SupportFormHistoryComponent, {
+    //   header: 'ACTUALIZAR ESTADO DEL SERVICIO',
+    //   width: '50%',
+    //   closable: false,
+    //   closeOnEscape: false,
+    //   dismissableMask: false,
+    //   showHeader: true,
+    //   position: 'center',
+    //   data: this.config.data,
+    // });
+
+    // this.refHistory.onClose.subscribe(() => {
+    //   this.ref.close();
+    // });
   }
 
   public cleanForm(): void {

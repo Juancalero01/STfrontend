@@ -29,6 +29,7 @@ export class SupportFormHistoryComponent {
   public nextStates: ISupportState[] = [];
 
   public ngOnInit(): void {
+    console.log(this.config.data['state']);
     this.setDefaultFormData();
     this.loadStates();
     this.loadForm(this.config.data);

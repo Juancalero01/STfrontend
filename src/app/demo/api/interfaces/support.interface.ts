@@ -5,7 +5,8 @@ import { ISupportState } from './support-state.interface';
 
 export interface ISupport {
   reclaim: string;
-  reference: string | null;
+  startReference: string | null;
+  endReference: string | null;
   failure: string | null;
   remarks: string | null;
   dateEntry: Date;

@@ -9,6 +9,7 @@
         formControlName="search"
         [pKeyFilter]="blockSpace"
         maxlength="10"
+        placeholder="Ingresar número de serie..."
         [ngClass]="{ 'ng-invalid ng-dirty': validateForm('search') }"
       />
       <p-button
@@ -24,13 +25,39 @@
   <div class="w-full flex gap-2">
     <div class="w-full">
       <label>FECHA DE REGISTRO</label>
-      <input
-        type="text"
-        pInputText
-        class="w-full font-bold bg-gray-100"
+      <p-calendar
         formControlName="dateEntry"
+        dateFormat="dd-mm-yy"
+        styleClass="w-full"
+        appendTo="body"
+        [minDate]="minDate"
+        [maxDate]="maxDate"
+        [showClear]="true"
+        [ngClass]="{ 'ng-invalid ng-dirty': validateForm('dateEntry') }"
       />
+      <small *ngIf="validateForm('dateEntry')" class="p-error">
+        Campo requerido*
+      </small>
     </div>
+    <div class="w-full">
+      <label>TIPO DE PRIORIDAD</label>
+      <p-dropdown
+        [options]="priorities"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="Seleccionar..."
+        styleClass="w-full"
+        formControlName="priority"
+        [showClear]="true"
+        [ngClass]="{ 'ng-invalid ng-dirty': validateForm('priority') }"
+      />
+      <small *ngIf="validateForm('priority')" class="p-error">
+        Campo requerido*
+      </small>
+    </div>
+  </div>
+
+  <div class="w-full flex gap-2">
     <div class="w-full">
       <label>NÚMERO DE RECLAMO</label>
       <input
@@ -49,27 +76,39 @@
         styleClass="w-full font-bold bg-gray-100 uppercase"
         formControlName="state"
         dropdownIcon="none"
-      ></p-dropdown>
+      />
     </div>
   </div>
 
   <div class="w-full flex gap-2">
     <div class="w-full">
-      <label>TIPO DE PRODUCTO</label>
+      <label>RAZÓN SOCIAL</label>
       <input
         type="text"
         pInputText
-        class="w-full font-bold bg-gray-100"
+        class="w-full font-bold bg-gray-100 uppercase"
+        formControlName="client"
+      />
+    </div>
+    <div class="w-full">
+      <label>IDENTIFICACIÓN DEL PRODUCTO</label>
+      <input
+        type="text"
+        pInputText
+        class="w-full font-bold bg-gray-100 uppercase"
         formControlName="productType"
       />
     </div>
     <div class="w-full">
-      <label>CLIENTE</label>
+      <label>FECHA DE DESPACHO DEL PRODUCTO</label>
       <input
         type="text"
         pInputText
-        class="w-full font-bold bg-gray-100"
-        formControlName="client"
+        class="w-full font-bold bg-gray-100 uppercase"
+        [value]="
+          supportForm.get('productDateEntry')?.value | date : 'dd-MM-yyyy'
+        "
+        formControlName="productDateEntry"
       />
     </div>
   </div>
@@ -113,8 +152,6 @@
         "
       />
     </div>
-  </div>
-  <div class="w-full flex gap-2">
     <div class="w-full">
       <label>GARANTIA</label>
       <p-dropdown
@@ -127,22 +164,6 @@
         [showClear]="true"
       />
     </div>
-    <div class="w-full">
-      <label>TIPO DE PRIORIDAD</label>
-      <p-dropdown
-        [options]="priorities"
-        optionLabel="name"
-        optionValue="id"
-        placeholder="Seleccionar..."
-        styleClass="w-full"
-        formControlName="priority"
-        [showClear]="true"
-        [ngClass]="{ 'ng-invalid ng-dirty': validateForm('priority') }"
-      />
-      <small *ngIf="validateForm('priority')" class="p-error">
-        Campo requerido*
-      </small>
-    </div>
   </div>
 
   <div class="w-full flex gap-2">
@@ -152,16 +173,22 @@
         type="text"
         pInputText
         class="w-full"
-        formControlName="reference"
+        formControlName="startReference"
       />
     </div>
     <div class="w-full">
       <label>REMITO DE PRODUCTO SALIENTE</label>
-      <input type="text" pInputText class="w-full" />
+      <input
+        type="text"
+        pInputText
+        class="w-full"
+        formControlName="endReference"
+      />
     </div>
   </div>
 
-  <div class="w-full flex gap-2">
+  <!-- TODO: Preguntar si realmente son necesarios estos nuevos* campos -->
+  <!-- <div class="w-full flex gap-2">
     <div class="w-full">
       <label>NÚMERO DE COTIZACIÓN</label>
       <input type="text" pInputText class="w-full" />
@@ -170,7 +197,7 @@
       <label>NÚMERO DE ORDEN</label>
       <input type="text" pInputText class="w-full" />
     </div>
-  </div>
+  </div> -->
 
   <div class="w-full">
     <label>FAJA DE SEGURIDAD</label>
