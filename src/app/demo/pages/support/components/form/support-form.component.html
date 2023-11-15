@@ -86,8 +86,17 @@
       <input
         type="text"
         pInputText
-        class="w-full font-bold bg-gray-100 uppercase"
+        class="w-full font-bold uppercase"
         formControlName="client"
+      />
+    </div>
+    <div class="w-full">
+      <label>NÚMERO DE SERIE DEL PRODUCTO</label>
+      <input
+        type="text"
+        pInputText
+        class="w-full font-bold uppercase"
+        formControlName="productSerial"
       />
     </div>
     <div class="w-full">
@@ -95,7 +104,7 @@
       <input
         type="text"
         pInputText
-        class="w-full font-bold bg-gray-100 uppercase"
+        class="w-full font-bold uppercase"
         formControlName="productType"
       />
     </div>
@@ -104,7 +113,7 @@
       <input
         type="text"
         pInputText
-        class="w-full font-bold bg-gray-100 uppercase"
+        class="w-full font-bold uppercase"
         [value]="
           supportForm.get('productDateEntry')?.value | date : 'dd-MM-yyyy'
         "

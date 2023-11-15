@@ -89,6 +89,7 @@ export class SupportFormComponent {
       client: [{ value: null, disabled: true }],
       productType: [{ value: null, disabled: true }],
       productDateEntry: [{ value: null, disabled: true }],
+      productSerial: [{ value: null, disabled: true }],
       reclaim: [{ value: null, disabled: true }],
       state: [{ value: null, disabled: true }],
 
@@ -111,10 +112,10 @@ export class SupportFormComponent {
     this.supportForm.get('dateEntry')?.disable();
     this.supportForm.patchValue(data);
     this.supportForm.get('dateEntry')?.setValue(new Date(data.dateEntry));
-    // fecha de despacho setear
     this.supportForm
       .get('productDateEntry')
       ?.setValue(data.product.deliveryDate);
+    this.supportForm.get('productSerial')?.setValue(data.product.serial);
     this.supportForm.get('search')?.clearValidators();
     this.supportForm.get('state')?.setValue(data.state.id);
     this.supportForm.get('client')?.setValue(data.product.client.taxpayerName);
@@ -186,6 +187,7 @@ export class SupportFormComponent {
                 product: product.id,
                 productType: product.productType.name,
                 productDateEntry: product.deliveryDate,
+                productSerial: product.serial,
               });
               this.calculateWarranty(product.deliveryDate);
             }
