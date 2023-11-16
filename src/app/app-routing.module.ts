@@ -9,6 +9,16 @@ import { NotfoundComponent } from './demo/pages/notfound/notfound.component';
       [
         {
           path: '',
+          redirectTo: 'auth',
+          pathMatch: 'full',
+        },
+        {
+          path: 'auth',
+          loadChildren: () =>
+            import('./demo/pages/auth/auth.module').then((m) => m.AuthModule),
+        },
+        {
+          path: 'cnet',
           component: AppLayoutComponent,
           children: [
             {
@@ -57,7 +67,7 @@ import { NotfoundComponent } from './demo/pages/notfound/notfound.component';
           ],
         },
         { path: 'notfound', component: NotfoundComponent },
-        { path: '**', redirectTo: '/notfound' },
+        { path: '**', redirectTo: '/notfound', pathMatch: 'full' },
       ],
       {
         scrollPositionRestoration: 'enabled',

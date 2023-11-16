@@ -1,0 +1,52 @@
+<section
+  class="flex flex-column gap-5 bg-white px-5 py-6 w-29rem border-round shadow-1"
+>
+  <div class="flex flex-row justify-content-center">
+    <img src="../../../../../../assets/cnet.svg" alt="Logo" />
+  </div>
+  <div class="flex flex-column gap-1">
+    <h2 class="font-normal">Inicio de sesión</h2>
+    <p class="text-gray-600">Ingrese sus credenciales para acceder al panel.</p>
+  </div>
+  <form class="flex flex-column gap-3" [formGroup]="loginForm">
+    <div class="flex flex-column w-full">
+      <label>Nombre de usuario</label>
+      <div class="p-inputgroup">
+        <span class="p-inputgroup-addon">
+          <i class="pi pi-user"></i>
+        </span>
+        <input
+          pInputText
+          maxlength="150"
+          placeholder="Ingrese su usuario"
+          class="w-full"
+          formControlName="username"
+        />
+      </div>
+      <small class="p-error">Campo obligatorio*</small>
+    </div>
+    <div class="flex flex-column w-full">
+      <label>Contraseña</label>
+      <div class="p-inputgroup">
+        <span class="p-inputgroup-addon">
+          <i class="pi pi-lock"></i>
+        </span>
+        <p-password
+          [feedback]="false"
+          [toggleMask]="true"
+          placeholder="Ingrese su contraseña"
+          styleClass="w-full"
+          inputStyleClass="w-full"
+          formControlName="password"
+        />
+      </div>
+      <small class="p-error">Campo obligatorio*</small>
+    </div>
+    <p-button
+      label="Iniciar sesión"
+      styleClass="w-full p-button-info"
+      (onClick)="login()"
+      [disabled]="loginForm.invalid"
+    />
+  </form>
+</section>
