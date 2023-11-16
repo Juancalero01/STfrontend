@@ -38,11 +38,13 @@ export class SupportFormComponent {
   ) {}
 
   public supportForm: FormGroup = this.buildForm();
+
+  //Buttons and Dropdowns properties
   public mainButtonLabel: string = 'REGISTRAR FORMULARIO';
   public showButtonState: boolean = false;
   public showButtonClean: boolean = true;
   public showSearch: boolean = true;
-  public showButtonCancel!: boolean;
+  public showButtonCancel: boolean = true;
   public booleanDropdown: any[] = [
     { value: true, label: 'Si' },
     { value: false, label: 'No' },
@@ -50,13 +52,14 @@ export class SupportFormComponent {
   public failureTypes: IFailureType[] = [];
   public states: ISupportState[] = [];
   public priorities: ISupportPriority[] = [];
-  public blockSpace: RegExp = /[^\s]/;
   public refHistory: DynamicDialogRef = new DynamicDialogRef();
+
+  //REFACTORIZAR TODAY para no hacer nuevos objetos de date
   public today: Date = new Date();
   public minDate: Date = new Date(
     new Date().setMonth(new Date().getMonth() - 1)
   );
-  public maxDate: Date = new Date();
+  public maxDate: Date = this.today;
 
   public ngOnInit() {
     this.setDefaultFormData();
@@ -79,54 +82,47 @@ export class SupportFormComponent {
     this.supportForm.get('dateEntry')?.setValue(this.today);
   }
 
-  //TODO: REFACTORIZAR PARA QUE SE CONSTRUYA EL VERDADERO FORMULARIO, POR MIENTRAS ESTAN TODOS LOS CAMPOS ACTUALES POSIBLE CAMBIOS EN EL FUTURO
   private buildForm(): FormGroup {
     return this.formBuilder.group({
       search: [null, [Validators.required]],
-      // INPUTS DISABLED
       warrantyProduction: [{ value: null, disabled: true }],
       warrantyService: [{ value: null, disabled: true }],
       client: [{ value: null, disabled: true }],
       productType: [{ value: null, disabled: true }],
       productDateEntry: [{ value: null, disabled: true }],
       productSerial: [{ value: null, disabled: true }],
-      reclaim: [{ value: null, disabled: true }],
-      state: [{ value: null, disabled: true }],
-
-      //------------------------------------------
-
+      product: [null, [Validators.required]],
       dateEntry: [null, [Validators.required]],
       priority: [null, [Validators.required]],
+      reclaim: [{ value: null, disabled: true }],
+      state: [{ value: null, disabled: true }],
+      warranty: [null, [Validators.required]],
       startReference: [null, [Validators.maxLength(255)]],
       endReference: [null, [Validators.maxLength(255)]],
+      orderNumber: [null, [Validators.maxLength(255)]],
+      quoteNumber: [null, [Validators.maxLength(255)]],
       securityStrap: [null],
       failure: [null, [Validators.maxLength(255)]],
       failureTypes: [null],
-      remarks: [null, [Validators.maxLength(255)]],
-      product: [null, [Validators.required]],
-      warranty: [null, [Validators.required]],
+      remarks: [null, [Validators.maxLength(500)]],
     });
   }
 
-  private loadForm(data: ISupport) {
+  private loadForm(support: ISupport) {
+    this.supportForm.patchValue({
+      ...support,
+      dateEntry: new Date(support.dateEntry),
+      state: support.state.id,
+      client: support.product.client.taxpayerName,
+      productType: support.product.productType.name,
+      productDateEntry: new Date(support.product.deliveryDate),
+      productSerial: support.product.serial,
+      priority: support.priority.id,
+      failureTypes: support.failureTypes.map((failureType) => failureType.id),
+    });
     this.supportForm.get('dateEntry')?.disable();
-    this.supportForm.patchValue(data);
-    this.supportForm.get('dateEntry')?.setValue(new Date(data.dateEntry));
-    this.supportForm
-      .get('productDateEntry')
-      ?.setValue(data.product.deliveryDate);
-    this.supportForm.get('productSerial')?.setValue(data.product.serial);
     this.supportForm.get('search')?.clearValidators();
-    this.supportForm.get('state')?.setValue(data.state.id);
-    this.supportForm.get('client')?.setValue(data.product.client.taxpayerName);
-    this.supportForm
-      .get('productType')
-      ?.setValue(data.product.productType.name);
-    this.supportForm.get('priority')?.setValue(data.priority.id);
-    this.supportForm
-      .get('failureTypes')
-      ?.setValue(data.failureTypes.map((failureType) => failureType.id));
-    this.calculateWarranty(data.product.deliveryDate);
+    this.calculateWarranty(support.product.deliveryDate);
     this.mainButtonLabel = 'ACTUALIZAR FORMULARIO';
   }
 
@@ -149,10 +145,12 @@ export class SupportFormComponent {
     });
   }
 
-  //! REFACTORIZAR 14/11/2023
   public searchProduct() {
     const serial = this.supportForm.get('search')?.value;
-    if (!serial || serial <= 3 || /[a-zA-Z]/.test(serial)) {
+
+    console.log('Search data:', serial);
+
+    if (!serial) {
       this.messageService.add({
         severity: 'error',
         summary: 'Error al buscar el producto',
@@ -167,12 +165,12 @@ export class SupportFormComponent {
             const supportFound = supports.find(
               (support) =>
                 support.product.id === product.id &&
-                support.state.id !== 8 &&
-                support.state.id !== 9
+                support.state.id !== 11 &&
+                support.state.id !== 12
             );
             if (supportFound) {
               this.messageService.add({
-                severity: 'error',
+                severity: 'info',
                 summary: 'Error al buscar el producto',
                 detail: 'El producto ya tiene un soporte activo',
               });
@@ -217,13 +215,6 @@ export class SupportFormComponent {
         }
       },
     });
-  }
-
-  public validateForm(controlName: string): boolean | undefined {
-    return (
-      this.supportForm.get(controlName)?.invalid &&
-      this.supportForm.get(controlName)?.touched
-    );
   }
 
   public submitForm(): void {
@@ -298,39 +289,33 @@ export class SupportFormComponent {
   }
 
   public cancelForm(): void {
-    // TODO : ADACTAR PARA QUE SE PUEDA CANCELAR EL FORMULARIO
-    this.openHistoryForm(this.states[this.states.length - 1]);
-    // this.confirmationService.confirm({
-    //   message: '¿Está seguro que desea cancelar el formulario?',
-    //   header: 'CONFIRMAR',
-    //   icon: 'pi pi-info-circle',
-    //   acceptLabel: 'CONFIRMAR',
-    //   acceptButtonStyleClass:
-    //     'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
-    //   rejectLabel: 'CANCELAR',
-    //   rejectButtonStyleClass:
-    //     'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
-    //   accept: () => {
-    //     this.supportService
-    //       .updateState(this.config.data.id, this.states[this.states.length - 1])
-    //       .subscribe({
-    //         next: () =>
-    //           this.messageService.add({
-    //             severity: 'success',
-    //             summary: 'Operación exitosa',
-    //             detail: 'El registro se canceló correctamente',
-    //           }),
-    //         error: () => {},
-    //         complete: () => this.ref.close(),
-    //       });
-    //   },
-    //   reject: () =>
-    //     this.messageService.add({
-    //       severity: 'info',
-    //       summary: 'Operación cancelada',
-    //       detail: 'El registro no se canceló',
-    //     }),
-    // });
+    // TODO : ADAPTAR PARA QUE SE PUEDA CANCELAR EL FORMULARIO
+    this.confirmationService.confirm({
+      message: '¿Está seguro que desea cancelar el formulario?',
+      header: 'CONFIRMAR',
+      icon: 'pi pi-info-circle',
+      acceptLabel: 'CONFIRMAR',
+      acceptButtonStyleClass:
+        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
+      rejectLabel: 'CANCELAR',
+      rejectButtonStyleClass:
+        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      accept: () => {
+        this.supportService
+          .updateState(this.config.data.id, this.states[this.states.length - 1])
+          .subscribe({
+            next: () =>
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Operación exitosa',
+                detail: 'El registro se canceló correctamente',
+              }),
+            error: () => {},
+            complete: () => this.ref.close(),
+          });
+      },
+      reject: () => {},
+    });
   }
 
   public exitForm(): void {
@@ -349,24 +334,14 @@ export class SupportFormComponent {
   }
 
   // todo: REFACTORIZAR PARA QUE TAMBIEN LO PUEDA USAR EL CANCERLAR FORMULARIO
-  public openHistoryForm(state?: ISupportState): void {
-    const header = state
-      ? 'FORMULARIO DE CANCELACIÓN DE SOPORTE TÉCNICO'
-      : 'FORMULARIO DE ACTUALIZACIÓN DE ESTADO DEL SOPORTE TÉCNICO';
-
-    this.refHistory = this.dialogService.open(SupportFormHistoryComponent, {
-      header: header,
-      width: '50%',
-      closable: false,
-      closeOnEscape: false,
-      dismissableMask: false,
-      showHeader: true,
-      position: 'center',
-      data: this.config.data,
-    });
+  public openHistoryForm(): void {
+    // state?: ISupportState
+    // const header = state
+    //   ? 'FORMULARIO DE CANCELACIÓN DE SOPORTE TÉCNICO'
+    //   : 'FORMULARIO DE ACTUALIZACIÓN DE ESTADO DEL SOPORTE TÉCNICO';
 
     // this.refHistory = this.dialogService.open(SupportFormHistoryComponent, {
-    //   header: 'ACTUALIZAR ESTADO DEL SERVICIO',
+    //   header: header,
     //   width: '50%',
     //   closable: false,
     //   closeOnEscape: false,
@@ -376,9 +351,20 @@ export class SupportFormComponent {
     //   data: this.config.data,
     // });
 
-    // this.refHistory.onClose.subscribe(() => {
-    //   this.ref.close();
-    // });
+    this.refHistory = this.dialogService.open(SupportFormHistoryComponent, {
+      header: 'ACTUALIZAR ESTADO DEL SERVICIO',
+      width: '50%',
+      closable: false,
+      closeOnEscape: false,
+      dismissableMask: false,
+      showHeader: true,
+      position: 'center',
+      data: this.config.data,
+    });
+
+    this.refHistory.onClose.subscribe(() => {
+      this.ref.close();
+    });
   }
 
   public cleanForm(): void {
@@ -407,7 +393,7 @@ export class SupportFormComponent {
     });
   }
 
-  //TODO: REFACTORIZAR PARA QUE TAMBIEN OBTENGA EL HISTORIAL DE ESE SERVICIO (SI )
+  //TODO: REFACTORIZAR PARA QUE TAMBIEN OBTENGA EL HISTORIAL DE ESE SERVICIO
   private calculateWarranty(deliveryDate: Date): void {
     const today = new Date();
 
@@ -439,17 +425,33 @@ export class SupportFormComponent {
     }
   }
 
+  //TODO: REFACTORIZAR PARA NO USAR TANTOS IF Y VARIABLES
+  // private getLastReclaimNumber(): void {
+  //   const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
+  //   this.supportService.findLastReclaim().subscribe({
+  //     next: (reclaimFound: string | null) => {
+  //       if (!reclaimFound) {
+  //         this.supportForm.get('reclaim')?.setValue(`CNET-${today}-1`);
+  //         return;
+  //       }
+  //       const lastReclaimNumber = reclaimFound.split('-').pop();
+  //       const reclaim = `CNET-${today}-${Number(lastReclaimNumber) + 1}`;
+  //       this.supportForm.get('reclaim')?.setValue(reclaim);
+  //     },
+  //   });
+  // }
+
   private getLastReclaimNumber(): void {
     const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
+
     this.supportService.findLastReclaim().subscribe({
       next: (reclaimFound: string | null) => {
-        if (!reclaimFound) {
-          this.supportForm.get('reclaim')?.setValue(`CNET-${today}-1`);
-          return;
-        }
-        const lastReclaimNumber = reclaimFound.split('-').pop();
-        const reclaim = `CNET-${today}-${Number(lastReclaimNumber) + 1}`;
-        this.supportForm.get('reclaim')?.setValue(reclaim);
+        const lastReclaimNumber = reclaimFound
+          ? Number(reclaimFound.split('-').pop()) + 1
+          : 1;
+        this.supportForm
+          .get('reclaim')
+          ?.setValue(`CNET-${today}-${lastReclaimNumber}`);
       },
     });
   }
@@ -464,5 +466,13 @@ export class SupportFormComponent {
       ...support
     } = this.supportForm.getRawValue();
     return support;
+  }
+
+  //REFACTORIZAR YA QUE NO CUMPLE CON EL REQUERIMIENTO, QUE DEBE SER QUE EN LA ETIQUETA SMALL SE MUESTRE EL ERROR POR EL CUAL NO SE PUEDE CREAR EL SOPORTE
+  public validateForm(controlName: string): boolean | undefined {
+    return (
+      this.supportForm.get(controlName)?.invalid &&
+      this.supportForm.get(controlName)?.touched
+    );
   }
 }

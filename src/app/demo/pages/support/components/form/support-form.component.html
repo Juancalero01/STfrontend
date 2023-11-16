@@ -7,15 +7,19 @@
         pInputText
         class="w-full"
         formControlName="search"
-        [pKeyFilter]="blockSpace"
+        pKeyFilter="int"
         maxlength="10"
+        minlength="3"
         placeholder="Ingresar número de serie..."
-        [ngClass]="{ 'ng-invalid ng-dirty': validateForm('search') }"
+        [ngClass]="{
+          'ng-invalid ng-dirty': validateForm('search')
+        }"
       />
       <p-button
         icon="pi pi-search"
         styleClass=" p-button-secondary"
         (onClick)="searchProduct()"
+        [disabled]="supportForm.get('search')?.invalid"
       />
     </div>
     <small *ngIf="validateForm('search')" class="p-error">
@@ -30,10 +34,12 @@
         dateFormat="dd-mm-yy"
         styleClass="w-full"
         appendTo="body"
+        [showButtonBar]="true"
         [minDate]="minDate"
         [maxDate]="maxDate"
         [showClear]="true"
         [ngClass]="{ 'ng-invalid ng-dirty': validateForm('dateEntry') }"
+        placeholder="Seleccionar fecha de registro..."
       />
       <small *ngIf="validateForm('dateEntry')" class="p-error">
         Campo requerido*
@@ -45,7 +51,7 @@
         [options]="priorities"
         optionLabel="name"
         optionValue="id"
-        placeholder="Seleccionar..."
+        placeholder="Seleccionar prioridad..."
         styleClass="w-full"
         formControlName="priority"
         [showClear]="true"
@@ -100,7 +106,7 @@
       />
     </div>
     <div class="w-full">
-      <label>IDENTIFICACIÓN DEL PRODUCTO</label>
+      <label>NOMBRE DEL PRODUCTO</label>
       <input
         type="text"
         pInputText
@@ -114,9 +120,6 @@
         type="text"
         pInputText
         class="w-full font-bold uppercase"
-        [value]="
-          supportForm.get('productDateEntry')?.value | date : 'dd-MM-yyyy'
-        "
         formControlName="productDateEntry"
       />
     </div>
@@ -167,7 +170,7 @@
         [options]="booleanDropdown"
         optionLabel="label"
         optionValue="value"
-        placeholder="Seleccionar..."
+        placeholder="Seleccionar aprobación de garantía..."
         styleClass="w-full"
         formControlName="warranty"
         [showClear]="true"
@@ -183,6 +186,7 @@
         pInputText
         class="w-full"
         formControlName="startReference"
+        placeholder="Ingresar número de remito de producto entrante"
       />
     </div>
     <div class="w-full">
@@ -192,21 +196,33 @@
         pInputText
         class="w-full"
         formControlName="endReference"
+        placeholder="Ingresar número de remito de producto saliente"
       />
     </div>
   </div>
 
-  <!-- TODO: Preguntar si realmente son necesarios estos nuevos* campos -->
-  <!-- <div class="w-full flex gap-2">
+  <div class="w-full flex gap-2">
     <div class="w-full">
       <label>NÚMERO DE COTIZACIÓN</label>
-      <input type="text" pInputText class="w-full" />
+      <input
+        type="text"
+        pInputText
+        class="w-full"
+        formControlName="quoteNumber"
+        placeholder="Ingresar número de cotización si corresponde"
+      />
     </div>
     <div class="w-full">
-      <label>NÚMERO DE ORDEN</label>
-      <input type="text" pInputText class="w-full" />
+      <label>NÚMERO DE ORDEN DE COMPRA</label>
+      <input
+        type="text"
+        pInputText
+        class="w-full"
+        formControlName="orderNumber"
+        placeholder="Ingresar número de orden de compra si corresponde"
+      />
     </div>
-  </div> -->
+  </div>
 
   <div class="w-full">
     <label>FAJA DE SEGURIDAD</label>
@@ -218,12 +234,19 @@
       styleClass="w-full"
       formControlName="securityStrap"
       [showClear]="true"
+      placeholder="Seleccionar aprobación de faja de seguridad..."
     />
   </div>
 
   <div class="w-full">
     <label>FALLA REPORTADA POR EL CLIENTE</label>
-    <input type="text" pInputText class="w-full" formControlName="failure" />
+    <input
+      type="text"
+      pInputText
+      class="w-full"
+      formControlName="failure"
+      placeholder="Ingresar falla reportada por el cliente"
+    />
   </div>
 
   <div class="w-full">
@@ -238,6 +261,7 @@
       placeholder="Seleccionar..."
       styleClass="w-full"
       [showClear]="true"
+      placeholder="Seleccionar fallas encontradas..."
     />
   </div>
 
@@ -245,11 +269,12 @@
     <label>OBSERVACIONES</label>
     <textarea
       pInputTextarea
-      maxlength="250"
+      maxlength="500"
       class="w-full"
       [autoResize]="true"
       rows="6"
       formControlName="remarks"
+      placeholder="Ingresar observaciones del servicio"
     ></textarea>
   </div>
 
@@ -289,3 +314,11 @@
     </div>
   </div>
 </form>
+
+<!-- Proximamente se agregará el componente de historial de estados -->
+<div class="p-2 flex align-items-center gap-2">
+  <i class="pi pi-info-circle"></i>
+  <p class="text-red-600">
+    Proximamente se agregará el componente de historial de estados
+  </p>
+</div>

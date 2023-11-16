@@ -17,6 +17,7 @@ export class SupportTableComponent {
 
   public supportData: ISupport[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
+  //! REVISAR PORQUE NO APARECE EL NUEVO EN LA SOLICITUD NUEVA PUEDE SER PORQUE SE IMPLEMENTO DATETIME en el backend
   public today: string = new Date().toISOString().split('T')[0];
 
   public priorityColors: any = {
