@@ -25,6 +25,13 @@ import { NotfoundComponent } from './demo/pages/notfound/notfound.component';
                   (m) => m.SupportModule
                 ),
             },
+            {
+              path: 'support/history',
+              loadChildren: () =>
+                import(
+                  './demo/pages/support-history/support-history.module'
+                ).then((m) => m.SupportHistoryModule),
+            },
 
             {
               path: 'client',

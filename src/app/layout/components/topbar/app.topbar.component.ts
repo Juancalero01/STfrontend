@@ -46,12 +46,12 @@ export class AppTopbarComponent {
         {
           label: 'Historial',
           icon: 'pi pi-fw pi-clock',
-          routerLink: ['support-history'],
+          routerLink: ['support/history'],
         },
         {
           label: 'Fallas',
           icon: 'pi pi-fw pi-exclamation-triangle',
-          routerLink: ['support-fail'],
+          routerLink: ['support/failure'],
         },
       ],
     },
