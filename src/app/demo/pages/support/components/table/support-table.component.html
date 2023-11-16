@@ -64,7 +64,7 @@
             />
           </div>
         </td>
-        <td>{{ support.dateEntry }}</td>
+        <td>{{ support.dateEntry | date : "dd 'de' MMMM, yyyy" }}</td>
         <td>{{ support.product.serial }}</td>
         <td>{{ support.product.productType.name | uppercase }}</td>
         <td>{{ support.product.client.taxpayerName | uppercase }}</td>
@@ -82,7 +82,7 @@
         </td>
         <td>
           <p-button
-            icon="pi pi-pencil"
+            icon="pi pi-window-maximize"
             styleClass="p-button-text p-button-secondary w-full"
             (onClick)="openSupportForm(support)"
           />
