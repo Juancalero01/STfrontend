@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AppLayoutComponent } from './layout/app.layout.component';
 import { NotfoundComponent } from './demo/pages/notfound/notfound.component';
+import { jwtGuardGuard } from './demo/pages/auth/jwt/jwt-guard.guard';
 
 @NgModule({
   imports: [
@@ -20,6 +21,8 @@ import { NotfoundComponent } from './demo/pages/notfound/notfound.component';
         {
           path: 'cnet',
           component: AppLayoutComponent,
+          canActivate: [jwtGuardGuard],
+          canActivateChild: [jwtGuardGuard],
           children: [
             {
               path: '',

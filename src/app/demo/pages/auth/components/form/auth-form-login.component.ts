@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+import { IAuth } from 'src/app/demo/api/interfaces/auth.interface';
+import { AuthService } from 'src/app/demo/api/services/auth.service';
 
 @Component({
   selector: 'app-auth-form-login',
@@ -9,7 +12,9 @@ import { Router } from '@angular/router';
 export class AuthFormLoginComponent {
   constructor(
     private readonly formBuilder: FormBuilder,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly authService: AuthService,
+    private readonly cookieService: CookieService
   ) {}
 
   public loginForm: FormGroup = this.buildForm();
@@ -24,7 +29,16 @@ export class AuthFormLoginComponent {
   }
 
   public login(): void {
-    alert(`Login,${JSON.stringify(this.loginForm.value)}`);
-    this.router.navigate(['/cnet']);
+    if (this.loginForm.valid) {
+      this.authService.login(this.loginForm.value).subscribe({
+        next: (data: IAuth) => {
+          this.cookieService.set('token', data.token);
+        },
+        error: () => {},
+        complete: () => {
+          this.router.navigate(['/cnet']);
+        },
+      });
+    }
   }
 }

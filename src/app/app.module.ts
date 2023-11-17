@@ -4,11 +4,25 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppLayoutModule } from './layout/app.layout.module';
 import { NotfoundComponent } from './demo/pages/notfound/notfound.component';
 import { PrimeNGConfig } from 'primeng/api';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  HttpClientModule,
+} from '@angular/common/http';
+import { CookieService } from 'ngx-cookie-service';
+import { JwtInterceptorInterceptor } from './demo/pages/auth/jwt/jwt-interceptor.interceptor';
 
 @NgModule({
   declarations: [AppComponent, NotfoundComponent],
   imports: [AppRoutingModule, AppLayoutModule, HttpClientModule],
+  providers: [
+    CookieService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtInterceptorInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {
