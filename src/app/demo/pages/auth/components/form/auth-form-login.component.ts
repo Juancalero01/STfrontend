@@ -1,12 +1,16 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-auth-form-login',
   templateUrl: './auth-form-login.component.html',
 })
 export class AuthFormLoginComponent {
-  constructor(private readonly formBuilder: FormBuilder) {}
+  constructor(
+    private readonly formBuilder: FormBuilder,
+    private readonly router: Router
+  ) {}
 
   public loginForm: FormGroup = this.buildForm();
 
@@ -20,6 +24,7 @@ export class AuthFormLoginComponent {
   }
 
   public login(): void {
-    console.log(this.loginForm.value);
+    alert(`Login,${JSON.stringify(this.loginForm.value)}`);
+    this.router.navigate(['/cnet']);
   }
 }

@@ -27,7 +27,7 @@ export class AppTopbarComponent {
     {
       label: 'Inicio',
       icon: 'pi pi-fw pi-home',
-      routerLink: ['/'],
+      routerLink: ['/cnet'],
     },
     {
       label: 'Servicio Técnico',
