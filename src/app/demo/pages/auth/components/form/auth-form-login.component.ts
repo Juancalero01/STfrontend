@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { IAuth } from 'src/app/demo/api/interfaces/auth.interface';
 import { AuthService } from 'src/app/demo/api/services/auth.service';
+import { UserService } from 'src/app/demo/api/services/user.service';
 
 @Component({
   selector: 'app-auth-form-login',
@@ -32,12 +33,7 @@ export class AuthFormLoginComponent {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).subscribe({
         next: (data: IAuth) => {
-          if (!this.cookieService.get('token')) {
-            this.cookieService.set('token', data.token);
-          } else {
-            this.cookieService.delete('token');
-            this.cookieService.set('token', data.token);
-          }
+          this.cookieService.set('token', data.token);
         },
         error: () => {},
         complete: () => {
