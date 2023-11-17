@@ -22,7 +22,6 @@ import { jwtGuardGuard } from './demo/pages/auth/jwt/jwt-guard.guard';
           path: 'cnet',
           component: AppLayoutComponent,
           canActivate: [jwtGuardGuard],
-          canActivateChild: [jwtGuardGuard],
           children: [
             {
               path: '',

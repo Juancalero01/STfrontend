@@ -32,7 +32,12 @@ export class AuthFormLoginComponent {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).subscribe({
         next: (data: IAuth) => {
-          this.cookieService.set('token', data.token);
+          if (!this.cookieService.get('token')) {
+            this.cookieService.set('token', data.token);
+          } else {
+            this.cookieService.delete('token');
+            this.cookieService.set('token', data.token);
+          }
         },
         error: () => {},
         complete: () => {

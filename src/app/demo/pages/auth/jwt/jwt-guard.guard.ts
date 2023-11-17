@@ -6,5 +6,5 @@ export const jwtGuardGuard: CanActivateFn = (route, state) => {
   const cookieService = inject(CookieService);
   const router = inject(Router);
   const token = cookieService.get('token');
-  return !token ? router.navigate(['/login']) : true;
+  return !token ? router.navigate(['auth/login']) : true;
 };
