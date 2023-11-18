@@ -10,7 +10,7 @@ import {
   HttpClientModule,
 } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
-import { JwtInterceptorInterceptor } from './demo/pages/auth/jwt/jwt-interceptor.interceptor';
+import { JwtInterceptorInterceptor } from './demo/pages/auth/interceptors/jwt-interceptor.interceptor';
 
 @NgModule({
   declarations: [AppComponent, NotfoundComponent],
