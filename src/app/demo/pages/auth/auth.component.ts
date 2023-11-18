@@ -4,4 +4,9 @@ import { Component } from '@angular/core';
   selector: 'app-auth',
   templateUrl: './auth.component.html',
 })
-export class AuthComponent {}
+export class AuthComponent {
+  constructor() {}
+  public version: string = '1.7.8.23';
+
+  public ngOnInit(): void {}
+}

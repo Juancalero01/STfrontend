@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
+import { MessageService } from 'primeng/api';
 import { IAuth } from 'src/app/demo/api/interfaces/auth.interface';
 import { AuthService } from 'src/app/demo/api/services/auth.service';
 import { UserService } from 'src/app/demo/api/services/user.service';
@@ -15,7 +16,8 @@ export class AuthFormLoginComponent {
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
     private readonly authService: AuthService,
-    private readonly cookieService: CookieService
+    private readonly cookieService: CookieService,
+    private readonly messageService: MessageService
   ) {}
 
   public loginForm: FormGroup = this.buildForm();
@@ -35,8 +37,17 @@ export class AuthFormLoginComponent {
         next: (data: IAuth) => {
           this.cookieService.set('token', data.token);
         },
-        error: () => {},
+        error: (e: any) => {
+          if (e.status === 404) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Usuario o contraseña incorrectos',
+            });
+          }
+        },
         complete: () => {
+          console.log('complete');
           this.router.navigate(['/cnet']);
         },
       });
