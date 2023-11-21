@@ -1,6 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
 import { MenuItem } from 'primeng/api';
 import { TokenService } from 'src/app/demo/api/services/token.service';
 

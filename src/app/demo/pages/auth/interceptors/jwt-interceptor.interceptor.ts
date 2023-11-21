@@ -6,7 +6,6 @@ import {
   HttpInterceptor,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CookieService } from 'ngx-cookie-service';
 import { TokenService } from 'src/app/demo/api/services/token.service';
 
 @Injectable()
