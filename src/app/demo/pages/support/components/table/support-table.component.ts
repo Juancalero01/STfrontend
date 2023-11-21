@@ -18,7 +18,8 @@ export class SupportTableComponent {
   public supportData: ISupport[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
   //! REVISAR PORQUE NO APARECE EL NUEVO EN LA SOLICITUD NUEVA PUEDE SER PORQUE SE IMPLEMENTO DATETIME en el backend
-  public today: string = new Date().toISOString().split('T')[0];
+  // public today: string = new Date().toISOString().split('T')[0];
+  public today: string = new Date().toDateString();
 
   public priorityColors: any = {
     INMEDIATA: 'bg-red-500 w-full',
@@ -29,13 +30,15 @@ export class SupportTableComponent {
 
   public ngOnInit(): void {
     this.loadSupports();
+    console.log('test');
+    // this.supportData.map((m) => console.log(m));
   }
 
   public ngDestroy(): void {
     if (this.ref) this.ref.close();
   }
 
-  private loadSupports(): void {
+  public loadSupports(): void {
     this.supportService.findAll().subscribe({
       next: (supports: ISupport[]) =>
         (this.supportData = supports.sort(
