@@ -16,9 +16,9 @@ import { loginGuardGuard } from './demo/pages/auth/guards/login-guard.guard';
         },
         {
           path: 'auth',
+          canActivate: [loginGuardGuard],
           loadChildren: () =>
             import('./demo/pages/auth/auth.module').then((m) => m.AuthModule),
-          canActivate: [loginGuardGuard],
         },
         {
           path: 'cnet',

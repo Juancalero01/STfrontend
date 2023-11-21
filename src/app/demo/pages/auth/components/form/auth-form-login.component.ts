@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
 import { MessageService } from 'primeng/api';
 import { IAuth } from 'src/app/demo/api/interfaces/auth.interface';
 import { AuthService } from 'src/app/demo/api/services/auth.service';
-import { UserService } from 'src/app/demo/api/services/user.service';
+import { TokenService } from 'src/app/demo/api/services/token.service';
 
 @Component({
   selector: 'app-auth-form-login',
@@ -16,8 +15,8 @@ export class AuthFormLoginComponent {
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
     private readonly authService: AuthService,
-    private readonly cookieService: CookieService,
-    private readonly messageService: MessageService
+    private readonly messageService: MessageService,
+    private readonly tokenService: TokenService
   ) {}
 
   public loginForm: FormGroup = this.buildForm();
@@ -35,7 +34,8 @@ export class AuthFormLoginComponent {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).subscribe({
         next: (data: IAuth) => {
-          this.cookieService.set('token', data.token);
+          this.tokenService.setToken(data.token);
+          this.router.navigate(['/cnet']);
         },
         error: (e: any) => {
           if (e.status === 404) {
@@ -45,10 +45,6 @@ export class AuthFormLoginComponent {
               detail: 'Usuario o contraseña incorrectos',
             });
           }
-        },
-        complete: () => {
-          console.log('complete');
-          this.router.navigate(['/cnet']);
         },
       });
     }

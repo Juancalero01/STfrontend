@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { MenuItem } from 'primeng/api';
+import { TokenService } from 'src/app/demo/api/services/token.service';
 
 @Component({
   selector: 'app-topbar',
@@ -14,8 +15,10 @@ import { MenuItem } from 'primeng/api';
   `,
 })
 export class AppTopbarComponent {
-  private cookieService = inject(CookieService);
-  private route = inject(Router);
+  constructor(
+    private readonly tokenService: TokenService,
+    private readonly route: Router
+  ) {}
 
   items: MenuItem[] = [
     {
@@ -26,7 +29,7 @@ export class AppTopbarComponent {
           label: 'Cerrar Sesión',
           icon: 'pi pi-fw pi-sign-out',
           command: () => {
-            this.cookieService.delete('token');
+            this.tokenService.deleteToken();
             this.route.navigate(['/auth/login']);
           },
         },
