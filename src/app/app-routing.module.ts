@@ -62,10 +62,17 @@ import { loginGuardGuard } from './demo/pages/auth/guards/login-guard.guard';
                 ),
             },
             {
-              path: 'product-type',
+              path: 'product/type',
               loadChildren: () =>
                 import('./demo/pages/product-type/product-type.module').then(
                   (m) => m.ProductTypeModule
+                ),
+            },
+            {
+              path: 'user',
+              loadChildren: () =>
+                import('./demo/pages/user/user.module').then(
+                  (m) => m.UserModule
                 ),
             },
           ],

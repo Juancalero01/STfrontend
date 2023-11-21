@@ -34,7 +34,7 @@ export class AuthFormLoginComponent {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).subscribe({
         next: (data: IAuth) => {
-          this.tokenService.setToken(data.token);
+          this.tokenService.setToken(data.token, data.user);
           this.router.navigate(['/cnet']);
         },
         error: (e: any) => {
@@ -42,7 +42,13 @@ export class AuthFormLoginComponent {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Usuario o contraseña incorrectos',
+              detail: 'Nombre de usuario incorrecto',
+            });
+          } else if (e.status === 401) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Contraseña incorrecta',
             });
           }
         },

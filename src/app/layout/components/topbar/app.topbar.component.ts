@@ -21,7 +21,7 @@ export class AppTopbarComponent {
 
   items: MenuItem[] = [
     {
-      label: 'FERNANDO MARTINEZ',
+      label: `${this.tokenService.getFullname()?.toUpperCase()}`,
       icon: 'pi pi-fw pi-user',
       items: [
         {
@@ -61,18 +61,18 @@ export class AppTopbarComponent {
       ],
     },
     {
-      label: 'Productos',
+      label: 'Producción',
       icon: 'pi pi-fw pi-cog',
       items: [
         {
-          label: 'Inventario',
+          label: 'Productos',
           icon: 'pi pi-fw pi-box',
           routerLink: ['product'],
         },
         {
-          label: 'Categorías',
+          label: 'Tipo de productos',
           icon: 'pi pi-fw pi-tags',
-          routerLink: ['product-type'],
+          routerLink: ['product/type'],
         },
       ],
     },
@@ -85,7 +85,7 @@ export class AppTopbarComponent {
     {
       label: 'Usuarios',
       icon: 'pi pi-fw pi-users',
-      routerLink: ['users'],
+      routerLink: ['user'],
     },
   ];
 }
