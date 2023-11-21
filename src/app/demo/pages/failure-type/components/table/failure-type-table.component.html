@@ -1,0 +1,82 @@
+<div class="w-full h-full flex flex-column gap-4">
+  <div class="flex align-items-center justify-content-between">
+    <div class="flex gap-2">
+      <p-button
+        icon="pi pi-plus"
+        styleClass="p-button-rounded p-button-text font-medium"
+        (onClick)="createProductType()"
+      />
+    </div>
+    <div class="flex gap-2">
+      <p-button
+        icon="pi pi-filter-slash"
+        styleClass="p-button-rounded p-button-text p-button-danger font-medium"
+        (onClick)="cleanFilters(dt, fi)"
+      />
+      <div class="p-input-icon-right">
+        <i class="pi pi-search"></i>
+        <input
+          #fi
+          pInputText
+          type="text"
+          placeholder="Buscar por nombre de falla..."
+          class="w-20rem"
+          (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+        />
+      </div>
+    </div>
+  </div>
+  <p-table
+    #dt
+    [value]="failureTypeData"
+    [rows]="10"
+    [rowHover]="true"
+    [paginator]="true"
+    [globalFilterFields]="['name']"
+    [rowsPerPageOptions]="[10, 25, 50, 100]"
+    [scrollable]="true"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Mostrando {first} a {last}"
+    scrollHeight="640px"
+    styleClass="p-datatable-striped p-datatable-gridlines p-datatable-sm"
+  >
+    <ng-template pTemplate="header">
+      <tr class="text-sm h-3rem">
+        <th>NOMBRE DE FALLA</th>
+        <th class="w-1">ACCIONES</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-failureType>
+      <tr class="text-sm h-3rem">
+        <td>
+          {{ failureType.name }}
+        </td>
+        <td>
+          <p-button
+            icon="pi pi-pencil"
+            styleClass="p-button-text p-button-secondary w-full"
+            (onClick)="updateProductType(failureType)"
+          />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr class="text-sm w-full">
+        <td colspan="2">
+          <div class="flex gap-2 align-items-center">
+            <i class="pi pi-info-circle"></i>
+            <span class="font-medium"
+              >{{
+                dt.filteredValue
+                  ? "No se encontraron tipos de falla con los criterios de búsqueda"
+                  : "No hay tipos de falla cargados."
+              }}
+            </span>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+<p-confirmDialog />
+<p-toast position="top-center" />

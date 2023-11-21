@@ -46,7 +46,13 @@ import { loginGuardGuard } from './demo/pages/auth/guards/login-guard.guard';
                   './demo/pages/support-history/support-history.module'
                 ).then((m) => m.SupportHistoryModule),
             },
-
+            {
+              path: 'support/failure',
+              loadChildren: () =>
+                import('./demo/pages/failure-type/failure-type.module').then(
+                  (m) => m.FailureTypeModule
+                ),
+            },
             {
               path: 'client',
               loadChildren: () =>
