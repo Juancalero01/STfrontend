@@ -66,12 +66,7 @@
   <div class="w-full flex gap-2">
     <div class="w-full">
       <label>NÚMERO DE RECLAMO</label>
-      <input
-        type="text"
-        pInputText
-        class="w-full font-bold bg-gray-100"
-        formControlName="reclaim"
-      />
+      <input type="text" pInputText class="w-full" formControlName="reclaim" />
     </div>
     <div class="w-full">
       <label>ESTADO DEL SERVICIO</label>
@@ -79,7 +74,7 @@
         [options]="states"
         optionLabel="name"
         optionValue="id"
-        styleClass="w-full font-bold bg-gray-100 uppercase"
+        styleClass="w-full uppercase"
         formControlName="state"
         dropdownIcon="none"
       />
@@ -92,7 +87,7 @@
       <input
         type="text"
         pInputText
-        class="w-full font-bold uppercase"
+        class="w-full uppercase"
         formControlName="client"
       />
     </div>
@@ -101,7 +96,7 @@
       <input
         type="text"
         pInputText
-        class="w-full font-bold uppercase"
+        class="w-full"
         formControlName="productSerial"
       />
     </div>
@@ -110,7 +105,7 @@
       <input
         type="text"
         pInputText
-        class="w-full font-bold uppercase"
+        class="w-full uppercase"
         formControlName="productType"
       />
     </div>
@@ -119,7 +114,7 @@
       <input
         type="text"
         pInputText
-        class="w-full font-bold uppercase"
+        class="w-full"
         formControlName="productDateEntry"
       />
     </div>
@@ -131,7 +126,7 @@
       <input
         type="text"
         pInputText
-        class="w-full font-bold"
+        class="w-full"
         formControlName="warrantyProduction"
         [class]="
           supportForm.get('warrantyProduction')?.value ===
@@ -150,7 +145,7 @@
       <input
         type="text"
         pInputText
-        class="w-full font-bold"
+        class="w-full"
         formControlName="warrantyService"
         [class]="
           supportForm.get('warrantyService')?.value ===

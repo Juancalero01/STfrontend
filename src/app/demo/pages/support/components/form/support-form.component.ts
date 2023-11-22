@@ -38,8 +38,6 @@ export class SupportFormComponent {
   ) {}
 
   public supportForm: FormGroup = this.buildForm();
-
-  //Buttons and Dropdowns properties
   public mainButtonLabel: string = 'REGISTRAR FORMULARIO';
   public showButtonState: boolean = false;
   public showButtonClean: boolean = true;
@@ -54,7 +52,7 @@ export class SupportFormComponent {
   public priorities: ISupportPriority[] = [];
   public refHistory: DynamicDialogRef = new DynamicDialogRef();
 
-  //REFACTORIZAR TODAY para no hacer nuevos objetos de date
+  //TODO: REFACTORIZAR TODAY para no hacer nuevos objetos de date
   public today: Date = new Date();
   public minDate: Date = new Date(
     new Date().setMonth(new Date().getMonth() - 1)
@@ -71,7 +69,7 @@ export class SupportFormComponent {
       this.showButtonState = true;
       this.showButtonClean = false;
       this.showSearch = false;
-      this.config.data.state.id < 3 ? (this.showButtonCancel = true) : false; //TODO: Arreglar dependiendo el tipo de estado ya que puede estar en espera de cotización o en espera de aprobación
+      this.config.data.state.id < 1 ? (this.showButtonCancel = true) : false;
     } else {
       this.getLastReclaimNumber();
     }
@@ -147,72 +145,39 @@ export class SupportFormComponent {
 
   public searchProduct() {
     const serial = this.supportForm.get('search')?.value;
-
-    console.log('Search data:', serial);
-
-    if (!serial) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error al buscar el producto',
-        detail: 'Debe ingresar un número de serie válido',
-      });
-      return;
-    }
     this.productService.findOneSerial(serial).subscribe({
       next: (product: IProduct) => {
-        this.supportService.findAll().subscribe({
+        if (!product) {
+          this.messageService.add({
+            severity: 'info',
+            summary: `Info`,
+            detail: 'Producto no encontrado',
+          });
+          return;
+        }
+        this.supportService.findAllByProduct(product.id).subscribe({
           next: (supports: ISupport[]) => {
-            const supportFound = supports.find(
-              (support) =>
-                support.product.id === product.id &&
-                support.state.id !== 11 &&
-                support.state.id !== 12
+            const supportActive = supports.find(
+              (support) => support.state.id !== 11 && support.state.id !== 12
             );
-            if (supportFound) {
+            if (supportActive) {
               this.messageService.add({
                 severity: 'info',
-                summary: 'Error al buscar el producto',
-                detail: 'El producto ya tiene un soporte activo',
+                summary: 'Info',
+                detail: 'Producto con soporte activo',
               });
-              this.supportForm.reset({
-                dateEntry: this.supportForm.get('dateEntry')?.value,
-                reclaim: this.supportForm.get('reclaim')?.value,
-                state: this.supportForm.get('state')?.value,
-              });
-            } else {
-              this.supportForm.patchValue({
-                client: product.client.taxpayerName,
-                product: product.id,
-                productType: product.productType.name,
-                productDateEntry: product.deliveryDate,
-                productSerial: product.serial,
-              });
-              this.calculateWarranty(product.deliveryDate);
+              return;
             }
+            this.supportForm.patchValue({
+              client: product.client.taxpayerName,
+              product: product.id,
+              productType: product.productType.name,
+              productDateEntry: product.deliveryDate,
+              productSerial: product.serial,
+            });
+            this.calculateWarranty(product.deliveryDate, product.id);
           },
         });
-      },
-      error: (e: any) => {
-        if (e.status === 0) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error al buscar el producto',
-            detail: 'Error de conexión con el servidor',
-          });
-        }
-        if (e.status === 404) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error al buscar el producto',
-            detail: 'No se encontró el producto',
-          });
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error al buscar el producto',
-            detail: 'Error al buscar el producto',
-          });
-        }
       },
     });
   }
@@ -333,7 +298,7 @@ export class SupportFormComponent {
     });
   }
 
-  // todo: REFACTORIZAR PARA QUE TAMBIEN LO PUEDA USAR EL CANCERLAR FORMULARIO
+  //TODO: REFACTORIZAR PARA QUE TAMBIEN LO PUEDA USAR EL CANCERLAR FORMULARIO
   public openHistoryForm(): void {
     // state?: ISupportState
     // const header = state
@@ -394,21 +359,17 @@ export class SupportFormComponent {
   }
 
   //TODO: REFACTORIZAR PARA QUE TAMBIEN OBTENGA EL HISTORIAL DE ESE SERVICIO
-  private calculateWarranty(deliveryDate: Date): void {
-    const today = new Date();
-
+  private calculateWarranty(deliveryDate: Date, id?: number): void {
     const oneYearLater = new Date(deliveryDate);
     oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
+    const sixMonthsLater = new Date(oneYearLater);
+    sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
 
-    if (today >= oneYearLater) {
+    if (this.today >= oneYearLater) {
       this.supportForm.patchValue({
         warrantyProduction: 'GARANTÍA DE PRODUCCIÓN VENCIDA',
       });
-
-      const sixMonthsLater = new Date(oneYearLater);
-      sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
-
-      if (today <= sixMonthsLater) {
+      if (this.today <= sixMonthsLater) {
         this.supportForm.patchValue({
           warrantyService: 'GARANTÍA DE SERVICIO TÉCNICO VÁLIDA',
         });
@@ -423,22 +384,48 @@ export class SupportFormComponent {
       });
       this.supportForm.patchValue({ warrantyService: 'N/A' });
     }
+
+    // this.supportService.findAllByProduct(id!).subscribe({
+    //   next: (supports: ISupport[]) => {
+    //     if (supports.length === 0) {
+    //       //!posible eliminación
+    //       this.calculateDateWarranty(this.today, oneYearLater, sixMonthsLater);
+    //     } else {
+    //       this.supportForm.patchValue({
+    //         warrantyProduction: 'GARANTÍA DE PRODUCCIÓN VENCIDA',
+    //       });
+    //       this.supportForm.patchValue({
+    //         warrantyService: 'GARANTÍA DE SERVICIO TÉCNICO VENCIDA',
+    //       });
+    //     }
+    //   },
+    // });
   }
 
-  //TODO: REFACTORIZAR PARA NO USAR TANTOS IF Y VARIABLES
-  // private getLastReclaimNumber(): void {
-  //   const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
-  //   this.supportService.findLastReclaim().subscribe({
-  //     next: (reclaimFound: string | null) => {
-  //       if (!reclaimFound) {
-  //         this.supportForm.get('reclaim')?.setValue(`CNET-${today}-1`);
-  //         return;
-  //       }
-  //       const lastReclaimNumber = reclaimFound.split('-').pop();
-  //       const reclaim = `CNET-${today}-${Number(lastReclaimNumber) + 1}`;
-  //       this.supportForm.get('reclaim')?.setValue(reclaim);
-  //     },
-  //   });
+  // private calculateDateWarranty(
+  //   today: Date,
+  //   oneYearLater: Date,
+  //   sixMonthsLater: Date
+  // ): void {
+  //   if (today >= oneYearLater) {
+  //     this.supportForm.patchValue({
+  //       warrantyProduction: 'GARANTÍA DE PRODUCCIÓN VENCIDA',
+  //     });
+  //     if (today <= sixMonthsLater) {
+  //       this.supportForm.patchValue({
+  //         warrantyService: 'GARANTÍA DE SERVICIO TÉCNICO VÁLIDA',
+  //       });
+  //     } else {
+  //       this.supportForm.patchValue({
+  //         warrantyService: 'GARANTÍA DE SERVICIO TÉCNICO VENCIDA',
+  //       });
+  //     }
+  //   } else {
+  //     this.supportForm.patchValue({
+  //       warrantyProduction: 'GARANTÍA DE PRODUCCIÓN VÁLIDA',
+  //     });
+  //     this.supportForm.patchValue({ warrantyService: 'N/A' });
+  //   }
   // }
 
   private getLastReclaimNumber(): void {
@@ -468,7 +455,7 @@ export class SupportFormComponent {
     return support;
   }
 
-  //REFACTORIZAR YA QUE NO CUMPLE CON EL REQUERIMIENTO, QUE DEBE SER QUE EN LA ETIQUETA SMALL SE MUESTRE EL ERROR POR EL CUAL NO SE PUEDE CREAR EL SOPORTE
+  //TODO: REFACTORIZAR YA QUE NO CUMPLE CON EL REQUERIMIENTO, QUE DEBE SER QUE EN LA ETIQUETA SMALL SE MUESTRE EL ERROR POR EL CUAL NO SE PUEDE CREAR EL SOPORTE
   public validateForm(controlName: string): boolean | undefined {
     return (
       this.supportForm.get(controlName)?.invalid &&
