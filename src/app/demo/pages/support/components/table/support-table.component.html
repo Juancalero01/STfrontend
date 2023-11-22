@@ -35,7 +35,6 @@
     #dt
     [value]="supportData"
     [rows]="10"
-    [rowHover]="true"
     [paginator]="true"
     [globalFilterFields]="['reclaim']"
     [rowsPerPageOptions]="[10, 25, 50, 100]"
@@ -47,13 +46,13 @@
   >
     <ng-template pTemplate="header">
       <tr class="text-sm h-3rem">
-        <th>N° DE RECLAMO</th>
+        <th>NÚMERO DE RECLAMO</th>
         <th>FECHA DE INGRESO</th>
-        <th>N° DE SERIE</th>
+        <th>NÚMERO DE SERIE</th>
         <th>TIPO DE PRODUCTO</th>
         <th>CLIENTE</th>
         <th class="w-15rem">ESTADO DEL SERVICIO</th>
-        <th>PRIORIDAD</th>
+        <th>PRIORIDAD DEL SERVICIO</th>
         <th class="w-1">ACCIONES</th>
       </tr>
     </ng-template>
@@ -62,11 +61,7 @@
         <td>
           <div class="flex align-items-center justify-content-between">
             {{ support.reclaim }}
-            <p-tag
-              *ngIf="support.dateEntry === today"
-              styleClass="w-full bg-green-500"
-              value="NUEVO"
-            />
+            <p-tag *ngIf="" styleClass="w-full bg-green-500" value="NUEVO" />
           </div>
         </td>
         <td>{{ support.dateEntry | date : "dd/MM/yyyy" }}</td>

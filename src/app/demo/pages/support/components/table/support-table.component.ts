@@ -19,7 +19,7 @@ export class SupportTableComponent {
   public ref: DynamicDialogRef = new DynamicDialogRef();
   //! REVISAR PORQUE NO APARECE EL NUEVO EN LA SOLICITUD NUEVA PUEDE SER PORQUE SE IMPLEMENTO DATETIME en el backend
   // public today: string = new Date().toISOString().split('T')[0];
-  public today: string = new Date().toDateString();
+  // public today: string = new Date().toISOString().split('T')[0];
 
   public priorityColors: any = {
     INMEDIATA: 'bg-red-500 w-full',
@@ -30,8 +30,6 @@ export class SupportTableComponent {
 
   public ngOnInit(): void {
     this.loadSupports();
-    console.log('test');
-    // this.supportData.map((m) => console.log(m));
   }
 
   public ngDestroy(): void {
@@ -40,10 +38,13 @@ export class SupportTableComponent {
 
   public loadSupports(): void {
     this.supportService.findAll().subscribe({
-      next: (supports: ISupport[]) =>
-        (this.supportData = supports.sort(
+      next: (supports: ISupport[]) => {
+        this.supportData = supports.sort(
           (a, b) => a.priority.id - b.priority.id
-        )),
+        );
+      },
+      error: () => {},
+      complete() {},
     });
   }
 
@@ -69,5 +70,12 @@ export class SupportTableComponent {
     filter.value = '';
   }
 
-  // proximanente una funcionalidad para que pinte dependiendo los dias que van pasando desde la fecha de creacion y la propiedad de vencimiento de la prioridad
+  // public newEntryToday(dateEntry: Date): boolean {
+  //   const dateEntryNew = new Date(dateEntry).toISOString().split('T')[0];
+  //   console.log(this.today);
+  //   console.log(dateEntryNew);
+  //   return true;
+  // }
+
+  //TODO: Proximanente una funcionalidad para que pinte dependiendo los dias que van pasando desde la fecha de creacion y la propiedad de vencimiento de la prioridad
 }
