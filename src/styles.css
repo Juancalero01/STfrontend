@@ -43,7 +43,7 @@ body {
   border: none;
 }
 
-.p-disabled,
+/* .p-disabled,
 .p-component:disabled {
   opacity: inherit !important;
-}
+} */
