@@ -8,17 +8,26 @@ export class TokenService {
   constructor() {}
 
   public setToken(token: string, user: IUser): void {
-    localStorage.setItem('token', token);
+    localStorage.setItem('utkn', token);
     localStorage.setItem('uid', String(user.id));
     localStorage.setItem('ufname', user.fullname);
+    localStorage.setItem('urole', user.role.name);
   }
 
   public getToken() {
-    return localStorage.getItem('token');
+    return localStorage.getItem('utkn');
   }
 
-  public getFullname() {
+  public getUserId() {
+    return localStorage.getItem('uid');
+  }
+
+  public getUserFullname() {
     return localStorage.getItem('ufname');
+  }
+
+  public getUserRole() {
+    return localStorage.getItem('urole');
   }
 
   public deleteToken(): void {

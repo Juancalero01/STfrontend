@@ -20,8 +20,11 @@ export class AppTopbarComponent {
   ) {}
 
   items: MenuItem[] = [
+    // todo: VERIFICAR PORQUE NO TRAE EL ROL
     {
-      label: `${this.tokenService.getFullname()?.toUpperCase()}`,
+      label: `${this.tokenService
+        .getUserFullname()
+        ?.toUpperCase()} \n ${this.tokenService.getUserRole()?.toUpperCase()}`,
       icon: 'pi pi-fw pi-user',
       items: [
         {

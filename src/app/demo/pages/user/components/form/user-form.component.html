@@ -22,6 +22,20 @@
     />
   </div>
   <div class="flex flex-column w-full">
+    <label>TIPO DE PERFIL</label>
+    <p-dropdown
+      formControlName="role"
+      [options]="roles"
+      optionLabel="name"
+      optionValue="id"
+      [filter]="true"
+      placeholder="Seleccionar el tipo de perfil del usuario..."
+      filterPlaceholder="Buscar tipo de perfil"
+      styleClass="w-full"
+    >
+    </p-dropdown>
+  </div>
+  <div class="flex flex-column w-full">
     <label>CORREO ELECTRÓNICO</label>
     <input
       pInputText
@@ -32,8 +46,6 @@
       pKeyFilter="email"
     />
   </div>
-  <!-- Implementar el dropdown de roles -->
-
   <div class="flex justify-content-end gap-2 w-full">
     <p-button
       label="SALIR DEL FORMULARIO"

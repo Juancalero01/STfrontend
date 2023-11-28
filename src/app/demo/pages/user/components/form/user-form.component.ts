@@ -2,7 +2,9 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { IRole } from 'src/app/demo/api/interfaces/role.interface';
 import { IUser } from 'src/app/demo/api/interfaces/user.interface';
+import { RoleService } from 'src/app/demo/api/services/role.service';
 import { UserService } from 'src/app/demo/api/services/user.service';
 
 @Component({
@@ -16,6 +18,7 @@ export class UserFormComponent {
     private readonly confirmationService: ConfirmationService,
     private readonly messageService: MessageService,
     private readonly userService: UserService,
+    private readonly roleService: RoleService,
     private readonly formBuilder: FormBuilder
   ) {}
 
@@ -23,12 +26,10 @@ export class UserFormComponent {
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
   public alphaUppercaseSpace: RegExp = /^[A-Z ]*$/;
   public alphaUppercase: RegExp = /^[A-Z]+$/;
-
-  //TODO: Se deberia mostrar la lista de roles que puede tener ese usuario.
-  // public roles: IRole[] = []
+  public roles: IRole[] = [];
 
   public ngOnInit(): void {
-    //this.getRoles();
+    this.getRoles();
     if (this.config.data) this.loadForm(this.config.data);
   }
 
@@ -41,12 +42,16 @@ export class UserFormComponent {
       username: [null, [Validators.required]],
       fullname: [null, [Validators.required]],
       email: [null, [Validators.required]],
-      password: [null],
+      password: [{ value: null, disabled: true }],
+      role: [null, [Validators.required]],
     });
   }
 
   private loadForm(user: IUser): void {
-    this.userForm.patchValue(user);
+    this.userForm.patchValue({
+      ...user,
+      role: user.role.id,
+    });
     this.buttonLabel = 'ACTUALIZAR FORMULARIO';
   }
 
@@ -96,7 +101,9 @@ export class UserFormComponent {
             });
           },
           error: () => {},
-          complete: () => {},
+          complete: () => {
+            this.ref.close();
+          },
         });
       },
     });
@@ -125,9 +132,17 @@ export class UserFormComponent {
               });
             },
             error: () => {},
-            complete: () => {},
+            complete: () => {
+              this.ref.close();
+            },
           });
       },
+    });
+  }
+
+  private getRoles(): void {
+    this.roleService.findAll().subscribe({
+      next: (roles: IRole[]) => (this.roles = roles),
     });
   }
 }
