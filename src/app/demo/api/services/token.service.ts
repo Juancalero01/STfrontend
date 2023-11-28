@@ -33,4 +33,8 @@ export class TokenService {
   public deleteToken(): void {
     localStorage.clear();
   }
+
+  public isAdmin(): boolean {
+    return this.getUserRole() === 'ADMINISTRADOR' ? true : false;
+  }
 }

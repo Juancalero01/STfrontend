@@ -20,11 +20,8 @@ export class AppTopbarComponent {
   ) {}
 
   items: MenuItem[] = [
-    // todo: VERIFICAR PORQUE NO TRAE EL ROL
     {
-      label: `${this.tokenService
-        .getUserFullname()
-        ?.toUpperCase()} \n ${this.tokenService.getUserRole()?.toUpperCase()}`,
+      label: `${this.tokenService.getUserFullname()?.toUpperCase()}`,
       icon: 'pi pi-fw pi-user',
       items: [
         {
@@ -75,24 +72,29 @@ export class AppTopbarComponent {
           label: 'Productos',
           icon: 'pi pi-fw pi-box',
           routerLink: ['product'],
+          visible: this.tokenService.isAdmin(),
         },
         {
           label: 'Tipo de productos',
           icon: 'pi pi-fw pi-tags',
           routerLink: ['product/type'],
+          visible: this.tokenService.isAdmin(),
         },
       ],
+      visible: this.tokenService.isAdmin(),
     },
 
     {
       label: 'Clientes',
       icon: 'pi pi-fw pi-users',
       routerLink: ['client'],
+      visible: this.tokenService.isAdmin(),
     },
     {
       label: 'Usuarios',
       icon: 'pi pi-fw pi-users',
       routerLink: ['user'],
+      visible: this.tokenService.isAdmin(),
     },
   ];
 }
