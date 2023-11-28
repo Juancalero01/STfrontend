@@ -328,7 +328,7 @@ export class SupportFormComponent {
     });
 
     this.refHistory.onClose.subscribe(() => {
-      this.ref.close();
+      this.refHistory.close();
     });
   }
 

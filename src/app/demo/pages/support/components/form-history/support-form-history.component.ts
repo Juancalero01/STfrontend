@@ -79,15 +79,13 @@ export class SupportFormHistoryComponent {
   }
 
   private setDefaultFormData(): void {
-    this.supportHistoryForm
-      .get('dateEntry')
-      ?.setValue(new Date().toISOString().split('T')[0]);
+    this.supportHistoryForm.get('dateEntry')?.setValue(this.today);
   }
 
   private buildForm(): FormGroup {
     return this.formBuilder.group({
-      dateEntry: [null, [Validators.required]],
       reclaim: [{ value: null, disabled: true }],
+      dateEntry: [null, [Validators.required]],
       stateCurrent: [{ value: null, disabled: true }],
       stateNext: [null, [Validators.required]],
       remarks: [null, [Validators.required]],

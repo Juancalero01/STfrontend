@@ -3,6 +3,10 @@
   [formGroup]="supportHistoryForm"
 >
   <div class="w-full">
+    <label>N° DE REFERENCIA DEL SERVICIO</label>
+    <input pInputText class="w-full uppercase" formControlName="reclaim" />
+  </div>
+  <div class="w-full">
     <label>FECHA</label>
     <p-calendar
       formControlName="dateEntry"
@@ -12,14 +16,11 @@
       [showButtonBar]="true"
       [minDate]="minDate"
       [maxDate]="maxDate"
+      [showOnFocus]="true"
       [showClear]="true"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('dateEntry') }"
       placeholder="Seleccionar fecha de cambio de estado..."
     />
-  </div>
-  <div class="w-full">
-    <label>N° DE REFERENCIA DEL SERVICIO</label>
-    <input pInputText class="w-full uppercase" formControlName="reclaim" />
   </div>
   <div class="w-full">
     <label>ESTADO ACTUAL</label>
