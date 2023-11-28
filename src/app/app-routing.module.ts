@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AppLayoutComponent } from './layout/app.layout.component';
 import { NotfoundComponent } from './demo/pages/notfound/notfound.component';
-import { jwtGuardGuard } from './demo/pages/auth/guards/jwt-guard.guard';
-import { loginGuardGuard } from './demo/pages/auth/guards/login-guard.guard';
+import { jwtGuard } from './demo/api/guards/jwt.guard';
+import { loginGuard } from './demo/api/guards/login.guard';
 
 @NgModule({
   imports: [
@@ -16,14 +16,14 @@ import { loginGuardGuard } from './demo/pages/auth/guards/login-guard.guard';
         },
         {
           path: 'auth',
-          canActivate: [loginGuardGuard],
+          canActivate: [loginGuard],
           loadChildren: () =>
             import('./demo/pages/auth/auth.module').then((m) => m.AuthModule),
         },
         {
           path: 'cnet',
           component: AppLayoutComponent,
-          canActivate: [jwtGuardGuard],
+          canActivate: [jwtGuard],
           children: [
             {
               path: '',

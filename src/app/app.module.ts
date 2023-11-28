@@ -9,7 +9,7 @@ import {
   HttpClient,
   HttpClientModule,
 } from '@angular/common/http';
-import { JwtInterceptorInterceptor } from './demo/pages/auth/interceptors/jwt-interceptor.interceptor';
+import { JwtInterceptorInterceptor } from './demo/api/interceptors/jwt-interceptor.interceptor';
 
 @NgModule({
   declarations: [AppComponent, NotfoundComponent],
