@@ -11,7 +11,7 @@ export class TokenService {
     localStorage.setItem('utkn', token);
     localStorage.setItem('uid', String(user.id));
     localStorage.setItem('ufname', user.fullname);
-    localStorage.setItem('urole', user.role.name);
+    localStorage.setItem('urole', String(user.role));
   }
 
   public getToken() {
