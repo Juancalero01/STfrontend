@@ -281,12 +281,13 @@
         styleClass="p-button-secondary p-button-text"
         (onClick)="cleanForm()"
       />
-      <p-button
+      <!--TODO: ELIMINAR EL BUTTON DE CANCELAR EL SERVICIO LO PODNREMOS DENTRO DEL SELECT -->
+      <!-- <p-button
         *ngIf="showButtonCancel"
         label="CANCELAR SERVICIO"
         styleClass="p-button-danger p-button-text"
         (onClick)="cancelForm()"
-      />
+      /> -->
       <p-button
         *ngIf="showButtonState"
         label="ACTUALIZAR ESTADO DEL SERVICIO"
@@ -310,10 +311,4 @@
   </div>
 </form>
 
-<!-- Proximamente se agregará el componente de historial de estados -->
-<div class="p-2 flex align-items-center gap-2">
-  <i class="pi pi-info-circle"></i>
-  <p class="text-red-600">
-    Proximamente se agregará el componente de historial de estados
-  </p>
-</div>
+<!--TODO: Proximamente se agregará el componente de historial de estados -->

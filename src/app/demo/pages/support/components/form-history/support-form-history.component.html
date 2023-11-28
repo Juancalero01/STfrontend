@@ -4,20 +4,22 @@
 >
   <div class="w-full">
     <label>FECHA</label>
-    <input
-      type="text"
-      pInputText
-      class="w-full font-bold bg-gray-100"
+    <p-calendar
       formControlName="dateEntry"
+      dateFormat="dd-mm-yy"
+      styleClass="w-full"
+      appendTo="body"
+      [showButtonBar]="true"
+      [minDate]="minDate"
+      [maxDate]="maxDate"
+      [showClear]="true"
+      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('dateEntry') }"
+      placeholder="Seleccionar fecha de cambio de estado..."
     />
   </div>
   <div class="w-full">
     <label>N° DE REFERENCIA DEL SERVICIO</label>
-    <input
-      pInputText
-      class="w-full font-bold bg-gray-100 uppercase"
-      formControlName="reclaim"
-    />
+    <input pInputText class="w-full uppercase" formControlName="reclaim" />
   </div>
   <div class="w-full">
     <label>ESTADO ACTUAL</label>
@@ -25,7 +27,7 @@
       [options]="currentStates"
       optionLabel="name"
       optionValue="id"
-      styleClass="w-full font-bold bg-gray-100 uppercase"
+      styleClass="w-full uppercase"
       formControlName="stateCurrent"
       dropdownIcon="none"
     />

@@ -7,6 +7,7 @@ import { ISupport } from 'src/app/demo/api/interfaces/support.interface';
 import { SupportHistoryService } from 'src/app/demo/api/services/support-history.service';
 import { SupportStateService } from 'src/app/demo/api/services/support-state.service';
 import { SupportService } from 'src/app/demo/api/services/support.service';
+import { TokenService } from 'src/app/demo/api/services/token.service';
 
 @Component({
   selector: 'app-form-history',
@@ -21,15 +22,20 @@ export class SupportFormHistoryComponent {
     private readonly messageService: MessageService,
     private readonly confirmationService: ConfirmationService,
     private readonly supportHistoryService: SupportHistoryService,
-    private readonly supportService: SupportService
+    private readonly supportService: SupportService,
+    private readonly tokenService: TokenService
   ) {}
 
   public supportHistoryForm: FormGroup = this.buildForm();
   public currentStates: ISupportState[] = [];
   public nextStates: ISupportState[] = [];
+  public today: Date = new Date();
+  public minDate: Date = new Date(
+    new Date().setMonth(new Date().getMonth() - 1)
+  );
+  public maxDate: Date = this.today;
 
   public ngOnInit(): void {
-    console.log(this.config.data['state']);
     this.setDefaultFormData();
     this.loadStates();
     this.loadForm(this.config.data);
@@ -80,7 +86,7 @@ export class SupportFormHistoryComponent {
 
   private buildForm(): FormGroup {
     return this.formBuilder.group({
-      dateEntry: [{ value: null, disabled: true }],
+      dateEntry: [null, [Validators.required]],
       reclaim: [{ value: null, disabled: true }],
       stateCurrent: [{ value: null, disabled: true }],
       stateNext: [null, [Validators.required]],
@@ -116,7 +122,7 @@ export class SupportFormHistoryComponent {
     const dataSend = this.supportHistoryForm.value;
     dataSend.stateCurrent = this.supportHistoryForm.get('stateCurrent')?.value;
     dataSend.dateEntry = this.supportHistoryForm.get('dateEntry')?.value;
-    dataSend.user = 1;
+    dataSend.user = this.tokenService.getUserId();
     this.confirmationService.confirm({
       message: '¿Está seguro que desea guardar los cambios?',
       header: 'CONFIRMAR',
