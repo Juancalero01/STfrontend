@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ProductTypeComponent } from './product-type.component';
-import { roleGuardGuard } from '../../api/guards/role-guard.guard';
+import { roleGuard } from '../../api/guards/role-guard.guard';
 
 @NgModule({
   imports: [
     RouterModule.forChild([
       {
         path: '',
-        canActivate: [roleGuardGuard],
+        canActivate: [roleGuard],
         component: ProductTypeComponent,
         data: {
           roles: ['ADMINISTRADOR'],
