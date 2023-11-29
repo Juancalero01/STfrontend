@@ -300,22 +300,6 @@ export class SupportFormComponent {
 
   //TODO: REFACTORIZAR PARA QUE TAMBIEN LO PUEDA USAR EL CANCERLAR FORMULARIO
   public openHistoryForm(): void {
-    // state?: ISupportState
-    // const header = state
-    //   ? 'FORMULARIO DE CANCELACIÓN DE SOPORTE TÉCNICO'
-    //   : 'FORMULARIO DE ACTUALIZACIÓN DE ESTADO DEL SOPORTE TÉCNICO';
-
-    // this.refHistory = this.dialogService.open(SupportFormHistoryComponent, {
-    //   header: header,
-    //   width: '50%',
-    //   closable: false,
-    //   closeOnEscape: false,
-    //   dismissableMask: false,
-    //   showHeader: true,
-    //   position: 'center',
-    //   data: this.config.data,
-    // });
-
     this.refHistory = this.dialogService.open(SupportFormHistoryComponent, {
       header: 'ACTUALIZAR ESTADO DEL SERVICIO',
       width: '50%',
@@ -327,9 +311,9 @@ export class SupportFormComponent {
       data: this.config.data,
     });
 
-    this.refHistory.onClose.subscribe(() => {
-      this.refHistory.close();
-    });
+    // this.refHistory.onClose.subscribe(() => {
+    //   this.refHistory.close();
+    // });
   }
 
   public cleanForm(): void {
@@ -384,53 +368,10 @@ export class SupportFormComponent {
       });
       this.supportForm.patchValue({ warrantyService: 'N/A' });
     }
-
-    // this.supportService.findAllByProduct(id!).subscribe({
-    //   next: (supports: ISupport[]) => {
-    //     if (supports.length === 0) {
-    //       //!posible eliminación
-    //       this.calculateDateWarranty(this.today, oneYearLater, sixMonthsLater);
-    //     } else {
-    //       this.supportForm.patchValue({
-    //         warrantyProduction: 'GARANTÍA DE PRODUCCIÓN VENCIDA',
-    //       });
-    //       this.supportForm.patchValue({
-    //         warrantyService: 'GARANTÍA DE SERVICIO TÉCNICO VENCIDA',
-    //       });
-    //     }
-    //   },
-    // });
   }
-
-  // private calculateDateWarranty(
-  //   today: Date,
-  //   oneYearLater: Date,
-  //   sixMonthsLater: Date
-  // ): void {
-  //   if (today >= oneYearLater) {
-  //     this.supportForm.patchValue({
-  //       warrantyProduction: 'GARANTÍA DE PRODUCCIÓN VENCIDA',
-  //     });
-  //     if (today <= sixMonthsLater) {
-  //       this.supportForm.patchValue({
-  //         warrantyService: 'GARANTÍA DE SERVICIO TÉCNICO VÁLIDA',
-  //       });
-  //     } else {
-  //       this.supportForm.patchValue({
-  //         warrantyService: 'GARANTÍA DE SERVICIO TÉCNICO VENCIDA',
-  //       });
-  //     }
-  //   } else {
-  //     this.supportForm.patchValue({
-  //       warrantyProduction: 'GARANTÍA DE PRODUCCIÓN VÁLIDA',
-  //     });
-  //     this.supportForm.patchValue({ warrantyService: 'N/A' });
-  //   }
-  // }
 
   private getLastReclaimNumber(): void {
     const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
-
     this.supportService.findLastReclaim().subscribe({
       next: (reclaimFound: string | null) => {
         const lastReclaimNumber = reclaimFound

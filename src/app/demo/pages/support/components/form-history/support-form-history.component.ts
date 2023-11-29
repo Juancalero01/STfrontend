@@ -30,9 +30,9 @@ export class SupportFormHistoryComponent {
   public currentStates: ISupportState[] = [];
   public nextStates: ISupportState[] = [];
   public today: Date = new Date();
-  public minDate: Date = new Date(
-    new Date().setMonth(new Date().getMonth() - 1)
-  );
+  //TODO: El minDate debe estar en varios pasos primero cuando es nuevo el caso el minDate es el mismo dia que se creo
+  //TODO: Luego el minDate tiene que ser la fecha en la que se cambio el estado.
+  public minDate: Date = new Date(this.config.data.dateEntry);
   public maxDate: Date = this.today;
 
   public ngOnInit(): void {
@@ -43,35 +43,35 @@ export class SupportFormHistoryComponent {
 
   private loadForm(data: ISupport): void {
     this.supportHistoryForm.patchValue({
-      reclaim: data.reclaim,
       stateCurrent: data.state.id,
       service: data,
+      user: Number(this.tokenService.getUserId()),
     });
   }
 
+  //TODO: SE DEBE MEJORAR SEGUN LO PEDIDO, EN LOS PRIMEROS 3 SIEMPRE APARECERA EL CANCELADO
+  //TODO: CUANDO ESTE EN FASE DE ANALISIS, SE TENDRA EN CUENTA 4 ESTADOS LOS ESPERA DE COTI, ESPERA DE REPUESTOS, NO SE REPARA, EN REPARACIÓN.
+  //TODO: LUEGO DE TODO ESO SIMPLEMENTE MOSTRAR DE UNA OPCION HASTA LLEGAR A CERRADO NO SE MUESTRA MAS OPCIONES.
   private loadStates(): void {
     this.supportStateService.findAll().subscribe({
       next: (states: ISupportState[]) => {
         this.currentStates = states;
         this.nextStates = states;
-
         const stateCurrentValue =
           this.supportHistoryForm.get('stateCurrent')?.value;
         let optionsToShow = 1;
-
         if (stateCurrentValue === 2) {
           optionsToShow = 3;
         } else if (stateCurrentValue === 3) {
-          optionsToShow = 2;
+          optionsToShow = 4;
         } else {
           optionsToShow = 1;
         }
-
         this.nextStates = this.nextStates.filter((state) => {
           return (
             state.id !== stateCurrentValue &&
             state.id > stateCurrentValue &&
-            optionsToShow-- > 0
+            (optionsToShow-- > 0 || state.id === 12)
           );
         });
       },
@@ -84,12 +84,12 @@ export class SupportFormHistoryComponent {
 
   private buildForm(): FormGroup {
     return this.formBuilder.group({
-      reclaim: [{ value: null, disabled: true }],
       dateEntry: [null, [Validators.required]],
       stateCurrent: [{ value: null, disabled: true }],
       stateNext: [null, [Validators.required]],
       remarks: [null, [Validators.required]],
       service: [null, [Validators.required]],
+      user: [null, [Validators.required]],
     });
   }
 
@@ -108,19 +108,9 @@ export class SupportFormHistoryComponent {
     });
   }
 
-  public validateForm(controlName: string): boolean | undefined {
-    return (
-      this.supportHistoryForm.get(controlName)?.invalid &&
-      this.supportHistoryForm.get(controlName)?.touched
-    );
-  }
-
+  //TODO: Corregir la funcionalidad ya que da error al momento de modificar el estado
+  //todo: SE DEBERA BUSCAR CUAL ES EL MOTIVO POR LA CUAL NO QUIERE ACTUALIZAR EL ESTADO AL SERVICIO.
   public saveForm(): void {
-    //TODO: Proximamente se implementará el usuario logueado en el sistema para que no sea por defecto el usuario administrador.
-    const dataSend = this.supportHistoryForm.value;
-    dataSend.stateCurrent = this.supportHistoryForm.get('stateCurrent')?.value;
-    dataSend.dateEntry = this.supportHistoryForm.get('dateEntry')?.value;
-    dataSend.user = this.tokenService.getUserId();
     this.confirmationService.confirm({
       message: '¿Está seguro que desea guardar los cambios?',
       header: 'CONFIRMAR',
@@ -132,30 +122,47 @@ export class SupportFormHistoryComponent {
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
       accept: () => {
-        this.supportHistoryService.create(dataSend).subscribe({
-          next: () => {
-            this.supportService
-              .update(this.config.data.id, {
-                ...this.config.data.service,
-                state: dataSend.stateNext,
-              })
-              .subscribe({
-                next: () => {
-                  this.messageService.add({
-                    severity: 'success',
-                    summary: 'Operación exitosa',
-                    detail: 'El registro se creó correctamente',
-                  });
-                },
-                complete: () => {
-                  this.ref.close();
-                },
-              });
-          },
-        });
+        this.supportHistoryService
+          .create(this.supportHistoryForm.getRawValue())
+          .subscribe({
+            next: () => {
+              this.supportService
+                .updateState(
+                  this.config.data.id,
+                  this.supportHistoryForm.get('stateNext')?.value
+                )
+                .subscribe({
+                  next: () => {
+                    this.messageService.add({
+                      severity: 'success',
+                      summary: 'Operación exitosa',
+                      detail: 'El registro se creó correctamente',
+                    });
+                  },
+                  error: (error) => {
+                    console.log(error);
+                  },
+                  complete: () => {
+                    this.ref.close();
+                  },
+                });
+            },
+            error: () => {},
+            complete: () => {},
+          });
       },
     });
   }
 
-  public update() {}
+  public validateForm(controlName: string): boolean | undefined {
+    return (
+      this.supportHistoryForm.get(controlName)?.invalid &&
+      this.supportHistoryForm.get(controlName)?.touched
+    );
+  }
+
+  //? posible solución
+  // private getStateData(): ISupportState {
+  //   return this.supportHistoryForm.get('stateNext')?.value;
+  // }
 }

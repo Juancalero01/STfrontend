@@ -111,11 +111,12 @@
     </div>
     <div class="w-full">
       <label>FECHA DE DESPACHO DEL PRODUCTO</label>
-      <input
-        type="text"
-        pInputText
-        class="w-full"
+      <p-calendar
         formControlName="productDateEntry"
+        dateFormat="dd-mm-yy"
+        styleClass="w-full"
+        [ngClass]="{ 'ng-invalid ng-dirty': validateForm('dateEntry') }"
+        placeholder="Seleccionar fecha de registro..."
       />
     </div>
   </div>
