@@ -8,4 +8,5 @@ export interface ISupportHistory {
   remarks: string;
   service: ISupport;
   user: number;
+  dateEntry: Date;
 }

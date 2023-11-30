@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ISupportHistory } from 'src/app/demo/api/interfaces/support-history.interface';
 import { ISupportState } from 'src/app/demo/api/interfaces/support-state.interface';
 import { ISupport } from 'src/app/demo/api/interfaces/support.interface';
 import { SupportHistoryService } from 'src/app/demo/api/services/support-history.service';
@@ -30,13 +31,12 @@ export class SupportFormHistoryComponent {
   public currentStates: ISupportState[] = [];
   public nextStates: ISupportState[] = [];
   public today: Date = new Date();
-  //TODO: El minDate debe estar en varios pasos primero cuando es nuevo el caso el minDate es el mismo dia que se creo
-  //TODO: Luego el minDate tiene que ser la fecha en la que se cambio el estado.
   public minDate: Date = new Date(this.config.data.dateEntry);
   public maxDate: Date = this.today;
 
   public ngOnInit(): void {
     this.setDefaultFormData();
+    this.findLastDateEntry();
     this.loadStates();
     this.loadForm(this.config.data);
   }
@@ -139,9 +139,7 @@ export class SupportFormHistoryComponent {
                       detail: 'El registro se creó correctamente',
                     });
                   },
-                  error: (error) => {
-                    console.log(error);
-                  },
+                  error: () => {},
                   complete: () => {
                     this.ref.close();
                   },
@@ -161,8 +159,17 @@ export class SupportFormHistoryComponent {
     );
   }
 
-  //? posible solución
-  // private getStateData(): ISupportState {
-  //   return this.supportHistoryForm.get('stateNext')?.value;
-  // }
+  private findLastDateEntry(): void {
+    if (this.config.data.state.id !== 1) {
+      this.supportHistoryService
+        .findLastDateEntry(this.config.data.id)
+        .subscribe({
+          next: (lastSupportHistory: ISupportHistory) => {
+            if (new Date(lastSupportHistory.dateEntry) > this.minDate) {
+              this.minDate = new Date(lastSupportHistory.dateEntry);
+            }
+          },
+        });
+    }
+  }
 }

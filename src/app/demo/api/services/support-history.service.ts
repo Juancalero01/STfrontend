@@ -19,6 +19,14 @@ export class SupportHistoryService {
     return this.httpClient.get<ISupportHistory>(`${this.URL}/${id}`);
   }
 
+  public findLastDateEntry(id: number): Observable<ISupportHistory> {
+    return this.httpClient.get<ISupportHistory>(`${this.URL}/r/${id}`);
+  }
+
+  public findByService(id: number): Observable<ISupportHistory[]> {
+    return this.httpClient.get<ISupportHistory[]>(`${this.URL}/s/${id}`);
+  }
+
   public create(supportHistory: ISupportHistory): Observable<ISupportHistory> {
     return this.httpClient.post<ISupportHistory>(this.URL, supportHistory);
   }

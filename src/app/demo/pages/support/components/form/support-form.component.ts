@@ -17,6 +17,7 @@ import { SupportPriorityService } from 'src/app/demo/api/services/support-priori
 import { SupportStateService } from 'src/app/demo/api/services/support-state.service';
 import { SupportService } from 'src/app/demo/api/services/support.service';
 import { SupportFormHistoryComponent } from '../form-history/support-form-history.component';
+import { TokenService } from 'src/app/demo/api/services/token.service';
 
 @Component({
   selector: 'app-support-form',
@@ -34,15 +35,16 @@ export class SupportFormComponent {
     private readonly supportPriorityService: SupportPriorityService,
     private readonly productService: ProductService,
     private readonly supportService: SupportService,
-    private readonly dialogService: DialogService
+    private readonly dialogService: DialogService,
+    private readonly tokenService: TokenService
   ) {}
 
+  // public showButtonCancel: boolean = true;
   public supportForm: FormGroup = this.buildForm();
   public mainButtonLabel: string = 'REGISTRAR FORMULARIO';
   public showButtonState: boolean = false;
   public showButtonClean: boolean = true;
   public showSearch: boolean = true;
-  public showButtonCancel: boolean = true;
   public booleanDropdown: any[] = [
     { value: true, label: 'Si' },
     { value: false, label: 'No' },
@@ -60,6 +62,7 @@ export class SupportFormComponent {
   public maxDate: Date = this.today;
 
   public ngOnInit() {
+    this.fieldsWIthoutAdmin();
     this.setDefaultFormData();
     this.loadStates();
     this.loadPriorities();
@@ -69,7 +72,7 @@ export class SupportFormComponent {
       this.showButtonState = true;
       this.showButtonClean = false;
       this.showSearch = false;
-      this.config.data.state.id < 1 ? (this.showButtonCancel = true) : false;
+      // this.config.data.state.id < 1 ? (this.showButtonCancel = true) : false;
     } else {
       this.getLastReclaimNumber();
     }
@@ -172,7 +175,7 @@ export class SupportFormComponent {
               client: product.client.taxpayerName,
               product: product.id,
               productType: product.productType.name,
-              productDateEntry: product.deliveryDate,
+              productDateEntry: new Date(product.deliveryDate),
               productSerial: product.serial,
             });
             this.calculateWarranty(product.deliveryDate, product.id);
@@ -402,5 +405,17 @@ export class SupportFormComponent {
       this.supportForm.get(controlName)?.invalid &&
       this.supportForm.get(controlName)?.touched
     );
+  }
+
+  public fieldsWIthoutAdmin() {
+    if (!this.tokenService.isAdmin()) {
+      this.supportForm.get('priority')?.disable();
+      this.supportForm.get('warranty')?.disable();
+      this.supportForm.get('startReference')?.disable();
+      this.supportForm.get('endReference')?.disable();
+      this.supportForm.get('orderNumber')?.disable();
+      this.supportForm.get('quoteNumber')?.disable();
+      this.supportForm.get('failure')?.disable();
+    }
   }
 }

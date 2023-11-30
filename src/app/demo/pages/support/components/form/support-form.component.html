@@ -116,7 +116,6 @@
         dateFormat="dd-mm-yy"
         styleClass="w-full"
         [ngClass]="{ 'ng-invalid ng-dirty': validateForm('dateEntry') }"
-        placeholder="Seleccionar fecha de registro..."
       />
     </div>
   </div>
@@ -172,6 +171,17 @@
         [showClear]="true"
       />
     </div>
+  </div>
+
+  <div class="w-full">
+    <label>FALLA REPORTADA POR EL CLIENTE</label>
+    <input
+      type="text"
+      pInputText
+      class="w-full"
+      formControlName="failure"
+      placeholder="Ingresar falla reportada por el cliente"
+    />
   </div>
 
   <div class="w-full flex gap-2">
@@ -231,17 +241,6 @@
       formControlName="securityStrap"
       [showClear]="true"
       placeholder="Seleccionar aprobación de faja de seguridad..."
-    />
-  </div>
-
-  <div class="w-full">
-    <label>FALLA REPORTADA POR EL CLIENTE</label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      formControlName="failure"
-      placeholder="Ingresar falla reportada por el cliente"
     />
   </div>
 
