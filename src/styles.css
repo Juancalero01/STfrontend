@@ -42,8 +42,3 @@ body {
 .p-datatable .p-datatable-thead > tr > th {
   border: none;
 }
-
-/* .p-disabled,
-.p-component:disabled {
-  opacity: inherit !important;
-} */
