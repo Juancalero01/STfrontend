@@ -20,6 +20,7 @@ export class SupportTableComponent {
   public supportData: ISupport[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
   public visibleAdmin: boolean = this.tokenService.isAdmin();
+  public today: Date = new Date();
 
   public priorityColors: any = {
     INMEDIATA: 'bg-red-500 w-full',
@@ -70,14 +71,12 @@ export class SupportTableComponent {
     filter.value = '';
   }
 
-  //! REVISAR PORQUE NO APARECE EL NUEVO EN LA SOLICITUD NUEVA PUEDE SER PORQUE SE IMPLEMENTO DATETIME en el backend
-  // public today: string = new Date().toISOString().split('T')[0];
-  // public today: string = new Date().toISOString().split('T')[0];
-  //TODO: Proximanente una funcionalidad para que pinte dependiendo los dias que van pasando desde la fecha de creacion y la propiedad de vencimiento de la prioridad
-  // public newEntryToday(dateEntry: Date): boolean {
-  //   const dateEntryNew = new Date(dateEntry).toISOString().split('T')[0];
-  //   console.log(this.today);
-  //   console.log(dateEntryNew);
-  //   return true;
-  // }
+  public getEntryNewTag(dateEntry: Date): boolean {
+    const todayWithoutTime = new Date();
+    todayWithoutTime.setHours(0, 0, 0, 0);
+
+    return (
+      new Date(dateEntry).setHours(0, 0, 0, 0) === todayWithoutTime.getTime()
+    );
+  }
 }

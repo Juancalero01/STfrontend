@@ -47,7 +47,7 @@
   >
     <ng-template pTemplate="header">
       <tr class="text-sm h-3rem">
-        <th>NÚMERO DE RECLAMO</th>
+        <th class="w-16rem">NÚMERO DE RECLAMO</th>
         <th>FECHA DE INGRESO</th>
         <th>NÚMERO DE SERIE</th>
         <th>TIPO DE PRODUCTO</th>
@@ -62,7 +62,11 @@
         <td>
           <div class="flex align-items-center justify-content-between">
             {{ support.reclaim }}
-            <p-tag *ngIf="" styleClass="w-full bg-green-500" value="NUEVO" />
+            <p-tag
+              *ngIf="getEntryNewTag(support.dateEntry)"
+              styleClass="w-full bg-green-500"
+              value="NUEVO"
+            />
           </div>
         </td>
         <td>{{ support.dateEntry | date : "dd/MM/yyyy" }}</td>
@@ -70,7 +74,10 @@
         <td>{{ support.product.productType.name | uppercase }}</td>
         <td>{{ support.product.client.taxpayerName | uppercase }}</td>
         <td>
-          <p-tag styleClass="w-full bg-blue-500" [value]="support.state.name" />
+          <p-tag
+            styleClass="w-full bg-bluegray-500"
+            [value]="support.state.name"
+          />
         </td>
         <td>
           <p-tag
