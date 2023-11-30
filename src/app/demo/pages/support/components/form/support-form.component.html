@@ -166,7 +166,7 @@
         optionLabel="label"
         optionValue="value"
         placeholder="Seleccionar aprobación de garantía..."
-        styleClass="w-full"
+        styleClass="w-full uppercase"
         formControlName="warranty"
         [showClear]="true"
       />
@@ -180,6 +180,7 @@
       pInputText
       class="w-full"
       formControlName="failure"
+      [pKeyFilter]="alphaUppercaseSpace"
       placeholder="Ingresar falla reportada por el cliente"
     />
   </div>
@@ -270,6 +271,7 @@
       rows="6"
       formControlName="remarks"
       placeholder="Ingresar observaciones del servicio"
+      [pKeyFilter]="alphaNumberUppercaseSpaceHyphenDotComma"
     ></textarea>
   </div>
 
@@ -281,13 +283,6 @@
         styleClass="p-button-secondary p-button-text"
         (onClick)="cleanForm()"
       />
-      <!--TODO: ELIMINAR EL BUTTON DE CANCELAR EL SERVICIO LO PODNREMOS DENTRO DEL SELECT -->
-      <!-- <p-button
-        *ngIf="showButtonCancel"
-        label="CANCELAR SERVICIO"
-        styleClass="p-button-danger p-button-text"
-        (onClick)="cancelForm()"
-      /> -->
       <p-button
         *ngIf="showButtonState"
         label="ACTUALIZAR ESTADO DEL SERVICIO"

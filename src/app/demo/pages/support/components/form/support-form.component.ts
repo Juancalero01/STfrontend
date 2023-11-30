@@ -38,8 +38,6 @@ export class SupportFormComponent {
     private readonly dialogService: DialogService,
     private readonly tokenService: TokenService
   ) {}
-
-  // public showButtonCancel: boolean = true;
   public supportForm: FormGroup = this.buildForm();
   public mainButtonLabel: string = 'REGISTRAR FORMULARIO';
   public showButtonState: boolean = false;
@@ -53,12 +51,13 @@ export class SupportFormComponent {
   public states: ISupportState[] = [];
   public priorities: ISupportPriority[] = [];
   public refHistory: DynamicDialogRef = new DynamicDialogRef();
-
-  //TODO: REFACTORIZAR TODAY para no hacer nuevos objetos de date
   public today: Date = new Date();
   public minDate: Date = new Date(
     new Date().setMonth(new Date().getMonth() - 1)
   );
+  public alphaUppercaseSpace: RegExp = /^[A-Z ]*$/;
+  public alphaNumberUppercaseSpaceHyphenDotComma: RegExp = /^[A-Z0-9 .,-]*$/;
+
   public maxDate: Date = this.today;
 
   public ngOnInit() {
@@ -72,7 +71,6 @@ export class SupportFormComponent {
       this.showButtonState = true;
       this.showButtonClean = false;
       this.showSearch = false;
-      // this.config.data.state.id < 1 ? (this.showButtonCancel = true) : false;
     } else {
       this.getLastReclaimNumber();
     }
@@ -301,10 +299,9 @@ export class SupportFormComponent {
     });
   }
 
-  //TODO: REFACTORIZAR PARA QUE TAMBIEN LO PUEDA USAR EL CANCERLAR FORMULARIO
   public openHistoryForm(): void {
     this.refHistory = this.dialogService.open(SupportFormHistoryComponent, {
-      header: 'ACTUALIZAR ESTADO DEL SERVICIO',
+      header: 'FORMULARIO DE ACTUALIZACIÓN DE ESTADO DEL SERVICIO',
       width: '50%',
       closable: false,
       closeOnEscape: false,
@@ -314,9 +311,9 @@ export class SupportFormComponent {
       data: this.config.data,
     });
 
-    // this.refHistory.onClose.subscribe(() => {
-    //   this.refHistory.close();
-    // });
+    this.refHistory.onClose.subscribe(() => {
+      this.ref.close();
+    });
   }
 
   public cleanForm(): void {
@@ -399,7 +396,6 @@ export class SupportFormComponent {
     return support;
   }
 
-  //TODO: REFACTORIZAR YA QUE NO CUMPLE CON EL REQUERIMIENTO, QUE DEBE SER QUE EN LA ETIQUETA SMALL SE MUESTRE EL ERROR POR EL CUAL NO SE PUEDE CREAR EL SOPORTE
   public validateForm(controlName: string): boolean | undefined {
     return (
       this.supportForm.get(controlName)?.invalid &&
