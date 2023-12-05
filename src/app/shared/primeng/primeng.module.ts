@@ -23,6 +23,7 @@ import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import { BadgeModule } from 'primeng/badge';
 import { PasswordModule } from 'primeng/password';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @NgModule({
   imports: [
@@ -49,6 +50,7 @@ import { PasswordModule } from 'primeng/password';
     ChipModule,
     BadgeModule,
     PasswordModule,
+    InputSwitchModule,
   ],
   exports: [
     ButtonModule,
@@ -74,6 +76,7 @@ import { PasswordModule } from 'primeng/password';
     ChipModule,
     BadgeModule,
     PasswordModule,
+    InputSwitchModule,
   ],
   providers: [ConfirmationService, DialogService, MessageService],
 })
