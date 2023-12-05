@@ -122,21 +122,8 @@ export class ClientFormComponent {
               detail: 'Registro creado correctamente',
             });
           },
-          error: (e: any) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Operación fallida',
-              detail: 'Registro no creado, compruebe los datos',
-            });
-          },
+          error: () => {},
           complete: () => this.ref.close(),
-        });
-      },
-      reject: () => {
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Operación cancelada',
-          detail: 'El registro no se creó',
         });
       },
     });
@@ -164,25 +151,14 @@ export class ClientFormComponent {
                 detail: 'El registro se actualizó',
               });
             },
-            error: (e: any) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Operación fallida',
-                detail: 'El registro no se actualizó, compruebe los datos',
-              });
-            },
-            complete: () => {
-              this.ref.close();
-            },
+            error: () => {},
+            complete: () => this.ref.close(),
           });
       },
-      reject: () => {
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Opernación cancelada',
-          detail: 'El registro no se actualizó',
-        });
-      },
     });
+  }
+
+  public getChangesToUpdate(): boolean {
+    return !this.clientForm.pristine;
   }
 }
