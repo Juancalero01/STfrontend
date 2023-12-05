@@ -53,8 +53,14 @@
       (onClick)="closeForm()"
     />
     <p-button
+      *ngIf="showButtonResetPassword"
+      label="RESTABLECER CONTRASEÑA"
+      styleClass="p-button-danger p-button-text"
+      (onClick)="resetPassword()"
+    />
+    <p-button
       [label]="buttonLabel"
-      [disabled]="userForm.invalid"
+      [disabled]="userForm.invalid || !getChangesToUpdate()"
       styleClass="p-button-info p-button-text"
       (onClick)="submitForm()"
     />

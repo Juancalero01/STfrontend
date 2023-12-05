@@ -26,11 +26,15 @@ export class UserFormComponent {
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
   public alphaUppercaseSpace: RegExp = /^[A-Z ]*$/;
   public alphaUppercase: RegExp = /^[A-Z]+$/;
+  public showButtonResetPassword: boolean = false;
   public roles: IRole[] = [];
 
   public ngOnInit(): void {
     this.getRoles();
-    if (this.config.data) this.loadForm(this.config.data);
+    if (this.config.data) {
+      this.loadForm(this.config.data);
+      this.showButtonResetPassword = true;
+    }
   }
 
   public submitForm(): void {
@@ -68,11 +72,6 @@ export class UserFormComponent {
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
       accept: () => {
         this.ref.close();
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Operación cancelada',
-          detail: 'La operación se canceló',
-        });
       },
     });
   }
@@ -110,6 +109,7 @@ export class UserFormComponent {
   }
 
   public updateUser(): void {
+    this.userForm.valueChanges;
     this.confirmationService.confirm({
       message: '¿Está seguro que desea actualizar el registro?',
       header: 'CONFIRMAR',
@@ -140,9 +140,42 @@ export class UserFormComponent {
     });
   }
 
+  public resetPassword(): void {
+    this.confirmationService.confirm({
+      message: '¿Está seguro que desea restaurar la contraseña?',
+      header: 'CONFIRMAR',
+      icon: 'pi pi-info-circle',
+      acceptLabel: 'CONFIRMAR',
+      acceptButtonStyleClass:
+        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
+      rejectLabel: 'CANCELAR',
+      rejectButtonStyleClass:
+        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      accept: () => {
+        this.userService.resetPassword(this.config.data?.id).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Operación exitosa',
+              detail: 'La contraseña se restableció',
+            });
+          },
+          error: () => {},
+          complete: () => {
+            this.ref.close();
+          },
+        });
+      },
+    });
+  }
+
   private getRoles(): void {
     this.roleService.findAll().subscribe({
       next: (roles: IRole[]) => (this.roles = roles),
     });
+  }
+
+  public getChangesToUpdate(): boolean {
+    return !this.userForm.pristine;
   }
 }

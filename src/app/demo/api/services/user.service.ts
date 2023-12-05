@@ -27,4 +27,8 @@ export class UserService {
   public update(id: number, client: IUser): Observable<IUser> {
     return this.http.put<IUser>(`${this.URL}/${id}`, client);
   }
+
+  public resetPassword(id: number): Observable<IUser> {
+    return this.http.put<IUser>(`${this.URL}/r/${id}`, {});
+  }
 }
