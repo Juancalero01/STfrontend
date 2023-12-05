@@ -42,13 +42,19 @@ export class AuthFormLoginComponent {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Nombre de usuario incorrecto',
+              detail: 'Usuario no encontrado',
+            });
+          } else if (e.status === 403) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Usuario no activo',
             });
           } else if (e.status === 401) {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Contraseña incorrecta',
+              detail: 'Credenciales incorrectas',
             });
           }
         },
