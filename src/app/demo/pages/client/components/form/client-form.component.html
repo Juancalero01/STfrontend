@@ -181,7 +181,7 @@
     />
     <p-button
       [label]="buttonLabel"
-      [disabled]="clientForm.invalid"
+      [disabled]="clientForm.invalid || !getChangesToUpdate()"
       styleClass="p-button-info p-button-text"
       (onClick)="submitForm()"
     />

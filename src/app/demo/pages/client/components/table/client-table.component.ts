@@ -33,21 +33,8 @@ export class ClientTableComponent {
       next: (clients: IClient[]) => {
         this.clientData = clients;
       },
-      error: (e: any) => {
-        if (e.status === 0) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error de conexión con el servidor',
-          });
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al cargar los clientes',
-          });
-        }
-      },
+      error: () => {},
+      complete: () => {},
     });
   }
 
