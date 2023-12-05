@@ -45,6 +45,7 @@
         <th>NOMBRE COMPLETO</th>
         <th>CORREO ELECTRÓNICO</th>
         <th>PERFIL</th>
+        <th>ESTADO</th>
         <th class="w-1">ACCIONES</th>
       </tr>
     </ng-template>
@@ -56,9 +57,14 @@
         <td>{{ user.email }}</td>
         <td>{{ user.role.name }}</td>
         <td>
+          <p-tag [severity]="user.isActive ? 'success' : 'danger'">
+            {{ user.isActive | bool }}
+          </p-tag>
+        </td>
+        <td>
           <p-button
-            icon="pi pi-pencil"
-            styleClass="p-button-text p-button-secondary w-full"
+            icon="pi pi-window-maximize"
+            styleClass="p-button-text p-button-secondary"
             (onClick)="openUserForm(user)"
           />
         </td>

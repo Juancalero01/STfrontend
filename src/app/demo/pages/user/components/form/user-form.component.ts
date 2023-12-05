@@ -24,9 +24,11 @@ export class UserFormComponent {
 
   public userForm: FormGroup = this.buildForm();
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
+  public buttonStatusLabel: string = 'test';
   public alphaUppercaseSpace: RegExp = /^[A-Z ]*$/;
   public alphaUppercase: RegExp = /^[A-Z]+$/;
   public showButtonResetPassword: boolean = false;
+  public showButtonDisableUser: boolean = false;
   public roles: IRole[] = [];
 
   public ngOnInit(): void {
@@ -34,6 +36,7 @@ export class UserFormComponent {
     if (this.config.data) {
       this.loadForm(this.config.data);
       this.showButtonResetPassword = true;
+      this.showButtonDisableUser = true;
     }
   }
 
@@ -57,6 +60,9 @@ export class UserFormComponent {
       role: user.role.id,
     });
     this.buttonLabel = 'ACTUALIZAR FORMULARIO';
+    this.buttonStatusLabel = user.isActive
+      ? 'DESHABILITAR USUARIO'
+      : 'HABILITAR USUARIO';
   }
 
   public closeForm(): void {
@@ -91,7 +97,7 @@ export class UserFormComponent {
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
       accept: () => {
-        this.userService.create(this.userForm.value).subscribe({
+        this.userService.create(this.userForm.getRawValue()).subscribe({
           next: () => {
             this.messageService.add({
               severity: 'success',
@@ -158,6 +164,37 @@ export class UserFormComponent {
               severity: 'success',
               summary: 'Operación exitosa',
               detail: 'La contraseña se restableció',
+            });
+          },
+          error: () => {},
+          complete: () => {
+            this.ref.close();
+          },
+        });
+      },
+    });
+  }
+
+  public changeState(): void {
+    this.confirmationService.confirm({
+      message: `¿Está seguro que desea ${this.buttonStatusLabel
+        .toLowerCase()
+        .replace('usuario', '')} al usuario?`,
+      header: 'CONFIRMAR',
+      icon: 'pi pi-info-circle',
+      acceptLabel: 'CONFIRMAR',
+      acceptButtonStyleClass:
+        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
+      rejectLabel: 'CANCELAR',
+      rejectButtonStyleClass:
+        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      accept: () => {
+        this.userService.changeState(this.config.data?.id).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Operación exitosa',
+              detail: 'Se modifico el estado del usuario',
             });
           },
           error: () => {},

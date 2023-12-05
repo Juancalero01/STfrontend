@@ -24,11 +24,15 @@ export class UserService {
     return this.http.post<IUser>(this.URL, user);
   }
 
-  public update(id: number, client: IUser): Observable<IUser> {
-    return this.http.put<IUser>(`${this.URL}/${id}`, client);
+  public update(id: number, user: IUser): Observable<IUser> {
+    return this.http.put<IUser>(`${this.URL}/${id}`, user);
   }
 
   public resetPassword(id: number): Observable<IUser> {
     return this.http.put<IUser>(`${this.URL}/r/${id}`, {});
+  }
+
+  public changeState(id: number): Observable<IUser> {
+    return this.http.put<IUser>(`${this.URL}/s/${id}`, {});
   }
 }
