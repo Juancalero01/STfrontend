@@ -116,6 +116,7 @@
             </p-columnFilter>
           </div>
         </th>
+        <th>REMITO DE DESPACHO</th>
         <th>FECHA DE DESPACHO</th>
         <th class="w-1">ACCIONES</th>
       </tr>
@@ -126,6 +127,7 @@
         <td>{{ product.serial }}</td>
         <td>{{ product.client.taxpayerName | uppercase }}</td>
         <td>{{ product.productType.name | uppercase }}</td>
+        <td>{{ product.reference | null }}</td>
         <td>{{ product.deliveryDate | date : "dd/MM/yyyy" }}</td>
         <td>
           <p-button

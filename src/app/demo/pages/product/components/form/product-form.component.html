@@ -10,6 +10,7 @@
       placeholder="Seleccionar cliente del producto"
       styleClass="w-full"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('client') }"
+      [showClear]="true"
     >
     </p-dropdown>
     <small *ngIf="validateForm('client')" class="p-error">
@@ -29,6 +30,7 @@
       styleClass="w-full"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('productType') }"
       (onChange)="onProductTypeChange()"
+      [showClear]="true"
     >
     </p-dropdown>
     <small *ngIf="validateForm('productType')" class="p-error">
@@ -47,13 +49,16 @@
       class="w-full"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('serial') }"
       maxlength="10"
+      [pKeyFilter]="numberWithHyphen"
     />
     <small *ngIf="validateForm('serial')" class="p-error">
       Campo requerido*
     </small>
   </div>
   <div class="flex flex-column w-full">
-    <label for="reference">NÚMERO DE REMITO (ENVIO)</label>
+    <label for="reference"
+      >NÚMERO DE REMITO (Remito del envio del producto al cliente)</label
+    >
     <input
       id="reference"
       type="text"
@@ -61,6 +66,7 @@
       formControlName="reference"
       placeholder="Ingresar número de remito del producto"
       class="w-full"
+      [pKeyFilter]="alphaNumberUppercase"
     />
   </div>
 
@@ -76,6 +82,7 @@
       appendTo="body"
       placeholder="Seleccionar o ingresar fecha de despacho del producto"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('deliveryDate') }"
+      [showClear]="true"
     >
     </p-calendar>
     <small *ngIf="validateForm('deliveryDate')" class="p-error">
@@ -91,7 +98,7 @@
     />
     <p-button
       [label]="buttonLabel"
-      [disabled]="productForm.invalid"
+      [disabled]="productForm.invalid || !getChangesToUpdate()"
       styleClass="p-button-info p-button-text "
       (onClick)="submitForm()"
     />

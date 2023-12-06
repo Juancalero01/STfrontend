@@ -29,7 +29,8 @@ export class ProductFormComponent {
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
   public clients: IClient[] = [];
   public productTypes: IProductType[] = [];
-
+  public numberWithHyphen: RegExp = /^[0-9 -]*$/;
+  public alphaNumberUppercase: RegExp = /^[A-Z0-9 -]*$/;
   public ngOnInit(): void {
     this.getClients();
     this.getProductTypes();
@@ -170,5 +171,9 @@ export class ProductFormComponent {
     } else {
       this.productForm.get('serial')?.setValue('');
     }
+  }
+
+  public getChangesToUpdate(): boolean {
+    return !this.productForm.pristine;
   }
 }
