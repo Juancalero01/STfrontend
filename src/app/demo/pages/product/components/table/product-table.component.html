@@ -21,7 +21,7 @@
           #fi
           pInputText
           type="text"
-          placeholder="Buscar por número de serie"
+          placeholder="Buscar por N° de serie o remito"
           class="w-20rem"
           (input)="dt.filterGlobal($any($event.target).value, 'contains')"
         />
@@ -33,7 +33,7 @@
     [value]="products"
     [rows]="10"
     [paginator]="true"
-    [globalFilterFields]="['serial']"
+    [globalFilterFields]="['serial', 'reference']"
     [rowsPerPageOptions]="[10, 25, 50, 100]"
     [scrollable]="true"
     [showCurrentPageReport]="true"

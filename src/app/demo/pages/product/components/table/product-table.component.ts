@@ -62,7 +62,7 @@ export class ProductTableComponent {
 
     this.ref = this.dialogService.open(ProductFormComponent, {
       header: header,
-      width: '80%',
+      width: '60%',
       closable: false,
       closeOnEscape: false,
       dismissableMask: false,
