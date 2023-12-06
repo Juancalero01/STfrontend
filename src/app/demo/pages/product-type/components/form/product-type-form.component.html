@@ -1,13 +1,15 @@
 <form class="w-full flex flex-column gap-3" [formGroup]="productTypeForm">
   <div class="w-full">
-    <label htmlFor="prefix">CABECERA DE SERIE</label>
-    <p-inputMask
+    <label>CABECERA DE SERIE</label>
+    <input
       formControlName="prefix"
-      id="prefix"
-      mask="999?9"
-      pKeyFilter="num"
-      styleClass="w-full"
+      type="text"
+      pInputText
+      class="w-full"
+      [maxLength]="4"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('prefix') }"
+      placeholder="Ingresar cabecera de serie del tipo de producto"
+      pKeyFilter="num"
     />
     <small *ngIf="validateForm('prefix')" class="p-error">
       Campo requerido*
@@ -21,8 +23,9 @@
       type="text"
       pInputText
       class="w-full"
+      placeholder="Ingresar nombre del tipo de producto"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('name') }"
-      [pKeyFilter]="alphaUppercaseSpace"
+      [pKeyFilter]="alphaNumberUppercaseSpaceHyphen"
     />
     <small *ngIf="validateForm('name')" class="p-error">
       Campo requerido*
@@ -49,7 +52,7 @@
     />
     <p-button
       [label]="buttonLabel"
-      [disabled]="productTypeForm.invalid"
+      [disabled]="productTypeForm.invalid || !getChangesToUpdate()"
       styleClass="p-button-info p-button-text"
       (onClick)="submitForm()"
     />

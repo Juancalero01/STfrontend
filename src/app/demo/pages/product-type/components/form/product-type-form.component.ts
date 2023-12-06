@@ -21,7 +21,8 @@ export class ProductTypeFormComponent {
 
   public productTypeForm: FormGroup = this.buildForm();
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
-  public alphaUppercaseSpace: RegExp = /^[A-Z ]*$/;
+  public alphaNumberUppercaseSpaceHyphen: RegExp = /^[A-Z0-9 ()#\-]*$/;
+
   public alphaNumberUppercaseSpaceHyphenDotComma: RegExp = /^[A-Z0-9 .,-]*$/;
   public ngOnInit(): void {
     if (this.config.data) this.loadForm(this.config.data);
@@ -123,5 +124,9 @@ export class ProductTypeFormComponent {
           });
       },
     });
+  }
+
+  public getChangesToUpdate(): boolean {
+    return !this.productTypeForm.pristine;
   }
 }
