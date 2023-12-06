@@ -1,5 +1,5 @@
-<form class="flex flex-wrap gap-4" [formGroup]="productTypeForm">
-  <div class="flex flex-column w-full">
+<form class="w-full flex flex-column gap-3" [formGroup]="productTypeForm">
+  <div class="w-full">
     <label htmlFor="prefix">CABECERA DE SERIE</label>
     <p-inputMask
       formControlName="prefix"
@@ -13,7 +13,7 @@
       Campo requerido*
     </small>
   </div>
-  <div class="flex flex-column w-full">
+  <div class="w-full">
     <label for="name">NOMBRE DEL TIPO DE PRODUCTO</label>
     <input
       formControlName="name"
@@ -22,14 +22,28 @@
       pInputText
       class="w-full"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('name') }"
+      [pKeyFilter]="alphaUppercaseSpace"
     />
     <small *ngIf="validateForm('name')" class="p-error">
       Campo requerido*
     </small>
   </div>
+  <div class="w-full">
+    <label>DESCRIPCIÓN</label>
+    <textarea
+      formControlName="description"
+      pInputTextarea
+      maxlength="250"
+      class="w-full"
+      [autoResize]="true"
+      rows="6"
+      placeholder="Ingresar descripción del tipo de producto"
+      [pKeyFilter]="alphaNumberUppercaseSpaceHyphenDotComma"
+    ></textarea>
+  </div>
   <div class="flex justify-content-end gap-2 w-full">
     <p-button
-      label="CANCELAR"
+      label="SALIR DEL FORMULARIO"
       styleClass="p-button-secondary p-button-text"
       (onClick)="cancelForm()"
     />
