@@ -39,11 +39,11 @@ export class ProductFormComponent {
 
   public buildForm(): FormGroup {
     return this.formBuilder.group({
-      client: ['', [Validators.required]],
-      productType: ['', [Validators.required]],
+      client: [null, [Validators.required]],
+      productType: [null, [Validators.required]],
       serial: ['', [Validators.required]],
-      reference: [''],
-      deliveryDate: ['', [Validators.required]],
+      reference: [null],
+      deliveryDate: [null, [Validators.required]],
     });
   }
 
@@ -79,9 +79,6 @@ export class ProductFormComponent {
 
   public submitForm(): void {
     !this.config.data ? this.createProduct() : this.updateProduct();
-
-    // if (!this.config.data) this.createProduct();
-    // else this.updateProduct();
   }
 
   public closeForm(): void {
@@ -95,21 +92,7 @@ export class ProductFormComponent {
       rejectLabel: 'CANCELAR',
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
-      accept: () => {
-        this.ref.close();
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Operación cancelada',
-          detail: 'La operación se canceló',
-        });
-      },
-      reject: () => {
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Operación cancelada',
-          detail: 'La operación no se canceló',
-        });
-      },
+      accept: () => this.ref.close(),
     });
   }
 
@@ -133,23 +116,8 @@ export class ProductFormComponent {
               detail: 'El registro se creó',
             });
           },
-          error: (e: any) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Operación fallida',
-              detail: 'El registro no se creó, compruebe los datos',
-            });
-          },
-          complete: () => {
-            this.ref.close();
-          },
-        });
-      },
-      reject: () => {
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Operación cancelada',
-          detail: 'El registro no se creó',
+          error: () => {},
+          complete: () => this.ref.close(),
         });
       },
     });
@@ -177,24 +145,9 @@ export class ProductFormComponent {
                 detail: 'El registro se actualizó',
               });
             },
-            error: (e: any) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Operación fallida',
-                detail: 'El registro no se actualizó, compruebe los datos',
-              });
-            },
-            complete: () => {
-              this.ref.close();
-            },
+            error: () => {},
+            complete: () => this.ref.close(),
           });
-      },
-      reject: () => {
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Opernación cancelada',
-          detail: 'El registro no se actualizó',
-        });
       },
     });
   }
@@ -208,7 +161,6 @@ export class ProductFormComponent {
         productType.prefix !== undefined
       );
     });
-
     if (productType) {
       const currentSerialValue = this.productForm.get('serial')?.value;
       const newSerialValue = `${productType.prefix}-${
