@@ -2,15 +2,17 @@
   <div class="flex align-items-center justify-content-between">
     <div class="flex gap-2">
       <p-button
+        label="Nuevo tipo de falla"
         icon="pi pi-plus"
-        styleClass="p-button-rounded p-button-text font-medium"
-        (onClick)="createProductType()"
+        styleClass="p-button-info p-button-text p-button-rounded"
+        (onClick)="openFailureTypeForm()"
       />
     </div>
     <div class="flex gap-2">
       <p-button
+        label="Limpiar filtros"
         icon="pi pi-filter-slash"
-        styleClass="p-button-rounded p-button-text p-button-danger font-medium"
+        styleClass="p-button-rounded p-button-text p-button-danger"
         (onClick)="cleanFilters(dt, fi)"
       />
       <div class="p-input-icon-right">
@@ -19,7 +21,7 @@
           #fi
           pInputText
           type="text"
-          placeholder="Buscar por nombre de falla..."
+          placeholder="Buscar por nombre de falla"
           class="w-20rem"
           (input)="dt.filterGlobal($any($event.target).value, 'contains')"
         />
@@ -30,7 +32,6 @@
     #dt
     [value]="failureTypeData"
     [rows]="10"
-    [rowHover]="true"
     [paginator]="true"
     [globalFilterFields]="['name']"
     [rowsPerPageOptions]="[10, 25, 50, 100]"
@@ -38,11 +39,11 @@
     [showCurrentPageReport]="true"
     currentPageReportTemplate="Mostrando {first} a {last}"
     scrollHeight="640px"
-    styleClass="p-datatable-striped p-datatable-gridlines p-datatable-sm"
+    styleClass="p-datatable-striped p-datatable-sm"
   >
     <ng-template pTemplate="header">
       <tr class="text-sm h-3rem">
-        <th>NOMBRE DE FALLA</th>
+        <th>NOMBRE DE LA FALLA</th>
         <th class="w-1">ACCIONES</th>
       </tr>
     </ng-template>
@@ -53,9 +54,9 @@
         </td>
         <td>
           <p-button
-            icon="pi pi-pencil"
-            styleClass="p-button-text p-button-secondary w-full"
-            (onClick)="updateProductType(failureType)"
+            icon="pi pi-window-maximize"
+            styleClass="p-button-text p-button-secondary"
+            (onClick)="openFailureTypeForm(failureType)"
           />
         </td>
       </tr>
@@ -79,4 +80,4 @@
   </p-table>
 </div>
 <p-confirmDialog />
-<p-toast position="top-center" />
+<p-toast position="bottom-right" />

@@ -1,6 +1,6 @@
 <form class="flex flex-wrap gap-4" [formGroup]="failureTypeForm">
   <div class="flex flex-column w-full">
-    <label for="name">NOMBRE DEL TIPO DE FALLA</label>
+    <label for="name">NOMBRE DE LA FALLA</label>
     <input
       formControlName="name"
       id="name"
@@ -11,13 +11,13 @@
   </div>
   <div class="flex justify-content-end gap-2 w-full">
     <p-button
-      label="CANCELAR"
+      label="SALIR DEL FORMULARIO"
       styleClass="p-button-secondary p-button-text"
       (onClick)="cancelForm()"
     />
     <p-button
       [label]="buttonLabel"
-      [disabled]="failureTypeForm.invalid"
+      [disabled]="failureTypeForm.invalid || !getChangesToUpdate()"
       styleClass="p-button-info p-button-text"
       (onClick)="submitForm()"
     />

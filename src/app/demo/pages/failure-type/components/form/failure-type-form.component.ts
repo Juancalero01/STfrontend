@@ -20,7 +20,7 @@ export class FailureTypeFormComponent {
   ) {}
 
   public failureTypeForm: FormGroup = this.buildForm();
-  public buttonLabel: string = 'REGISTRAR';
+  public buttonLabel: string = 'REGISTRAR FORMULARIO';
 
   public ngOnInit(): void {
     if (this.config.data) this.loadForm(this.config.data);
@@ -35,7 +35,7 @@ export class FailureTypeFormComponent {
 
   private loadForm(failureType: IFailureType): void {
     this.failureTypeForm.patchValue(failureType);
-    this.buttonLabel = 'ACTUALIZAR';
+    this.buttonLabel = 'ACTUALIZAR FORMULARIO';
   }
 
   public validateForm(controlName: string): boolean | undefined {
@@ -60,21 +60,7 @@ export class FailureTypeFormComponent {
       rejectLabel: 'CANCELAR',
       rejectButtonStyleClass:
         'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
-      accept: () => {
-        this.ref.close();
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Operación cancelada',
-          detail: 'La operación se canceló',
-        });
-      },
-      reject: () => {
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Operación cancelada',
-          detail: 'La operación no se canceló',
-        });
-      },
+      accept: () => this.ref.close(),
     });
   }
 
@@ -100,13 +86,6 @@ export class FailureTypeFormComponent {
           },
           error: () => {},
           complete: () => this.ref.close(),
-        });
-      },
-      reject: () => {
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Operación cancelada',
-          detail: 'El registro no se creó',
         });
       },
     });
@@ -138,13 +117,10 @@ export class FailureTypeFormComponent {
             complete: () => this.ref.close(),
           });
       },
-      reject: () => {
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Opernación cancelada',
-          detail: 'El registro no se actualizó',
-        });
-      },
     });
+  }
+
+  public getChangesToUpdate(): boolean {
+    return !this.failureTypeForm.pristine;
   }
 }

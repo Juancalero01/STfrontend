@@ -13,7 +13,6 @@ import { FailureTypeFormComponent } from '../form/failure-type-form.component';
 export class FailureTypeTableComponent {
   constructor(
     private readonly failureTypeService: FailureTypeService,
-    private readonly messageService: MessageService,
     private readonly dialogService: DialogService
   ) {}
 
@@ -35,25 +34,12 @@ export class FailureTypeTableComponent {
     });
   }
 
-  public createProductType() {
+  public openFailureTypeForm(failureType?: IFailureType) {
+    const header = failureType
+      ? 'FORMULARIO DE ACTUALIZACIÓN DE TIPO DE FALLA'
+      : 'FORMULARIO DE REGISTRO DE TIPO DE FALLA';
     this.ref = this.dialogService.open(FailureTypeFormComponent, {
-      header: 'FORMULARIO DE REGISTRO DE TIPO DE FALLA',
-      width: '50%',
-      closable: false,
-      closeOnEscape: false,
-      dismissableMask: false,
-      showHeader: true,
-      position: 'center',
-    });
-
-    this.ref.onClose.subscribe(() => {
-      this.loadFailureTypes();
-    });
-  }
-
-  public updateProductType(failureType: IFailureType) {
-    this.ref = this.dialogService.open(FailureTypeFormComponent, {
-      header: 'FORMULARIO DE ACTUALIZACIÓN DE TIPO DE FALLA',
+      header: header,
       width: '50%',
       closable: false,
       closeOnEscape: false,
@@ -61,10 +47,6 @@ export class FailureTypeTableComponent {
       showHeader: true,
       position: 'center',
       data: failureType,
-    });
-
-    this.ref.onClose.subscribe(() => {
-      this.loadFailureTypes();
     });
   }
 

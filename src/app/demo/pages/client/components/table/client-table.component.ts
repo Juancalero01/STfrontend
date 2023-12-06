@@ -13,8 +13,7 @@ import { MessageService } from 'primeng/api';
 export class ClientTableComponent {
   constructor(
     private readonly clientService: ClientService,
-    private readonly dialogService: DialogService,
-    private readonly messageService: MessageService
+    private readonly dialogService: DialogService
   ) {}
 
   public clientData: IClient[] = [];
