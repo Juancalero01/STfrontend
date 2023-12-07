@@ -41,6 +41,8 @@
         <td>NÚMERO DE RECLAMO</td>
         <td>PRODUCTO</td>
         <td>CLIENTE</td>
+        <td>FECHA DE INGRESO</td>
+        <td>FECHA DE SALIDA</td>
         <td>ESTADO DEL SERVICIO</td>
         <td class="w-1">ACCIONES</td>
       </tr>
@@ -52,14 +54,14 @@
       let-expanded="expanded"
     >
       <tr class="text-sm h-3rem">
-        <td colspan="5">
+        <td colspan="7">
           <div class="flex align-items-center">
             <p-button
               styleClass="p-button-text p-button-secondary"
               [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
               [pRowToggler]="support"
             />
-            {{ support.product.serial }}
+            <span class="font-medium">{{ support.product.serial }}</span>
           </div>
         </td>
       </tr>
@@ -69,13 +71,14 @@
         <td>{{ support.reclaim }}</td>
         <td>{{ support.product.productType.name }}</td>
         <td>{{ support.product.client.taxpayerName }}</td>
+        <td>{{ support.dateEntry | date : "dd/MM/yyyy" }}</td>
+        <td>{{ support.endEntry | date : "dd/MM/yyyy" | null }}</td>
         <td>
           <p-tag
             [severity]="support.state.id === 12 ? 'danger' : 'success'"
             [value]="support.state.name"
           />
         </td>
-
         <td>
           <p-button
             icon="pi pi-window-maximize"
@@ -86,7 +89,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr class="text-sm w-full">
-        <td colspan="5">
+        <td colspan="7">
           <div class="flex gap-2 align-items-center">
             <i class="pi pi-info-circle"></i>
             <span class="font-medium"
