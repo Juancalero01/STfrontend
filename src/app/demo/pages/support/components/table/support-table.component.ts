@@ -38,7 +38,7 @@ export class SupportTableComponent {
   }
 
   public loadSupports(): void {
-    this.supportService.findAll().subscribe({
+    this.supportService.findAllActiveServices().subscribe({
       next: (supports: ISupport[]) => {
         this.supportData = supports.sort(
           (a, b) => a.priority.id - b.priority.id

@@ -14,6 +14,10 @@ export class SupportService {
   private readonly URL = environment.apiUrl + '/service';
 
   public findAll(): Observable<ISupport[]> {
+    return this.httpClient.get<ISupport[]>(`${this.URL}/all`);
+  }
+
+  public findAllActiveServices(): Observable<ISupport[]> {
     return this.httpClient.get<ISupport[]>(this.URL);
   }
 
