@@ -44,8 +44,8 @@ export class SupportFormComponent {
   public showButtonClean: boolean = true;
   public showSearch: boolean = true;
   public booleanDropdown: any[] = [
-    { value: true, label: 'Si' },
-    { value: false, label: 'No' },
+    { value: true, label: 'SI' },
+    { value: false, label: 'NO' },
   ];
   public failureTypes: IFailureType[] = [];
   public states: ISupportState[] = [];
@@ -188,17 +188,16 @@ export class SupportFormComponent {
   }
 
   public createSupport(): void {
-    //! REFACTORIZADO POSIBLE SOLUCIÓN AL PROBLEMA DE LOS CAMPOS DESHABILITADOS
     this.confirmationService.confirm({
       message: '¿Está seguro que desea crear el registro?',
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
       rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () =>
         this.supportService.create(this.getSupportData()).subscribe({
           next: () =>
@@ -207,15 +206,8 @@ export class SupportFormComponent {
               summary: 'Operación exitosa',
               detail: 'El registro se creó correctamente',
             }),
-          //TODO: Mostrar error cuando haya una falla de la API.
           error: () => {},
           complete: () => this.ref.close(),
-        }),
-      reject: () =>
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Operación cancelada',
-          detail: 'El registro no se creó',
         }),
     });
   }
@@ -226,11 +218,11 @@ export class SupportFormComponent {
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
       rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
         this.supportService
           .update(this.config.data.id, this.getSupportData())
@@ -245,42 +237,6 @@ export class SupportFormComponent {
             complete: () => this.ref.close(),
           });
       },
-      reject: () =>
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Operación cancelada',
-          detail: 'El registro no se actualizó',
-        }),
-    });
-  }
-
-  public cancelForm(): void {
-    // TODO : ADAPTAR PARA QUE SE PUEDA CANCELAR EL FORMULARIO
-    this.confirmationService.confirm({
-      message: '¿Está seguro que desea cancelar el formulario?',
-      header: 'CONFIRMAR',
-      icon: 'pi pi-info-circle',
-      acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
-      rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
-      accept: () => {
-        this.supportService
-          .updateState(this.config.data.id, this.states[this.states.length - 1])
-          .subscribe({
-            next: () =>
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Operación exitosa',
-                detail: 'El registro se canceló correctamente',
-              }),
-            error: () => {},
-            complete: () => this.ref.close(),
-          });
-      },
-      reject: () => {},
     });
   }
 
@@ -290,11 +246,11 @@ export class SupportFormComponent {
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
       rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => this.ref.close(),
     });
   }
@@ -321,11 +277,11 @@ export class SupportFormComponent {
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
       rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
         this.supportForm.reset({
           dateEntry: this.supportForm.get('dateEntry')?.value,
@@ -341,7 +297,7 @@ export class SupportFormComponent {
     });
   }
 
-  //TODO: REFACTORIZAR PARA QUE TAMBIEN OBTENGA EL HISTORIAL DE ESE SERVICIO
+  //TODO VERIFICAR NUEVAMENTE LA GARANTIA TT
   private calculateWarranty(deliveryDate: Date, id?: number): void {
     const oneYearLater = new Date(deliveryDate);
     oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
@@ -412,5 +368,9 @@ export class SupportFormComponent {
       this.supportForm.get('quoteNumber')?.disable();
       this.supportForm.get('failure')?.disable();
     }
+  }
+
+  public getChangesToUpdate(): boolean {
+    return !this.supportForm.pristine;
   }
 }

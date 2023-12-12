@@ -33,6 +33,7 @@ export class SupportFormHistoryComponent {
   public today: Date = new Date();
   public minDate: Date = new Date(this.config.data.dateEntry);
   public maxDate: Date = this.today;
+  public alphaNumberUppercaseSpaceHyphenDotComma: RegExp = /^[A-Z0-9 .,-]*$/;
 
   public ngOnInit(): void {
     this.setDefaultFormData();
@@ -99,28 +100,26 @@ export class SupportFormHistoryComponent {
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
       rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => this.ref.close(),
     });
   }
 
-  //TODO: Corregir la funcionalidad ya que da error al momento de modificar el estado
-  //todo: SE DEBERA BUSCAR CUAL ES EL MOTIVO POR LA CUAL NO QUIERE ACTUALIZAR EL ESTADO AL SERVICIO.
   public saveForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea guardar los cambios?',
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
       rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
         this.supportHistoryService
           .create(this.supportHistoryForm.getRawValue())

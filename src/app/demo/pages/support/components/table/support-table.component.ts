@@ -23,10 +23,10 @@ export class SupportTableComponent {
   public today: Date = new Date();
 
   public priorityColors: any = {
-    INMEDIATA: 'bg-red-500 w-full',
-    ALTA: 'bg-orange-500 w-full',
-    MEDIA: 'bg-yellow-500 w-full',
-    BAJA: 'bg-green-500 w-full',
+    INMEDIATA: 'bg-red-500 ',
+    ALTA: 'bg-orange-500 ',
+    MEDIA: 'bg-yellow-500 ',
+    BAJA: 'bg-blue-500 ',
   };
 
   public ngOnInit(): void {

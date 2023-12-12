@@ -15,7 +15,7 @@
       [showClear]="true"
       [autofocus]="true"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('dateEntry') }"
-      placeholder="Seleccionar fecha de cambio de estado..."
+      placeholder="Seleccionar fecha de cambio de estado"
     />
   </div>
   <div class="w-full">
@@ -54,6 +54,7 @@
       [autoResize]="true"
       rows="6"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('remarks') }"
+      [pKeyFilter]="alphaNumberUppercaseSpaceHyphenDotComma"
     ></textarea>
     <small *ngIf="validateForm('remarks')" class="p-error">
       Campo requerido*
@@ -61,13 +62,13 @@
   </div>
   <div class="flex justify-content-end gap-2 w-full">
     <p-button
-      label="SALIR SIN GUARDAR"
-      styleClass="p-button-secondary p-button-text"
+      label="SALIR DEL FORMULARIO"
+      styleClass="p-button-secondary"
       (onClick)="exitForm()"
     />
     <p-button
-      styleClass="p-button-info p-button-text"
-      label="REGISTRAR CAMBIO DE ESTADO"
+      styleClass="p-button-info"
+      label="REGISTRAR FORMULARIO"
       [disabled]="supportHistoryForm.invalid"
       (onClick)="saveForm()"
     />

@@ -41,7 +41,9 @@ export class SupportService {
     id: number,
     state: ISupportState
   ): Observable<ISupportState> {
-    return this.httpClient.put<ISupportState>(`${this.URL}/s/${id}`, state);
+    return this.httpClient.put<ISupportState>(`${this.URL}/s/${id}`, {
+      id: state,
+    });
   }
 
   public findAllByProduct(id: number): Observable<ISupport[]> {

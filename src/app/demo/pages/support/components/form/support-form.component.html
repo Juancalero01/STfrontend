@@ -1,6 +1,6 @@
 <form class="w-full flex flex-column gap-3 py-2" [formGroup]="supportForm">
   <div class="w-full flex flex-column" *ngIf="showSearch">
-    <label>BUSCADOR DEL PRODUCTO</label>
+    <label>BUSCADOR</label>
     <div class="w-full flex gap-2">
       <input
         type="text"
@@ -10,14 +10,14 @@
         pKeyFilter="int"
         maxlength="10"
         minlength="3"
-        placeholder="Ingresar número de serie..."
+        placeholder="Ingresar número de serie"
         [ngClass]="{
           'ng-invalid ng-dirty': validateForm('search')
         }"
       />
       <p-button
-        icon="pi pi-search"
-        styleClass=" p-button-secondary"
+        label="BUSCAR"
+        styleClass=" p-button-info"
         (onClick)="searchProduct()"
         [disabled]="supportForm.get('search')?.invalid"
       />
@@ -39,7 +39,7 @@
         [maxDate]="maxDate"
         [showClear]="true"
         [ngClass]="{ 'ng-invalid ng-dirty': validateForm('dateEntry') }"
-        placeholder="Seleccionar fecha de registro..."
+        placeholder="Seleccionar fecha de registro del servicio"
       />
       <small *ngIf="validateForm('dateEntry')" class="p-error">
         Campo requerido*
@@ -51,7 +51,7 @@
         [options]="priorities"
         optionLabel="name"
         optionValue="id"
-        placeholder="Seleccionar prioridad..."
+        placeholder="Seleccionar prioridad del servicio"
         styleClass="w-full"
         formControlName="priority"
         [showClear]="true"
@@ -165,8 +165,8 @@
         [options]="booleanDropdown"
         optionLabel="label"
         optionValue="value"
-        placeholder="Seleccionar aprobación de garantía..."
-        styleClass="w-full uppercase"
+        placeholder="Seleccionar aprobación de garantía"
+        styleClass="w-full"
         formControlName="warranty"
         [showClear]="true"
       />
@@ -237,11 +237,10 @@
       [options]="booleanDropdown"
       optionLabel="label"
       optionValue="value"
-      placeholder="Seleccionar..."
       styleClass="w-full"
       formControlName="securityStrap"
       [showClear]="true"
-      placeholder="Seleccionar aprobación de faja de seguridad..."
+      placeholder="Seleccionar aprobación de faja de seguridad"
     />
   </div>
 
@@ -254,10 +253,9 @@
       formControlName="failureTypes"
       optionLabel="name"
       optionValue="id"
-      placeholder="Seleccionar..."
       styleClass="w-full"
       [showClear]="true"
-      placeholder="Seleccionar fallas encontradas..."
+      placeholder="Seleccionar fallas encontradas"
     />
   </div>
 
@@ -274,36 +272,34 @@
       [pKeyFilter]="alphaNumberUppercaseSpaceHyphenDotComma"
     ></textarea>
   </div>
-
   <div class="flex justify-content-between w-full">
     <div>
       <p-button
         *ngIf="showButtonClean"
         label="LIMPIAR FORMULARIO"
-        styleClass="p-button-secondary p-button-text"
+        styleClass="p-button-danger"
         (onClick)="cleanForm()"
       />
       <p-button
         *ngIf="showButtonState"
+        [disabled]="getChangesToUpdate()"
         label="ACTUALIZAR ESTADO DEL SERVICIO"
-        styleClass="p-button-success p-button-text"
+        styleClass="p-button-info"
         (onClick)="openHistoryForm()"
       />
     </div>
     <div class="flex gap-2">
       <p-button
         label="SALIR DEL FORMULARIO"
-        styleClass="p-button-secondary p-button-text"
+        styleClass="p-button-secondary"
         (onClick)="exitForm()"
       />
       <p-button
         [label]="mainButtonLabel"
-        [disabled]="supportForm.invalid"
-        styleClass="p-button-info p-button-text"
+        [disabled]="supportForm.invalid || !getChangesToUpdate()"
+        styleClass="p-button-info"
         (onClick)="submitForm()"
       />
     </div>
   </div>
 </form>
-
-<!--TODO: Proximamente se agregará el componente de historial de estados -->

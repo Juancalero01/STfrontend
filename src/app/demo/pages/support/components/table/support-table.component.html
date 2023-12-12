@@ -1,22 +1,25 @@
 <div class="w-full h-full flex flex-column gap-4">
   <div class="flex align-items-center justify-content-between">
-    <div class="flex gap-2">
+    <div class="flex gap-2 align-items-center">
       <p-button
+        label="NUEVO INGRESO"
         icon="pi pi-plus"
-        styleClass="p-button-info p-button-text p-button-rounded"
+        styleClass="p-button-info p-button-sm"
         (onClick)="openSupportForm()"
         *ngIf="visibleAdmin"
       />
     </div>
-    <div class="flex gap-2">
+    <div class="flex gap-2 align-items-center">
       <p-button
+        label="SINCRONIZAR DATOS"
         icon="pi pi-sync"
-        styleClass="p-button-secondary p-button-text p-button-rounded"
+        styleClass="p-button-secondary p-button-sm"
         (onClick)="loadSupports()"
       />
       <p-button
+        label="LIMPIAR FILTROS"
         icon="pi pi-filter-slash"
-        styleClass="p-button-danger p-button-text p-button-rounded"
+        styleClass="p-button-danger p-button-sm"
         (onClick)="cleanFilters(dt, fi)"
       />
       <div class="p-input-icon-right">
@@ -43,7 +46,7 @@
     [showCurrentPageReport]="true"
     currentPageReportTemplate="Mostrando {first} a {last}"
     scrollHeight="640px"
-    styleClass="p-datatable-striped p-datatable-gridlines p-datatable-sm"
+    styleClass="p-datatable-striped p-datatable-sm"
   >
     <ng-template pTemplate="header">
       <tr class="text-sm h-3rem">
@@ -61,10 +64,10 @@
       <tr class="text-sm h-3rem">
         <td>
           <div class="flex align-items-center justify-content-between">
-            {{ support.reclaim }}
+            <span class="font-semibold">{{ support.reclaim }}</span>
             <p-tag
               *ngIf="getEntryNewTag(support.dateEntry)"
-              styleClass="w-full bg-green-500"
+              severity="success"
               value="NUEVO"
             />
           </div>
@@ -74,21 +77,18 @@
         <td>{{ support.product.productType.name | uppercase }}</td>
         <td>{{ support.product.client.taxpayerName | uppercase }}</td>
         <td>
-          <p-tag
-            styleClass="w-full bg-bluegray-500"
-            [value]="support.state.name"
-          />
+          <p-tag [value]="support.state.name" severity="info" />
         </td>
         <td>
           <p-tag
-            [styleClass]="priorityColors[support.priority.name] || 'w-full'"
+            [styleClass]="priorityColors[support.priority.name]"
             [value]="support.priority.name"
           />
         </td>
         <td>
           <p-button
             icon="pi pi-window-maximize"
-            styleClass="p-button-text p-button-secondary w-full"
+            styleClass="p-button-text p-button-secondary"
             (onClick)="openSupportForm(support)"
           />
         </td>
@@ -113,4 +113,4 @@
   </p-table>
 </div>
 <p-confirmDialog />
-<p-toast position="top-center" />
+<p-toast position="bottom-right" />

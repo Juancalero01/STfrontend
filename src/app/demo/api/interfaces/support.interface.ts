@@ -4,6 +4,7 @@ import { ISupportPriority } from './support-priority.interface';
 import { ISupportState } from './support-state.interface';
 
 export interface ISupport {
+  id: number;
   reclaim: string;
   startReference: string | null;
   endReference: string | null;

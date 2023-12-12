@@ -39,10 +39,10 @@
     <ng-template pTemplate="header">
       <tr class="text-sm h-3rem">
         <td>NÚMERO DE RECLAMO</td>
-        <td>PRODUCTO</td>
+        <td>TIPO DE PRODUCTO</td>
         <td>CLIENTE</td>
-        <td>FECHA DE INGRESO</td>
-        <td>FECHA DE SALIDA</td>
+        <td>FECHA INICIAL DEL SERVICIO</td>
+        <td>FECHA FINAL DEL SERVICIO</td>
         <td>ESTADO DEL SERVICIO</td>
         <td class="w-1">ACCIONES</td>
       </tr>
@@ -61,21 +61,23 @@
               [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
               [pRowToggler]="support"
             />
-            <span class="font-medium">{{ support.product.serial }}</span>
+            <span class="font-semibold">{{ support.product.serial }}</span>
           </div>
         </td>
       </tr>
     </ng-template>
     <ng-template pTemplate="rowexpansion" let-support>
       <tr class="text-sm h-3rem">
-        <td>{{ support.reclaim }}</td>
+        <td>
+          <span class="font-semibold">{{ support.reclaim }}</span>
+        </td>
         <td>{{ support.product.productType.name }}</td>
         <td>{{ support.product.client.taxpayerName }}</td>
         <td>{{ support.dateEntry | date : "dd/MM/yyyy" }}</td>
         <td>{{ support.endEntry | date : "dd/MM/yyyy" | null }}</td>
         <td>
           <p-tag
-            [severity]="support.state.id === 12 ? 'danger' : 'success'"
+            [severity]="support.state.id === 12 ? 'danger' : 'info'"
             [value]="support.state.name"
           />
         </td>
@@ -83,6 +85,7 @@
           <p-button
             icon="pi pi-window-maximize"
             styleClass="p-button-text p-button-secondary"
+            (onClick)="openSupportHistoryForm(support)"
           />
         </td>
       </tr>
