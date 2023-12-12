@@ -39,14 +39,14 @@ export class SupportHistoryTableComponent {
 
   public openSupportHistoryForm(support?: ISupport) {
     this.ref = this.dialogService.open(SupportHistoryFormComponent, {
-      header: `HISTORICO DEL SERVICIO`,
-      width: '60%',
+      header: `SERVICIO: ${support?.reclaim}`,
+      width: '70%',
       closable: true,
       closeOnEscape: false,
       dismissableMask: false,
       showHeader: true,
       position: 'center',
-      data: support?.id,
+      data: support,
     });
   }
 }
