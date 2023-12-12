@@ -66,7 +66,7 @@ export class SupportFormHistoryComponent {
         } else if (stateCurrentValue === 3) {
           optionsToShow = 4;
         } else {
-          optionsToShow = 1;
+          optionsToShow = 2;
         }
         this.nextStates = this.nextStates.filter((state) => {
           return (
@@ -132,20 +132,31 @@ export class SupportFormHistoryComponent {
                 )
                 .subscribe({
                   next: () => {
-                    this.messageService.add({
-                      severity: 'success',
-                      summary: 'Operación exitosa',
-                      detail: 'El registro se creó correctamente',
-                    });
+                    if (
+                      this.supportHistoryForm.get('stateCurrent')?.value === 10
+                    ) {
+                      this.supportService
+                        .updateDateDeparture(this.config.data.id, new Date())
+                        .subscribe({
+                          next: () => {},
+                          error: () => {},
+                          complete: () => {},
+                        });
+                    }
                   },
                   error: () => {},
-                  complete: () => {
-                    this.ref.close();
-                  },
+                  complete: () => {},
                 });
             },
             error: () => {},
-            complete: () => {},
+            complete: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Operación exitosa',
+                detail: 'El registro se creó correctamente',
+              });
+              this.ref.close();
+            },
           });
       },
     });

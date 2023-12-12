@@ -46,6 +46,15 @@ export class SupportService {
     });
   }
 
+  public updateDateDeparture(
+    id: number,
+    dateDeparture: Date
+  ): Observable<Date> {
+    return this.httpClient.put<Date>(`${this.URL}/d/${id}`, {
+      dateDeparture,
+    });
+  }
+
   public findAllByProduct(id: number): Observable<ISupport[]> {
     return this.httpClient.get<ISupport[]>(`${this.URL}/p/${id}`);
   }

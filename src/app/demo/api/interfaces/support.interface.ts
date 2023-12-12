@@ -13,6 +13,7 @@ export interface ISupport {
   failure: string | null;
   remarks: string | null;
   dateEntry: Date;
+  dateDeparture: Date | null;
   warranty: boolean | null;
   securityTrap: boolean | null;
   product: IProduct;

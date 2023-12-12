@@ -39,7 +39,7 @@ export class SupportHistoryTableComponent {
 
   public openSupportHistoryForm(support?: ISupport) {
     this.ref = this.dialogService.open(SupportHistoryFormComponent, {
-      header: `HISTORIAL DEL SERVICIO`,
+      header: `HISTORICO DEL SERVICIO`,
       width: '60%',
       closable: true,
       closeOnEscape: false,

@@ -8,37 +8,13 @@
     <tr class="text-sm h-3rem">
       <th>FECHA DE REGISTRO</th>
       <th>NÚMERO DE RECLAMO</th>
-      <th>ESTADO ACTUAL</th>
+      <th>ESTADO PREVIO</th>
       <th>ESTADO SIGUIENTE</th>
       <th>COMENTARIOS</th>
       <th>USUARIO</th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-supportHistory>
-    <!-- <tr class="text-sm h-3rem">
-      <th>FECHA DE REGISTRO</th>
-      <td>{{ supportHistory.dateEntry | date : "dd/MM/yyyy" }}</td>
-    </tr>
-    <tr class="text-sm h-3rem">
-      <th>NÚMERO DE RECLAMO</th>
-      <td>{{ supportHistory.service.reclaim }}</td>
-    </tr>
-    <tr class="text-sm h-3rem">
-      <th>ESTADO ACTUAL</th>
-      <td>{{ supportHistory.stateCurrent.name }}</td>
-    </tr>
-    <tr class="text-sm h-3rem">
-      <th>ESTADO SIGUIENTE</th>
-      <td>{{ supportHistory.stateNext.name }}</td>
-    </tr>
-    <tr class="text-sm h-3rem">
-      <th>COMENTARIOS</th>
-      <td>{{ supportHistory.remarks }}</td>
-    </tr>
-    <tr class="text-sm h-3rem">
-      <th>USUARIO</th>
-      <td>{{ supportHistory.user.fullname }}</td>
-    </tr> -->
     <tr class="text-sm h-3rem">
       <td>{{ supportHistory.dateEntry | date : "dd/MM/yyyy" }}</td>
       <td>{{ supportHistory.service.reclaim }}</td>
@@ -54,7 +30,7 @@
         <div class="flex gap-2 align-items-center">
           <i class="pi pi-info-circle"></i>
           <span class="font-medium"
-            >Aún no existen registros para el servicio</span
+            >Aún no existen registros de estados para el servicio</span
           >
         </div>
       </td>

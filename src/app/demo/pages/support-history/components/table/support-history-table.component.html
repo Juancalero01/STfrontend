@@ -1,10 +1,10 @@
 <div class="w-full h-full flex flex-column gap-4">
   <div class="flex align-items-center justify-content-end">
-    <div class="flex gap-2">
+    <div class="flex gap-2 align-items-center">
       <p-button
-        label="Limpiar filtros"
+        label="LIMPIAR FILTROS"
         icon="pi pi-filter-slash"
-        styleClass="p-button-danger p-button-text p-button-rounded"
+        styleClass="p-button-danger p-button-sm"
         (onClick)="cleanFilters(dt, fi)"
       />
       <div class="p-input-icon-right">
@@ -74,7 +74,7 @@
         <td>{{ support.product.productType.name }}</td>
         <td>{{ support.product.client.taxpayerName }}</td>
         <td>{{ support.dateEntry | date : "dd/MM/yyyy" }}</td>
-        <td>{{ support.endEntry | date : "dd/MM/yyyy" | null }}</td>
+        <td>{{ support.dateDeparture | date : "dd/MM/yyyy" | null }}</td>
         <td>
           <p-tag
             [severity]="support.state.id === 12 ? 'danger' : 'info'"

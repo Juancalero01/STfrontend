@@ -93,6 +93,7 @@ export class SupportFormComponent {
       productSerial: [{ value: null, disabled: true }],
       product: [null, [Validators.required]],
       dateEntry: [null, [Validators.required]],
+      dateDeparture: [{ value: null, disabled: true }],
       priority: [null, [Validators.required]],
       reclaim: [{ value: null, disabled: true }],
       state: [{ value: null, disabled: true }],
