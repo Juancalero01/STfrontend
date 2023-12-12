@@ -56,7 +56,8 @@ export class SupportFormComponent {
     new Date().setMonth(new Date().getMonth() - 1)
   );
   public alphaUppercaseSpace: RegExp = /^[A-Z ]*$/;
-  public alphaNumberUppercaseSpaceHyphenDotComma: RegExp = /^[A-Z0-9 .,-]*$/;
+  public alphaNumberUppercaseSpaceHyphenDotComma: RegExp =
+    /^[A-Z0-9\u00C0-\u00D6\u00D8-\u00DE .,\-]*$/;
 
   public maxDate: Date = this.today;
 
