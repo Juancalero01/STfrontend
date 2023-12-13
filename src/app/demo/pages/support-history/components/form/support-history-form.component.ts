@@ -4,7 +4,6 @@ import { IFailureType } from 'src/app/demo/api/interfaces/failure-type.interface
 import { ISupportHistory } from 'src/app/demo/api/interfaces/support-history.interface';
 import { ISupport } from 'src/app/demo/api/interfaces/support.interface';
 import { SupportHistoryService } from 'src/app/demo/api/services/support-history.service';
-import { SupportService } from 'src/app/demo/api/services/support.service';
 
 @Component({
   selector: 'app-support-history-form',

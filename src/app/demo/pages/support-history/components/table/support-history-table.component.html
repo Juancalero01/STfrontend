@@ -39,11 +39,11 @@
     <ng-template pTemplate="header">
       <tr class="text-sm h-3rem">
         <th>NÚMERO DE RECLAMO</th>
+        <th>FECHA DE INGRESO</th>
+        <th>FECHA DE SALIDA</th>
         <th>TIPO DE PRODUCTO</th>
         <th>CLIENTE</th>
-        <th>FECHA INICIAL DEL SERVICIO</th>
-        <th>FECHA FINAL DEL SERVICIO</th>
-        <th>ESTADO DEL SERVICIO</th>
+        <th>ESTADO</th>
         <th class="w-1">ACCIONES</th>
       </tr>
     </ng-template>
@@ -71,10 +71,13 @@
         <td>
           <span class="font-semibold">{{ support.reclaim }}</span>
         </td>
+        <td [pSortableColumn]="">
+          {{ support.dateEntry | date : "dd/MM/yyyy" }}
+        </td>
+        <td>{{ support.dateDeparture | date : "dd/MM/yyyy" | null }}</td>
         <td>{{ support.product.productType.name }}</td>
         <td>{{ support.product.client.taxpayerName }}</td>
-        <td>{{ support.dateEntry | date : "dd/MM/yyyy" }}</td>
-        <td>{{ support.dateDeparture | date : "dd/MM/yyyy" | null }}</td>
+
         <td>
           <p-tag
             [severity]="support.state.id === 12 ? 'danger' : 'info'"

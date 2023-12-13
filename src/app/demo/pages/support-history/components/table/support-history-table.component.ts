@@ -4,6 +4,7 @@ import { Table } from 'primeng/table';
 import { ISupport } from 'src/app/demo/api/interfaces/support.interface';
 import { SupportService } from 'src/app/demo/api/services/support.service';
 import { SupportHistoryFormComponent } from '../form/support-history-form.component';
+import { SortEvent } from 'primeng/api/sortevent';
 
 @Component({
   selector: 'app-support-history-table',
