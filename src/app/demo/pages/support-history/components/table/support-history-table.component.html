@@ -80,7 +80,7 @@
 
         <td>
           <p-tag
-            [severity]="support.state.id === 12 ? 'danger' : 'info'"
+            [severity]="getTagSeverity(support.state.id)"
             [value]="support.state.name"
           />
         </td>

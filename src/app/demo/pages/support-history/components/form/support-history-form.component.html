@@ -93,13 +93,11 @@
     >
       <ng-template pTemplate="header">
         <tr class="text-sm h-3rem">
-          <th colspan="6">CAMBIOS DE ESTADO DEL SERVICIO</th>
+          <th colspan="4">CAMBIOS DE ESTADO DEL SERVICIO</th>
         </tr>
         <tr class="text-sm h-3rem">
           <th>FECHA DE REGISTRO</th>
-          <th>NÚMERO DE RECLAMO</th>
-          <th>ESTADO PREVIO</th>
-          <th>ESTADO SIGUIENTE</th>
+          <th>ESTADO</th>
           <th>COMENTARIOS</th>
           <th>USUARIO</th>
         </tr>
@@ -107,16 +105,14 @@
       <ng-template pTemplate="body" let-supportHistory>
         <tr class="text-sm h-3rem">
           <td>{{ supportHistory.dateEntry | date : "dd/MM/yyyy" }}</td>
-          <td>{{ supportHistory.service.reclaim }}</td>
           <td>{{ supportHistory.stateCurrent.name }}</td>
-          <td>{{ supportHistory.stateNext.name }}</td>
           <td>{{ supportHistory.remarks }}</td>
           <td>{{ supportHistory.user.fullname }}</td>
         </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr class="text-sm w-full">
-          <td colspan="6">
+          <td colspan="4">
             <div class="flex gap-2 align-items-center">
               <i class="pi pi-info-circle"></i>
               <span class="font-medium"

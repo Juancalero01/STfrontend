@@ -51,4 +51,14 @@ export class SupportHistoryTableComponent {
       data: support,
     });
   }
+
+  public getTagSeverity(stateId: number): string {
+    if (stateId === 11) {
+      return 'success';
+    } else if (stateId === 12) {
+      return 'danger';
+    } else {
+      return 'info';
+    }
+  }
 }
