@@ -24,7 +24,8 @@ import { ChipModule } from 'primeng/chip';
 import { BadgeModule } from 'primeng/badge';
 import { PasswordModule } from 'primeng/password';
 import { InputSwitchModule } from 'primeng/inputswitch';
-
+import { SidebarModule } from 'primeng/sidebar';
+import { TimelineModule } from 'primeng/timeline';
 @NgModule({
   imports: [
     ButtonModule,
@@ -51,6 +52,8 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     BadgeModule,
     PasswordModule,
     InputSwitchModule,
+    SidebarModule,
+    TimelineModule,
   ],
   exports: [
     ButtonModule,
@@ -77,6 +80,8 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     BadgeModule,
     PasswordModule,
     InputSwitchModule,
+    SidebarModule,
+    TimelineModule,
   ],
   providers: [ConfirmationService, DialogService, MessageService],
 })
