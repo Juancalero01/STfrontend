@@ -42,7 +42,7 @@ export class SupportHistoryTableComponent {
     this.ref = this.dialogService.open(SupportHistoryFormComponent, {
       header: `INFORMACIÓN DEL SERVICIO`,
       width: '70%',
-      height: '72%',
+      height: '75%',
       closable: true,
       closeOnEscape: false,
       dismissableMask: false,
