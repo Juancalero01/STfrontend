@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Table } from 'primeng/table';
 import { IFailureType } from 'src/app/demo/api/interfaces/failure-type.interface';

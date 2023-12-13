@@ -29,7 +29,6 @@ export class FailureTypeFormComponent {
   private buildForm(): FormGroup {
     return this.formBuilder.group({
       name: [null, [Validators.required]],
-      //? Posible agregar el detalle de cada falla, para acceder
     });
   }
 
@@ -55,11 +54,11 @@ export class FailureTypeFormComponent {
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
       rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => this.ref.close(),
     });
   }
@@ -70,11 +69,11 @@ export class FailureTypeFormComponent {
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
       rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
         this.failureTypeService.create(this.failureTypeForm.value).subscribe({
           next: () => {
@@ -97,11 +96,11 @@ export class FailureTypeFormComponent {
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
       rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
         this.failureTypeService
           .update(this.config.data?.id, this.failureTypeForm.value)
