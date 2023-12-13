@@ -10,7 +10,10 @@ import { TokenService } from 'src/app/demo/api/services/token.service';
       [model]="items"
       class="flex"
       styleClass="bg-white border-none border-noround shadow-1 w-full text-sm"
-    />
+    >
+      <ng-template pTemplate="end">
+        <img src="../../../../assets/logo.svg" height="32" /> </ng-template
+    ></p-menubar>
   `,
 })
 export class AppTopbarComponent {
