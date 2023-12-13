@@ -5,6 +5,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class BooleanPipe implements PipeTransform {
   transform(value: boolean): string {
-    return value ? 'ACTIVO' : 'INACTIVO';
+    return value ? 'SI' : 'NO';
   }
 }

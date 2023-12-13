@@ -60,7 +60,7 @@
         <td>{{ user.role.name }}</td>
         <td>
           <p-tag [severity]="user.isActive ? 'success' : 'danger'">
-            {{ user.isActive | bool }}
+            {{ user.isActive | active }}
           </p-tag>
         </td>
         <td>

@@ -5,9 +5,10 @@ import { NullPipe } from './utils/pipes/null.pipe';
 import { ExcelService } from './utils/services/excel.service';
 import { RouterModule } from '@angular/router';
 import { BooleanPipe } from './utils/pipes/bool.pipe';
+import { ActivePipe } from './utils/pipes/active.pipe';
 
 @NgModule({
-  declarations: [NullPipe, BooleanPipe],
+  declarations: [NullPipe, BooleanPipe, ActivePipe],
   imports: [PrimengModule, ReactiveFormsModule, FormsModule, RouterModule],
   exports: [
     PrimengModule,
@@ -15,6 +16,7 @@ import { BooleanPipe } from './utils/pipes/bool.pipe';
     FormsModule,
     NullPipe,
     BooleanPipe,
+    ActivePipe,
     RouterModule,
   ],
   providers: [ExcelService],

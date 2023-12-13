@@ -1,12 +1,71 @@
 <p-tabView>
-  <p-tabPanel header="HISTORIAL"> </p-tabPanel>
-  <p-tabPanel header="HISTORIAL DE CAMBIOS">
+  <p-tabPanel header="DETALLE">
     <p-table
-      [value]="supportHistories"
-      [rows]="12"
+      [value]="[supports]"
       styleClass="p-datatable-striped p-datatable-sm"
     >
       <ng-template pTemplate="header">
+        <tr class="text-sm h-3rem">
+          <th colspan="2">DETALLE GENERAL DEL SERVICIO</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body">
+        <tr class="text-sm h-3rem">
+          <td class="w-16rem">NÚMERO DE RECLAMO</td>
+          <td>{{ supports.reclaim }}</td>
+        </tr>
+        <tr class="text-sm h-3rem">
+          <td class="w-16rem">FECHA DE INGRESO</td>
+          <td>{{ supports.dateEntry | date : "dd/mm/YYYY" }}</td>
+        </tr>
+        <tr class="text-sm h-3rem">
+          <td class="w-16rem">FECHA DE SALIDA</td>
+          <td>{{ supports.dateDeparture | date : "dd/mm/YYYY" | null }}</td>
+        </tr>
+        <tr class="text-sm h-3rem">
+          <td class="w-16rem">GARANTIA</td>
+          <td>{{ supports.warranty | null | bool }}</td>
+        </tr>
+        <tr class="text-sm h-3rem">
+          <td class="w-16rem">REMITO DE INGRESO</td>
+          <td>{{ supports.startReference | null }}</td>
+        </tr>
+        <tr class="text-sm h-3rem">
+          <td class="w-16rem">REMITO DE SALIDA</td>
+          <td>{{ supports.endReference | null }}</td>
+        </tr>
+        <tr class="text-sm h-3rem">
+          <td class="w-16rem">NÚMERO DE ORDEN DE COMPRA</td>
+          <td>{{ supports.orderNumber | null }}</td>
+        </tr>
+        <tr class="text-sm h-3rem">
+          <td class="w-16rem">NÚMERO DE COTIZACIÓN</td>
+          <td>{{ supports.quoteNumber | null }}</td>
+        </tr>
+        <tr class="text-sm h-3rem">
+          <td class="w-16rem">FALLA REPORTADA</td>
+          <td>{{ supports.failure | null }}</td>
+        </tr>
+        <tr class="text-sm h-3rem">
+          <td class="w-16rem">FAJA DE SEGURIDAD</td>
+          <td>{{ supports.securityTrap | null | bool }}</td>
+        </tr>
+        <tr class="text-sm h-3rem">
+          <td class="w-16rem">OBSERVACIONES</td>
+          <td>{{ supports.remarks | null }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-tabPanel>
+  <p-tabPanel header="HISTORIAL">
+    <p-table
+      [value]="supportHistories"
+      styleClass="p-datatable-striped p-datatable-sm"
+    >
+      <ng-template pTemplate="header">
+        <tr class="text-sm h-3rem">
+          <th colspan="6">CAMBIOS DE ESTADO DEL SERVICIO</th>
+        </tr>
         <tr class="text-sm h-3rem">
           <th>FECHA DE REGISTRO</th>
           <th>NÚMERO DE RECLAMO</th>
@@ -32,7 +91,37 @@
             <div class="flex gap-2 align-items-center">
               <i class="pi pi-info-circle"></i>
               <span class="font-medium"
-                >Aún no existen registros de estados para el servicio</span
+                >No existen registros de cambio de estados para el
+                servicio</span
+              >
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-tabPanel>
+  <p-tabPanel header="FALLAS">
+    <p-table
+      [value]="failureTypes"
+      styleClass="p-datatable-striped p-datatable-sm"
+    >
+      <ng-template pTemplate="header">
+        <tr class="text-sm h-3rem">
+          <th>FALLAS ENCONTRADAS DURANTE EL SERVICIO</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-failureType>
+        <tr class="text-sm h-3rem">
+          <td>{{ failureType.name }}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr class="text-sm w-full">
+          <td>
+            <div class="flex gap-2 align-items-center">
+              <i class="pi pi-info-circle"></i>
+              <span class="font-medium"
+                >No existen registros de fallas para el servicio</span
               >
             </div>
           </td>

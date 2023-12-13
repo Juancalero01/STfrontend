@@ -39,8 +39,9 @@ export class SupportHistoryTableComponent {
 
   public openSupportHistoryForm(support?: ISupport) {
     this.ref = this.dialogService.open(SupportHistoryFormComponent, {
-      header: `SERVICIO: ${support?.reclaim}`,
+      header: `INFORMACIÓN DEL SERVICIO`,
       width: '70%',
+      height: '72%',
       closable: true,
       closeOnEscape: false,
       dismissableMask: false,
