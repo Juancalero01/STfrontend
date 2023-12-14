@@ -30,6 +30,7 @@ export class SupportFormHistoryComponent {
   public supportHistoryForm: FormGroup = this.buildForm();
   public currentStates: ISupportState[] = [];
   public nextStates: ISupportState[] = [];
+  public historyStateBySupport: Number[] = [];
   public today: Date = new Date();
   public minDate: Date = new Date(this.config.data.dateEntry);
   public maxDate: Date = this.today;
@@ -40,6 +41,7 @@ export class SupportFormHistoryComponent {
     this.findLastDateEntry();
     this.loadStates();
     this.loadForm(this.config.data);
+    this.getCheckHistoryState();
   }
 
   private loadForm(data: ISupport): void {
@@ -50,29 +52,43 @@ export class SupportFormHistoryComponent {
     });
   }
 
-  //TODO: SE DEBE MEJORAR SEGUN LO PEDIDO, EN LOS PRIMEROS 3 SIEMPRE APARECERA EL CANCELADO
-  //TODO: CUANDO ESTE EN FASE DE ANALISIS, SE TENDRA EN CUENTA 4 ESTADOS LOS ESPERA DE COTI, ESPERA DE REPUESTOS, NO SE REPARA, EN REPARACIÓN.
-  //TODO: LUEGO DE TODO ESO SIMPLEMENTE MOSTRAR DE UNA OPCION HASTA LLEGAR A CERRADO NO SE MUESTRA MAS OPCIONES.
   private loadStates(): void {
     this.supportStateService.findAll().subscribe({
       next: (states: ISupportState[]) => {
         this.currentStates = states;
-        this.nextStates = states;
         const stateCurrentValue =
           this.supportHistoryForm.get('stateCurrent')?.value;
         let optionsToShow = 1;
-        if (stateCurrentValue === 2) {
-          optionsToShow = 3;
+        if ([1, 2].includes(stateCurrentValue)) {
+          this.nextStates = states.filter((state) =>
+            [stateCurrentValue + 1, 12].includes(state.id)
+          );
+          return;
         } else if (stateCurrentValue === 3) {
-          optionsToShow = 4;
+          this.nextStates = states.filter(
+            (state) =>
+              state.id > stateCurrentValue && state.id <= stateCurrentValue + 4
+          );
+          return;
+        } else if (stateCurrentValue === 5) {
+          this.nextStates = states.filter((state) =>
+            [4, 5, 6, 7].includes(state.id)
+          );
+          return;
+        } else if (stateCurrentValue === 6) {
+          this.nextStates = states.filter((state) => [8].includes(state.id));
+          return;
+        } else if (stateCurrentValue === 7) {
+          this.nextStates = states.filter((state) => [9].includes(state.id));
+          return;
         } else {
-          optionsToShow = 2;
+          optionsToShow = 1;
         }
-        this.nextStates = this.nextStates.filter((state) => {
+        this.nextStates = states.filter((state) => {
           return (
             state.id !== stateCurrentValue &&
             state.id > stateCurrentValue &&
-            (optionsToShow-- > 0 || state.id === 12)
+            optionsToShow-- > 0
           );
         });
       },
@@ -181,5 +197,13 @@ export class SupportFormHistoryComponent {
           },
         });
     }
+  }
+
+  private getCheckHistoryState() {
+    this.supportHistoryService.findByService(this.config.data.id).subscribe({
+      next: (data: ISupportHistory[]) => {
+        this.historyStateBySupport = data.map((state) => state.stateCurrent.id);
+      },
+    });
   }
 }

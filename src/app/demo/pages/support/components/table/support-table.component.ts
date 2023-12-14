@@ -63,7 +63,9 @@ export class SupportTableComponent {
       position: 'center',
       data: support,
     });
-    this.ref.onClose.subscribe(() => this.loadSupports());
+    this.ref.onClose.subscribe(() => {
+      this.loadSupports();
+    });
   }
 
   public cleanFilters(table: Table, filter: any) {

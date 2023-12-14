@@ -67,17 +67,18 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="rowexpansion" let-support>
+      <tr></tr>
+
       <tr class="text-sm h-3rem">
         <td>
           <span class="font-semibold">{{ support.reclaim }}</span>
         </td>
-        <td [pSortableColumn]="">
+        <td>
           {{ support.dateEntry | date : "dd/MM/yyyy" }}
         </td>
         <td>{{ support.dateDeparture | date : "dd/MM/yyyy" | null }}</td>
         <td>{{ support.product.productType.name }}</td>
         <td>{{ support.product.client.taxpayerName }}</td>
-
         <td>
           <p-tag
             [severity]="getTagSeverity(support.state.id)"
