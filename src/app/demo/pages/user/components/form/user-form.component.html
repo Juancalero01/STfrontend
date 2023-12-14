@@ -51,26 +51,26 @@
       <p-button
         *ngIf="showButtonResetPassword"
         label="RESTABLECER CONTRASEÑA"
-        styleClass="p-button-danger p-button-text"
+        styleClass="p-button-danger"
         (onClick)="resetPassword()"
       />
       <p-button
         *ngIf="showButtonDisableUser"
         [label]="buttonStatusLabel"
-        styleClass="p-button-secondary p-button-text"
+        styleClass="p-button-secondary"
         (onClick)="changeState()"
       />
     </div>
     <div class="flex gap-2">
       <p-button
         label="SALIR DEL FORMULARIO"
-        styleClass="p-button-secondary p-button-text"
+        styleClass="p-button-secondary"
         (onClick)="closeForm()"
       />
       <p-button
         [label]="buttonLabel"
         [disabled]="userForm.invalid || !getChangesToUpdate()"
-        styleClass="p-button-info p-button-text"
+        styleClass="p-button-info"
         (onClick)="submitForm()"
       />
     </div>

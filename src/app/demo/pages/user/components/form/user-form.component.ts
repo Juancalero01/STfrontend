@@ -71,11 +71,11 @@ export class UserFormComponent {
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
       rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
         this.ref.close();
       },
@@ -91,11 +91,11 @@ export class UserFormComponent {
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
       rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
         this.userService.create(this.userForm.getRawValue()).subscribe({
           next: () => {
@@ -121,11 +121,11 @@ export class UserFormComponent {
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
       rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
         this.userService
           .update(this.config.data?.id, this.userForm.value)
@@ -152,11 +152,11 @@ export class UserFormComponent {
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
       rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
         this.userService.resetPassword(this.config.data?.id).subscribe({
           next: () => {
@@ -183,11 +183,11 @@ export class UserFormComponent {
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
       rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
         this.userService.changeState(this.config.data?.id).subscribe({
           next: () => {

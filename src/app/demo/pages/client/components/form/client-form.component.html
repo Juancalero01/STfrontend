@@ -1,5 +1,3 @@
-<!-- TODO: Realizar las maskaras para que sean en mayusculas los datos y que algunos permitan números entre otras cosas -->
-
 <form class="flex flex-wrap gap-3" [formGroup]="clientForm">
   <div class="flex flex-column w-full">
     <label>NOMBRE / RAZÓN SOCIAL</label>
@@ -178,13 +176,13 @@
   <div class="flex justify-content-end gap-2 w-full">
     <p-button
       label="SALIR DEL FORMULARIO"
-      styleClass="p-button-secondary p-button-text"
+      styleClass="p-button-secondary"
       (onClick)="closeForm()"
     />
     <p-button
       [label]="buttonLabel"
       [disabled]="clientForm.invalid || !getChangesToUpdate()"
-      styleClass="p-button-info p-button-text"
+      styleClass="p-button-info"
       (onClick)="submitForm()"
     />
   </div>
