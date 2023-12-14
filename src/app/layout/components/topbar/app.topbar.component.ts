@@ -69,11 +69,11 @@ export class AppTopbarComponent {
     },
     {
       label: 'Producción',
-      icon: 'pi pi-fw pi-cog',
+      icon: 'pi pi-fw pi-box',
       items: [
         {
           label: 'Productos',
-          icon: 'pi pi-fw pi-box',
+          icon: 'pi pi-fw pi-tag',
           routerLink: ['product'],
           visible: this.tokenService.isAdmin(),
         },
