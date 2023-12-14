@@ -88,11 +88,11 @@ export class ProductFormComponent {
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
       rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => this.ref.close(),
     });
   }
@@ -103,11 +103,11 @@ export class ProductFormComponent {
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
       rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
         this.productService.create(this.productForm.value).subscribe({
           next: () => {
@@ -130,11 +130,11 @@ export class ProductFormComponent {
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
-      acceptButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-info',
       rejectLabel: 'CANCELAR',
-      rejectButtonStyleClass:
-        'p-button-rounded p-button-text p-button-sm font-medium p-button-secondary',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
         this.productService
           .update(this.config.data?.id, this.productForm.value)

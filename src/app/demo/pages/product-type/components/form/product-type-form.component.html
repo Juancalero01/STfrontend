@@ -47,13 +47,13 @@
   <div class="flex justify-content-end gap-2 w-full">
     <p-button
       label="SALIR DEL FORMULARIO"
-      styleClass="p-button-secondary p-button-text"
+      styleClass="p-button-secondary"
       (onClick)="cancelForm()"
     />
     <p-button
       [label]="buttonLabel"
       [disabled]="productTypeForm.invalid || !getChangesToUpdate()"
-      styleClass="p-button-info p-button-text"
+      styleClass="p-button-info"
       (onClick)="submitForm()"
     />
   </div>
