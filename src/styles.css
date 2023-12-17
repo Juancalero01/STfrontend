@@ -15,7 +15,6 @@ body {
   font-family: var(--font-family);
 }
 
-/* Custom header table */
 .p-datatable .p-datatable-header {
   background: transparent;
   border: none;
@@ -25,7 +24,6 @@ body {
   padding: 2rem 0;
 }
 
-/* Custom paginator */
 .p-datatable .p-paginator {
   display: flex;
   justify-content: flex-end;
@@ -33,7 +31,6 @@ body {
   border: none;
 }
 
-/* Custom menu */
 .p-menu .p-submenu-header {
   color: #212529;
   background: transparent;
