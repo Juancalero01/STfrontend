@@ -26,6 +26,7 @@ import { PasswordModule } from 'primeng/password';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { SidebarModule } from 'primeng/sidebar';
 import { TimelineModule } from 'primeng/timeline';
+import { ChartModule } from 'primeng/chart';
 @NgModule({
   imports: [
     ButtonModule,
@@ -54,6 +55,7 @@ import { TimelineModule } from 'primeng/timeline';
     InputSwitchModule,
     SidebarModule,
     TimelineModule,
+    ChartModule,
   ],
   exports: [
     ButtonModule,
@@ -82,6 +84,7 @@ import { TimelineModule } from 'primeng/timeline';
     InputSwitchModule,
     SidebarModule,
     TimelineModule,
+    ChartModule,
   ],
   providers: [ConfirmationService, DialogService, MessageService],
 })
