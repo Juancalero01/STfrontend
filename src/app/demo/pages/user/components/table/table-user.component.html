@@ -31,15 +31,10 @@
   <p-table
     #dt
     [value]="users"
-    [rows]="10"
-    [paginator]="true"
     [globalFilterFields]="['username']"
-    [rowsPerPageOptions]="[10, 25, 50, 100]"
     [scrollable]="true"
-    [showCurrentPageReport]="true"
-    currentPageReportTemplate="Mostrando {first} a {last}"
     scrollHeight="640px"
-    styleClass="p-table-striped p-datatable-gridline p-datatable-sm"
+    styleClass="p-datatable-striped p-datatable-sm"
   >
     <ng-template pTemplate="header">
       <tr class="text-sm h-3rem">

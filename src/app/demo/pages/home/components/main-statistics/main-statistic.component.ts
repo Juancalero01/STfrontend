@@ -40,10 +40,6 @@ export class MainStatisticComponent {
             color: textColor,
           },
         },
-        title: {
-          display: true,
-          text: 'FALLAS DEL AÑO 2023',
-        },
       },
     };
   }
