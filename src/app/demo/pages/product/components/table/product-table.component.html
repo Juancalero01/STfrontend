@@ -1,18 +1,18 @@
 <div class="w-full h-full flex flex-column gap-4">
-  <div class="flex align-items-center justify-content-between">
-    <div class="flex gap-2 align-items-center">
+  <div class="flex justify-content-between">
+    <div class="flex gap-2">
       <p-button
         label="NUEVO PRODUCTO"
         icon="pi pi-plus"
-        styleClass="p-button-info p-button-sm"
+        styleClass="p-button-info p-button-sm h-full"
         (onClick)="openProductForm()"
       />
     </div>
-    <div class="flex gap-2 align-items-center">
+    <div class="flex gap-2">
       <p-button
         label="LIMPIAR FILTROS"
         icon="pi pi-filter-slash"
-        styleClass="p-button-danger p-button-sm"
+        styleClass="p-button-danger p-button-sm h-full"
         (onClick)="cleanFilters(dt, fi)"
       />
       <div class="p-input-icon-right">
