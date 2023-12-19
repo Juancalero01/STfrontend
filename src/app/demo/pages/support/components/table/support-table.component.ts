@@ -65,6 +65,7 @@ export class SupportTableComponent {
     });
     this.ref.onClose.subscribe(() => {
       this.loadSupports();
+      console.log('este ref');
     });
   }
 

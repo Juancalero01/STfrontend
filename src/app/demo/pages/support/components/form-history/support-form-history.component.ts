@@ -169,7 +169,7 @@ export class SupportFormHistoryComponent {
               this.messageService.add({
                 severity: 'success',
                 summary: 'Operación exitosa',
-                detail: 'El registro se creó correctamente',
+                detail: 'El estado se actualizo correctamente',
               });
               this.ref.close();
             },
