@@ -4,10 +4,10 @@ import { Component } from '@angular/core';
   selector: 'app-layout',
   template: `
     <main class="min-h-screen">
-      <nav class="w-full min-h-full">
+      <nav>
         <app-topbar />
       </nav>
-      <section class="w-full min-h-full p-4">
+      <section class="p-4" style="height: calc(100vh - 63px);">
         <router-outlet />
       </section>
     </main>
