@@ -54,6 +54,13 @@ import { loginGuard } from './demo/api/guards/login.guard';
                 ),
             },
             {
+              path: 'support/indicator',
+              loadChildren: () =>
+                import('./demo/pages/indicator/indicator.module').then(
+                  (m) => m.IndicatorModule
+                ),
+            },
+            {
               path: 'client',
               loadChildren: () =>
                 import('./demo/pages/client/client.module').then(

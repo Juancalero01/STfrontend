@@ -68,7 +68,7 @@ export class AppTopbarComponent {
         {
           label: 'Indicadores',
           icon: 'pi pi-fw pi-chart-bar',
-          routerLink: ['support/failure'],
+          routerLink: ['support/indicator'],
           visible: this.tokenService.isAdmin(),
         },
       ],
