@@ -27,6 +27,8 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { SidebarModule } from 'primeng/sidebar';
 import { TimelineModule } from 'primeng/timeline';
 import { ChartModule } from 'primeng/chart';
+import { CardModule } from 'primeng/card';
+
 @NgModule({
   imports: [
     ButtonModule,
@@ -56,6 +58,7 @@ import { ChartModule } from 'primeng/chart';
     SidebarModule,
     TimelineModule,
     ChartModule,
+    CardModule,
   ],
   exports: [
     ButtonModule,
@@ -85,6 +88,7 @@ import { ChartModule } from 'primeng/chart';
     SidebarModule,
     TimelineModule,
     ChartModule,
+    CardModule,
   ],
   providers: [ConfirmationService, DialogService, MessageService],
 })

@@ -21,6 +21,18 @@ export class SupportService {
     return this.httpClient.get<ISupport[]>(this.URL);
   }
 
+  public findAllWithoutCancel(): Observable<number> {
+    return this.httpClient.get<number>(`${this.URL}/allwoc`);
+  }
+
+  public findAllWithoutRepair(): Observable<number> {
+    return this.httpClient.get<number>(`${this.URL}/allwor`);
+  }
+
+  public findAllWithRepair(): Observable<number> {
+    return this.httpClient.get<number>(`${this.URL}/allwr`);
+  }
+
   public findOne(id: number): Observable<ISupport> {
     return this.httpClient.get<ISupport>(`${this.URL}/${id}`);
   }

@@ -27,6 +27,10 @@ export class SupportHistoryService {
     return this.httpClient.get<ISupportHistory[]>(`${this.URL}/s/${id}`);
   }
 
+  public findActivitiesForLastThreeDays(): Observable<ISupportHistory[]> {
+    return this.httpClient.get<ISupportHistory[]>(`${this.URL}/act`);
+  }
+
   public create(supportHistory: ISupportHistory): Observable<ISupportHistory> {
     return this.httpClient.post<ISupportHistory>(this.URL, supportHistory);
   }

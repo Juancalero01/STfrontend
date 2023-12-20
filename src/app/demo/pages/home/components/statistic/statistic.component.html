@@ -1,0 +1,124 @@
+<div class="grid">
+  <div class="col-12 lg:col-6 xl:col-3">
+    <div class="p-card mb-0 p-4">
+      <div class="flex justify-content-between mb-3">
+        <div>
+          <span class="block text-500 font-medium mb-3"
+            >SERVICIOS EN GENERAL</span
+          >
+          <div class="text-900 font-medium text-xl">{{ generalServices }}</div>
+        </div>
+        <div
+          class="flex align-items-center justify-content-center bg-blue-100 border-round h-3rem w-3rem"
+        >
+          <i class="pi pi-globe text-blue-500 text-xl"></i>
+        </div>
+      </div>
+      <span class="text-500">Todos los servicios en general.</span>
+    </div>
+  </div>
+  <div class="col-12 lg:col-6 xl:col-3">
+    <div class="p-card mb-0 p-4">
+      <div class="flex justify-content-between mb-3">
+        <div>
+          <span class="block text-500 font-medium mb-3">SERVICIOS ACTIVOS</span>
+          <div class="text-900 font-medium text-xl">{{ activeServices }}</div>
+        </div>
+        <div
+          class="flex align-items-center justify-content-center bg-green-100 border-round h-3rem w-3rem"
+        >
+          <i class="pi pi-check text-green-500 text-xl"></i>
+        </div>
+      </div>
+      <span class="text-500">Servicios activos actualmente.</span>
+    </div>
+  </div>
+  <div class="col-12 lg:col-6 xl:col-3">
+    <div class="p-card mb-0 p-4">
+      <div class="flex justify-content-between mb-3">
+        <div>
+          <span class="block text-500 font-medium mb-3"
+            >SERVICIOS REPARADOS</span
+          >
+          <div class="text-900 font-medium text-xl">{{ repairServices }}</div>
+        </div>
+        <div
+          class="flex align-items-center justify-content-center bg-yellow-100 border-round h-3rem w-3rem"
+        >
+          <i class="pi pi-thumbs-up text-yellow-500 text-xl"></i>
+        </div>
+      </div>
+      <span class="text-500">Servicios que fueron reparados.</span>
+    </div>
+  </div>
+  <div class="col-12 lg:col-6 xl:col-3">
+    <div class="p-card mb-0 p-4">
+      <div class="flex justify-content-between mb-3">
+        <div>
+          <span class="block text-500 font-medium mb-3"
+            >SERVICIOS NO REPARADOS</span
+          >
+          <div class="text-900 font-medium text-xl">{{ withOutServices }}</div>
+        </div>
+        <div
+          class="flex align-items-center justify-content-center bg-orange-100 border-round h-3rem w-3rem"
+        >
+          <i class="pi pi-thumbs-down text-orange-500 text-xl"></i>
+        </div>
+      </div>
+      <span class="text-500">Servicios que no fueron reparados.</span>
+    </div>
+  </div>
+  <div class="col-12 lg:col-6 xl:col-12">
+    <div class="p-card mb-0 p-4">
+      <div>
+        <span class="block text-500 font-medium"
+          >ACTIVIDAD RECIENTE DE LOS SERVICIOS</span
+        >
+      </div>
+      <p-table
+        [value]="activities"
+        [rows]="10"
+        [scrollable]="true"
+        scrollHeight="640px"
+        styleClass="p-datatable-striped p-datatable-sm"
+      >
+        <ng-template pTemplate="body" let-supportHistory>
+          <tr class="text-sm h-3rem">
+            <td>
+              <span class="font-semibold text-secondary">{{
+                supportHistory.dateEntry | date : "dd/MM/yyyy HH:mm"
+              }}</span>
+              - El usuario
+              <span class="font-semibold">{{
+                supportHistory.user.fullname
+              }}</span>
+              modificó el estado
+              <span class="font-semibold text-blue-500">{{
+                supportHistory.stateCurrent.name
+              }}</span>
+              a
+              <span class="font-semibold text-green-500">{{
+                supportHistory.stateNext.name
+              }}</span>
+              del servicio
+              <span class="font-semibold text-gray-500">{{
+                supportHistory.service.reclaim
+              }}</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr class="text-sm w-full">
+            <td colspan="4">
+              <div class="flex gap-2 align-items-center">
+                <i class="pi pi-info-circle"></i>
+                <span class="font-medium">No hay actividad reciente</span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
