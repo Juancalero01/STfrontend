@@ -65,6 +65,12 @@ export class AppTopbarComponent {
           icon: 'pi pi-fw pi-exclamation-triangle',
           routerLink: ['support/failure'],
         },
+        {
+          label: 'Indicadores',
+          icon: 'pi pi-fw pi-chart-bar',
+          routerLink: ['support/failure'],
+          visible: this.tokenService.isAdmin(),
+        },
       ],
     },
     {
