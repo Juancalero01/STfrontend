@@ -1,1 +1,131 @@
-<p>Proximamente</p>
+<div class="grid">
+  <!-- app-form-indicator -->
+  <div class=""></div>
+</div>
+
+<div class="grid">
+  <div class="p-4 col-12 lg:col-12 xl:col-2 flex flex-column gap-2">
+    <div>
+      <label>TIPO DE PRODUCTO</label>
+      <p-dropdown
+        [options]="[]"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="Seleccionar prioridad del servicio"
+        styleClass="w-full"
+        [showClear]="true"
+      />
+      <small class="p-error"> Campo requerido* </small>
+    </div>
+    <div>
+      <label>FECHA DESDE</label>
+      <p-calendar
+        dateFormat="dd-mm-yy"
+        styleClass="w-full"
+        appendTo="body"
+        [showButtonBar]="true"
+        [showClear]="true"
+        placeholder="Seleccionar fecha"
+      />
+      <small class="p-error"> Campo requerido* </small>
+    </div>
+    <div>
+      <label>FECHA HASTA</label>
+      <p-calendar
+        dateFormat="dd-mm-yy"
+        styleClass="w-full"
+        appendTo="body"
+        [showButtonBar]="true"
+        [showClear]="true"
+        placeholder="Seleccionar fecha"
+      />
+      <small class="p-error"> Campo requerido* </small>
+    </div>
+    <div>
+      <p-button label="GENERAR" styleClass="w-full p-button-info" />
+    </div>
+  </div>
+  <div class="grid col-12 lg:col-12 xl:col-10">
+    <div class="col-12">
+      <div class="flex flex-column gap-1">
+        <img src="../../../../assets/logo.svg" alt="logo" width="280" />
+        <p class="block text-lg font-medium text-gray-600">
+          Estadísticas de Servicio Técnico desde el 20/06/2023 al 23/12/2023
+          <!-- TODO: Poner la fecha en la que se selecciono esta consulta-->
+        </p>
+        <p class="text-lg font-medium text-gray-500">Producto: VL-400</p>
+        <!-- TODO: Poner el tipo de producto que se selecciono -->
+      </div>
+    </div>
+    <div class="col-12 lg:col-6 xl:col-3">
+      <div class="p-card mb-0 p-4 shadow-none border-1 border-gray-200">
+        <div class="flex justify-content-between mb-3">
+          <div>
+            <span class="block text-500 font-medium">INGRESOS</span>
+          </div>
+        </div>
+        <span class="text-3xl">30</span>
+      </div>
+    </div>
+    <div class="col-12 lg:col-6 xl:col-3">
+      <div class="p-card mb-0 p-4 shadow-none border-1 border-gray-200">
+        <div class="flex justify-content-between mb-3">
+          <div>
+            <span class="block text-500 font-medium">RE INGRESOS</span>
+          </div>
+        </div>
+        <span class="text-3xl">5</span>
+      </div>
+    </div>
+    <div class="col-12 lg:col-6 xl:col-3">
+      <div class="p-card mb-0 p-4 shadow-none border-1 border-gray-200">
+        <div class="flex justify-content-between mb-3">
+          <div>
+            <span class="block text-500 font-medium">TIEMPO DE REPARACIÓN</span>
+          </div>
+        </div>
+        <span class="text-3xl">2 horas</span>
+      </div>
+    </div>
+    <div class="col-12 lg:col-6 xl:col-3">
+      <div class="p-card mb-0 p-4 shadow-none border-1 border-gray-200">
+        <div class="flex justify-content-between mb-3">
+          <div>
+            <span class="block text-500 font-medium"
+              >TIEMPO DE PERMANENCIA</span
+            >
+          </div>
+        </div>
+        <span class="text-3xl">5 dias</span>
+      </div>
+    </div>
+    <div class="col-12 lg:col-12 xl:col-12">
+      <div class="grid gap-2">
+        <div
+          class="p-card flex align-items-center justify-content-center p-4 col-4"
+        >
+          <p-chart
+            type="doughnut"
+            [data]="data"
+            [options]="options"
+            width="400"
+          ></p-chart>
+        </div>
+        <div
+          class="p-card flex align-items-center justify-content-center p-4 col-4"
+        >
+          <p-chart
+            type="pie"
+            [data]="data"
+            [options]="options"
+            width="400"
+          ></p-chart>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TODO: Actualizar los estilos para generar la estadistica -->
+  <!-- TODO: Lo dejo asi para avanzar con las estadisticas code -->
+  <!-- TODO: Al finalizar se rearma correctamente las estadisticas -->
+</div>
