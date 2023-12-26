@@ -70,4 +70,8 @@ export class SupportService {
   public findAllByProduct(id: number): Observable<ISupport[]> {
     return this.httpClient.get<ISupport[]>(`${this.URL}/p/${id}`);
   }
+
+  //generateIndicator
+  //params: dateEntry
+  //return values: ingresos (REPARADOS CERRADOS)
 }

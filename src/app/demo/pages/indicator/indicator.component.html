@@ -1,109 +1,139 @@
-<div class="grid">
-  <!-- app-form-indicator -->
-  <div class=""></div>
-</div>
-
-<div class="grid">
-  <div class="p-4 col-12 lg:col-12 xl:col-2 flex flex-column gap-2">
-    <div>
-      <label>TIPO DE PRODUCTO</label>
-      <p-dropdown
-        [options]="[]"
-        optionLabel="name"
-        optionValue="id"
-        placeholder="Seleccionar prioridad del servicio"
-        styleClass="w-full"
-        [showClear]="true"
-      />
-      <small class="p-error"> Campo requerido* </small>
-    </div>
-    <div>
-      <label>FECHA DESDE</label>
-      <p-calendar
-        dateFormat="dd-mm-yy"
-        styleClass="w-full"
-        appendTo="body"
-        [showButtonBar]="true"
-        [showClear]="true"
-        placeholder="Seleccionar fecha"
-      />
-      <small class="p-error"> Campo requerido* </small>
-    </div>
-    <div>
-      <label>FECHA HASTA</label>
-      <p-calendar
-        dateFormat="dd-mm-yy"
-        styleClass="w-full"
-        appendTo="body"
-        [showButtonBar]="true"
-        [showClear]="true"
-        placeholder="Seleccionar fecha"
-      />
-      <small class="p-error"> Campo requerido* </small>
-    </div>
-    <div>
-      <p-button label="GENERAR" styleClass="w-full p-button-info" />
-    </div>
-  </div>
-  <div class="grid col-12 lg:col-12 xl:col-10">
-    <div class="col-12">
-      <div class="flex flex-column gap-1">
-        <img src="../../../../assets/logo.svg" alt="logo" width="280" />
-        <p class="block text-lg font-medium text-gray-600">
-          Estadísticas de Servicio Técnico desde el 20/06/2023 al 23/12/2023
-          <!-- TODO: Poner la fecha en la que se selecciono esta consulta-->
-        </p>
-        <p class="text-lg font-medium text-gray-500">Producto: VL-400</p>
-        <!-- TODO: Poner el tipo de producto que se selecciono -->
+<section class="grid" style="height: 100%">
+  <section class="col-12 lg:col-12 xl:col-2">
+    <form class="flex flex-wrap gap-2" [formGroup]="indicatorForm">
+      <div class="w-full mb-2">
+        <span class="font-medium text-2xl">FILTROS</span>
+      </div>
+      <div class="flex flex-column w-full">
+        <label>TIPO DE PRODUCTO</label>
+        <p-dropdown
+          [options]="productTypes"
+          formControlName="productType"
+          optionLabel="name"
+          optionValue="id"
+          [filter]="true"
+          placeholder="Seleccionar tipo de producto"
+          filterPlaceholder="Buscar..."
+          emptyFilterMessage="No hay resultados"
+          styleClass="w-full"
+          [showClear]="true"
+        />
+        <small class="p-error"> Campo requerido* </small>
+      </div>
+      <div class="flex flex-column w-full">
+        <label>FECHA DESDE</label>
+        <p-calendar
+          formControlName="dateFrom"
+          dateFormat="dd-mm-yy"
+          styleClass="w-full"
+          appendTo="body"
+          [showButtonBar]="true"
+          [showClear]="true"
+          placeholder="Seleccionar fecha"
+        />
+        <small class="p-error"> Campo requerido* </small>
+      </div>
+      <div class="flex flex-column w-full">
+        <label>FECHA HASTA</label>
+        <p-calendar
+          formControlName="dateUntil"
+          dateFormat="dd-mm-yy"
+          styleClass="w-full"
+          appendTo="body"
+          [showButtonBar]="true"
+          [showClear]="true"
+          placeholder="Seleccionar fecha"
+        />
+        <small class="p-error"> Campo requerido* </small>
+      </div>
+      <div class="w-full">
+        <p-button
+          label="GENERAR ESTADÍSTICAS"
+          styleClass="w-full p-button-info"
+          [disabled]="indicatorForm.invalid || !getChangesToUpdate()"
+          (onClick)="generateIndicators()"
+        />
+      </div>
+    </form>
+  </section>
+  <section
+    class="col-12 lg:col-12 xl:col-10 px-4"
+    *ngIf="showIndicator; else elseBlock"
+  >
+    <div class="flex flex-column gap-3 w-full mb-3">
+      <img src="../../../../assets/logo.svg" alt="logo" width="280" />
+      <div class="flex flex-column gap-2">
+        <span class="block text-lg font-medium text-gray-600">
+          Estadísticas de Servicio Técnico desde el
+          {{ dateFrom | date : "dd/MM/yyyy" }} al
+          {{ dateUntil | date : "dd/MM/yyyy" }}
+        </span>
+        <span class="text-lg font-medium text-gray-500"
+          >Tipo de producto: {{ productType.name | null }}
+        </span>
       </div>
     </div>
-    <div class="col-12 lg:col-6 xl:col-3">
-      <div class="p-card mb-0 p-4 shadow-none border-1 border-gray-200">
-        <div class="flex justify-content-between mb-3">
-          <div>
-            <span class="block text-500 font-medium">INGRESOS</span>
+    <div class="grid">
+      <div class="col-12 lg:col-6 xl:col-3">
+        <div class="p-card shadow-none p-3 border-1 border-gray-200">
+          <div class="flex justify-content-between mb-3">
+            <span class="block text-500 font-medium">SERVICIOS</span>
+          </div>
+          <div class="flex gap-2 align-items-center">
+            <span class="text-4xl font-medium">30</span>
+            <span class="text-green-400 font-medium">60%</span>
           </div>
         </div>
-        <span class="text-3xl">30</span>
       </div>
-    </div>
-    <div class="col-12 lg:col-6 xl:col-3">
-      <div class="p-card mb-0 p-4 shadow-none border-1 border-gray-200">
-        <div class="flex justify-content-between mb-3">
-          <div>
-            <span class="block text-500 font-medium">RE INGRESOS</span>
+      <div class="col-12 lg:col-6 xl:col-3">
+        <div class="p-card shadow-none p-3 border-1 border-gray-200">
+          <div class="flex justify-content-between mb-3">
+            <span class="block text-500 font-medium"
+              >SERVICIOS REINGRESADOS</span
+            >
+          </div>
+          <div class="flex gap-2 align-items-center">
+            <span class="text-4xl font-medium">20</span>
+            <span class="text-green-400 font-medium">30%</span>
           </div>
         </div>
-        <span class="text-3xl">5</span>
       </div>
-    </div>
-    <div class="col-12 lg:col-6 xl:col-3">
-      <div class="p-card mb-0 p-4 shadow-none border-1 border-gray-200">
-        <div class="flex justify-content-between mb-3">
-          <div>
+      <div class="col-12 lg:col-6 xl:col-3">
+        <div class="p-card shadow-none p-3 border-1 border-gray-200">
+          <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium">TIEMPO DE REPARACIÓN</span>
           </div>
+          <div class="flex gap-2 align-items-center">
+            <span class="text-4xl font-medium">5 Hrs</span>
+            <span class="text-green-400 font-medium">170 Hrs</span>
+          </div>
         </div>
-        <span class="text-3xl">2 horas</span>
       </div>
-    </div>
-    <div class="col-12 lg:col-6 xl:col-3">
-      <div class="p-card mb-0 p-4 shadow-none border-1 border-gray-200">
-        <div class="flex justify-content-between mb-3">
-          <div>
+      <div class="col-12 lg:col-6 xl:col-3">
+        <div class="p-card shadow-none p-3 border-1 border-gray-200">
+          <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium"
               >TIEMPO DE PERMANENCIA</span
             >
           </div>
+          <div class="flex gap-2 align-items-center">
+            <span class="text-4xl font-medium">15 Días</span>
+            <span class="text-green-400 font-medium">45%</span>
+          </div>
         </div>
-        <span class="text-3xl">5 dias</span>
       </div>
-    </div>
-    <div class="col-12 lg:col-12 xl:col-12">
-      <div class="grid gap-2">
-        <div
-          class="p-card flex align-items-center justify-content-center p-4 col-4"
-        >
+      <div class="col-12 lg:col-12 xl:col-4">
+        <div class="p-card shadow-none border-1 border-gray-200 py-2">
+          <p-chart
+            type="polarArea"
+            [data]="data"
+            [options]="options"
+            width="400"
+          ></p-chart>
+        </div>
+      </div>
+      <div class="col-12 lg:col-12 xl:col-4">
+        <div class="p-card shadow-none border-1 border-gray-200 py-2">
           <p-chart
             type="doughnut"
             [data]="data"
@@ -111,9 +141,9 @@
             width="400"
           ></p-chart>
         </div>
-        <div
-          class="p-card flex align-items-center justify-content-center p-4 col-4"
-        >
+      </div>
+      <div class="col-12 lg:col-12 xl:col-4">
+        <div class="p-card shadow-none border-1 border-gray-200 py-2">
           <p-chart
             type="pie"
             [data]="data"
@@ -123,9 +153,12 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- TODO: Actualizar los estilos para generar la estadistica -->
-  <!-- TODO: Lo dejo asi para avanzar con las estadisticas code -->
-  <!-- TODO: Al finalizar se rearma correctamente las estadisticas -->
-</div>
+  </section>
+  <ng-template #elseBlock>
+    <div>
+      Esperando a que inicie la generación de estadísticas. Por favor, haga clic
+      en el botón correspondiente.
+      <i class="pi pi-spin pi-spinner"></i>
+    </div>
+  </ng-template>
+</section>
