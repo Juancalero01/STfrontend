@@ -21,6 +21,8 @@ export class SupportService {
     return this.httpClient.get<ISupport[]>(this.URL);
   }
 
+  //! VERIFICAR SI SE PUEDE PONER EN UNA SOLA QUERY LOS DATOS ESTOS.
+
   public findAllWithoutCancel(): Observable<number> {
     return this.httpClient.get<number>(`${this.URL}/allwoc`);
   }
@@ -58,20 +60,17 @@ export class SupportService {
     });
   }
 
-  public updateDateDeparture(
-    id: number,
-    dateDeparture: Date
-  ): Observable<Date> {
-    return this.httpClient.put<Date>(`${this.URL}/d/${id}`, {
-      dateDeparture,
-    });
+  public setDateDeparture(id: number, dateDeparture: Date): Observable<any> {
+    const requestBody = { dateDeparture };
+    return this.httpClient.put<any>(`${this.URL}/d/${id}`, requestBody);
+  }
+
+  public setRepairedTime(id: number, repairedTime: number): Observable<any> {
+    const requestBody = { repairedTime };
+    return this.httpClient.put<any>(`${this.URL}/rt/${id}`, requestBody);
   }
 
   public findAllByProduct(id: number): Observable<ISupport[]> {
     return this.httpClient.get<ISupport[]>(`${this.URL}/p/${id}`);
   }
-
-  //generateIndicator
-  //params: dateEntry
-  //return values: ingresos (REPARADOS CERRADOS)
 }

@@ -35,6 +35,7 @@ export class SupportFormHistoryComponent {
   public minDate: Date = new Date(this.config.data.dateEntry);
   public maxDate: Date = this.today;
   public alphaNumberUppercaseSpaceHyphenDotComma: RegExp = /^[A-Z0-9 .,-]*$/;
+  public showHours: boolean = false;
 
   public ngOnInit(): void {
     this.setDefaultFormData();
@@ -77,6 +78,15 @@ export class SupportFormHistoryComponent {
           return;
         } else if (stateCurrentValue === 6) {
           this.nextStates = states.filter((state) => [8].includes(state.id));
+          this.showHours = true;
+          this.supportHistoryForm.get('repairedTime')?.enable();
+
+          this.supportHistoryForm
+            .get('repairedTime')
+            ?.addValidators([
+              Validators.required,
+              Validators.pattern(/^(?!00$|0$)[1-9]\d?$/),
+            ]);
           return;
         } else if (stateCurrentValue === 7) {
           this.nextStates = states.filter((state) => [9].includes(state.id));
@@ -107,6 +117,7 @@ export class SupportFormHistoryComponent {
       remarks: [null, [Validators.required]],
       service: [null, [Validators.required]],
       user: [null, [Validators.required]],
+      repairedTime: [{ value: null, disabled: true }],
     });
   }
 
@@ -137,43 +148,45 @@ export class SupportFormHistoryComponent {
       acceptButtonStyleClass: 'p-button-sm p-button-info',
       rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
-        this.supportHistoryService
-          .create(this.supportHistoryForm.getRawValue())
-          .subscribe({
-            next: () => {
-              this.supportService
-                .updateState(
-                  this.config.data.id,
-                  this.supportHistoryForm.get('stateNext')?.value
-                )
-                .subscribe({
-                  next: () => {
-                    if (
-                      this.supportHistoryForm.get('stateCurrent')?.value === 10
-                    ) {
-                      this.supportService
-                        .updateDateDeparture(this.config.data.id, new Date())
-                        .subscribe({
-                          next: () => {},
-                          error: () => {},
-                          complete: () => {},
-                        });
-                    }
-                  },
-                  error: () => {},
-                  complete: () => {},
-                });
-            },
-            error: () => {},
-            complete: () => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Operación exitosa',
-                detail: 'El estado se actualizo correctamente',
+        const { repairedTime, ...dataSend } =
+          this.supportHistoryForm.getRawValue();
+        this.supportHistoryService.create(dataSend).subscribe({
+          next: () => {
+            this.supportService
+              .updateState(
+                this.config.data.id,
+                this.supportHistoryForm.get('stateNext')?.value
+              )
+              .subscribe({
+                next: () => {
+                  if (
+                    this.supportHistoryForm.get('stateCurrent')?.value === 6
+                  ) {
+                    this.supportService
+                      .setRepairedTime(this.config.data.id, repairedTime)
+                      .subscribe();
+                  } else if (
+                    this.supportHistoryForm.get('stateCurrent')?.value === 10
+                  ) {
+                    this.supportService
+                      .setDateDeparture(this.config.data.id, new Date())
+                      .subscribe();
+                  }
+                },
+                error: () => {},
+                complete: () => {},
               });
-              this.ref.close();
-            },
-          });
+          },
+          error: () => {},
+          complete: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Operación exitosa',
+              detail: 'El estado se actualizo correctamente',
+            });
+            this.ref.close();
+          },
+        });
       },
     });
   }

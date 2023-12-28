@@ -44,8 +44,24 @@
       Campo requerido*
     </small>
   </div>
+  <div class="w-full" *ngIf="showHours">
+    <label>TIEMPO DE REPARACIÓN (horas aproximadas)</label>
+    <input
+      formControlName="repairedTime"
+      type="text"
+      pInputText
+      class="w-full"
+      [pKeyFilter]="'num'"
+      [maxlength]="2"
+      placeholder="Ingrese horas de reparación"
+      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('hours') }"
+    />
+    <small *ngIf="validateForm('hours')" class="p-error">
+      Campo requerido*
+    </small>
+  </div>
   <div class="w-full">
-    <label>COMENTARIOS</label>
+    <label>COMENTARIOS (Estado actual)</label>
     <textarea
       pInputTextarea
       formControlName="remarks"
