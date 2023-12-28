@@ -119,28 +119,14 @@ export class IndicatorComponent {
 
     this.data = {
       labels: labels,
-      datasets: [
-        {
-          data: percentages,
-        },
-      ],
+      datasets: [{ data: percentages }],
     };
 
     this.options = {
       plugins: {
         tooltip: {
           callbacks: {
-            label: function (context: any) {
-              let label = context.label || '';
-
-              if (label) {
-                label += ': ';
-              }
-              if (context.parsed !== null) {
-                label += context.parsed + '%';
-              }
-              return label;
-            },
+            label: (context: any) => context.parsed + '%',
           },
         },
         legend: {
@@ -149,6 +135,16 @@ export class IndicatorComponent {
           labels: {
             color: textColor,
           },
+        },
+        dataLabels: {
+          display: true,
+          align: 'center',
+          font: {
+            size: 15,
+          },
+        },
+        label: {
+          display: true,
         },
         title: {
           display: true,
