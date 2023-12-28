@@ -54,9 +54,9 @@
       [pKeyFilter]="'num'"
       [maxlength]="2"
       placeholder="Ingrese horas de reparación"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('hours') }"
+      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('repairedTime') }"
     />
-    <small *ngIf="validateForm('hours')" class="p-error">
+    <small *ngIf="validateForm('repairedTime')" class="p-error">
       Campo requerido*
     </small>
   </div>
