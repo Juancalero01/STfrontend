@@ -68,9 +68,9 @@
           {{ dateFrom | date : "dd/MM/yyyy" }} al
           {{ dateUntil | date : "dd/MM/yyyy" }}
         </span>
-        <span class="text-lg font-medium text-gray-500"
+        <!-- <span class="text-lg font-medium text-gray-500"
           >Tipo de producto: {{ productType.name | null }}
-        </span>
+        </span> -->
       </div>
     </div>
     <div class="grid">
@@ -79,9 +79,10 @@
           <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium">SERVICIOS</span>
           </div>
-          <div class="flex gap-2 align-items-center">
-            <span class="text-4xl font-medium">30</span>
-            <span class="text-green-400 font-medium">60%</span>
+          <div>
+            <span class="text-4xl font-medium"
+              >{{ indicatorData.numberOfServices }}
+            </span>
           </div>
         </div>
       </div>
@@ -92,9 +93,10 @@
               >SERVICIOS REINGRESADOS</span
             >
           </div>
-          <div class="flex gap-2 align-items-center">
-            <span class="text-4xl font-medium">20</span>
-            <span class="text-green-400 font-medium">30%</span>
+          <div>
+            <span class="text-4xl font-medium"
+              >{{ indicatorData.reentryServices }}
+            </span>
           </div>
         </div>
       </div>
@@ -104,8 +106,12 @@
             <span class="block text-500 font-medium">TIEMPO DE REPARACIÓN</span>
           </div>
           <div class="flex gap-2 align-items-center">
-            <span class="text-4xl font-medium">5 Hrs</span>
-            <span class="text-green-400 font-medium">170 Hrs</span>
+            <span class="text-4xl font-medium">
+              {{ indicatorData.repairTime.averageHours }} Hrs prom.</span
+            >
+            <span class="text-green-400 font-medium"
+              >{{ indicatorData.repairTime.totalHours }} Hrs</span
+            >
           </div>
         </div>
       </div>
@@ -117,38 +123,22 @@
             >
           </div>
           <div class="flex gap-2 align-items-center">
-            <span class="text-4xl font-medium">15 Días</span>
-            <span class="text-green-400 font-medium">45%</span>
+            <span class="text-4xl font-medium"
+              >{{ indicatorData.repairTimeOfStay.averageDays }} Días prom.
+            </span>
+            <span class="text-green-400 font-medium">
+              {{ indicatorData.repairTimeOfStay.totalDays }} Días</span
+            >
           </div>
         </div>
       </div>
-      <div class="col-12 lg:col-12 xl:col-4">
-        <div class="p-card shadow-none border-1 border-gray-200 py-2">
-          <p-chart
-            type="polarArea"
-            [data]="data"
-            [options]="options"
-            width="400"
-          ></p-chart>
-        </div>
-      </div>
-      <div class="col-12 lg:col-12 xl:col-4">
-        <div class="p-card shadow-none border-1 border-gray-200 py-2">
-          <p-chart
-            type="doughnut"
-            [data]="data"
-            [options]="options"
-            width="400"
-          ></p-chart>
-        </div>
-      </div>
-      <div class="col-12 lg:col-12 xl:col-4">
+      <div class="col-12 lg:col-12 xl:col-6">
         <div class="p-card shadow-none border-1 border-gray-200 py-2">
           <p-chart
             type="pie"
             [data]="data"
             [options]="options"
-            width="400"
+            width="500"
           ></p-chart>
         </div>
       </div>

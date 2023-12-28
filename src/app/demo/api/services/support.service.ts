@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { Observable } from 'rxjs';
 import { ISupport } from '../interfaces/support.interface';
@@ -72,5 +72,9 @@ export class SupportService {
 
   public findAllByProduct(id: number): Observable<ISupport[]> {
     return this.httpClient.get<ISupport[]>(`${this.URL}/p/${id}`);
+  }
+
+  public getServiceIndicators(body: any) {
+    return this.httpClient.post<any>(`${this.URL}/i`, body);
   }
 }
