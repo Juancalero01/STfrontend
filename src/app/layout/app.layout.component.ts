@@ -3,11 +3,11 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-layout',
   template: `
-    <main class="min-h-screen">
+    <main>
       <nav>
         <app-topbar />
       </nav>
-      <section class="p-4" style="height: calc(100vh - 63px);">
+      <section class="p-4">
         <router-outlet />
       </section>
     </main>
