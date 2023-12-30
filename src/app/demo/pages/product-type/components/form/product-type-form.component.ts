@@ -21,26 +21,35 @@ export class ProductTypeFormComponent {
 
   public productTypeForm: FormGroup = this.buildForm();
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
-  public alphaNumberUppercaseSpaceHyphen: RegExp = /^[A-Z0-9 ()#\-]*$/;
 
-  public alphaNumberUppercaseSpaceHyphenDotComma: RegExp = /^[A-Z0-9 .,-]*$/;
   public ngOnInit(): void {
-    if (this.config.data) this.loadForm(this.config.data);
+    if (this.config.data) {
+      this.loadForm(this.config.data);
+      this.buttonLabel = 'ACTUALIZAR FORMULARIO';
+    }
   }
 
   private buildForm(): FormGroup {
     return this.formBuilder.group({
       prefix: [null, [Validators.required, Validators.maxLength(4)]],
-      name: [null, [Validators.required, Validators.maxLength(100)]],
+      name: [
+        null,
+        [
+          Validators.required,
+          Validators.maxLength(100),
+          Validators.pattern(/^[a-zA-Z0-9\s-()]+$/),
+        ],
+      ],
       description: [null, [Validators.maxLength(250)]],
     });
   }
 
   private loadForm(productType: IProductType): void {
     this.productTypeForm.patchValue(productType);
-    if (this.productTypeForm.get('prefix')?.value === null)
+    if (this.productTypeForm.get('prefix')?.value === null) {
       this.productTypeForm.get('prefix')?.clearValidators();
-    this.buttonLabel = 'ACTUALIZAR FORMULARIO';
+      this.productTypeForm.get('prefix')?.disable();
+    }
   }
 
   public validateForm(controlName: string): boolean | undefined {
@@ -51,8 +60,11 @@ export class ProductTypeFormComponent {
   }
 
   public submitForm(): void {
-    if (!this.config.data) this.createProductType();
-    else this.updateProductType();
+    if (!this.config.data) {
+      this.createProductType();
+    } else {
+      this.updateProductType();
+    }
   }
 
   public cancelForm(): void {
@@ -82,17 +94,18 @@ export class ProductTypeFormComponent {
       acceptButtonStyleClass: 'p-button-sm p-button-info',
       rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
-        this.productTypeService.create(this.productTypeForm.value).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Operación exitosa',
-              detail: 'El registro se creó',
-            });
-          },
-          error: () => {},
-          complete: () => this.ref.close(),
-        });
+        this.productTypeService
+          .create(this.productTypeForm.getRawValue())
+          .subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Operación exitosa',
+                detail: 'Registro creado correctamente',
+              });
+              this.ref.close();
+            },
+          });
       },
     });
   }
@@ -110,17 +123,16 @@ export class ProductTypeFormComponent {
       rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
         this.productTypeService
-          .update(this.config.data?.id, this.productTypeForm.value)
+          .update(this.config.data.id, this.productTypeForm.getRawValue())
           .subscribe({
             next: () => {
               this.messageService.add({
                 severity: 'success',
                 summary: 'Operación exitosa',
-                detail: 'El registro se actualizó',
+                detail: 'Registro actualizado correctamente',
               });
+              this.ref.close();
             },
-            error: () => {},
-            complete: () => this.ref.close(),
           });
       },
     });

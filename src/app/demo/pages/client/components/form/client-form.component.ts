@@ -183,7 +183,7 @@ export class ClientFormComponent {
       rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
         this.clientService
-          .update(this.config.data?.id, this.clientForm.value)
+          .update(this.config.data.id, this.clientForm.value)
           .subscribe({
             next: () => {
               this.messageService.add({
