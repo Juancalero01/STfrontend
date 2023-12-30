@@ -1,28 +1,27 @@
 <div class="w-full h-full flex flex-column gap-4">
-  <div class="flex justify-content-between">
-    <div class="flex gap-2">
-      <p-button
-        label="NUEVO CLIENTE"
-        icon="pi pi-plus"
-        styleClass="p-button-info p-button-sm h-full"
-        (onClick)="openClientForm()"
-      />
-    </div>
-    <div class="flex gap-2">
+  <div class="flex flex-column md:flex-row justify-content-between gap-2">
+    <p-button
+      label="NUEVO CLIENTE"
+      icon="pi pi-plus"
+      styleClass="p-button-info p-button-sm h-3rem w-full"
+      (onClick)="openClientForm()"
+    />
+
+    <div class="flex flex-column-reverse md:flex-row gap-2">
       <p-button
         label="LIMPIAR FILTROS"
         icon="pi pi-filter-slash"
-        styleClass="p-button-danger p-button-sm h-full"
+        styleClass="p-button-danger p-button-sm h-3rem w-full"
         (onClick)="cleanFilters(dt, fi)"
       />
-      <div class="p-input-icon-right">
+      <div class="p-input-icon-right h-3rem">
         <i class="pi pi-search"></i>
         <input
           #fi
           pInputText
           type="text"
           placeholder="Buscar por razón social"
-          class="w-20rem"
+          class="w-full h-full"
           (input)="dt.filterGlobal($any($event.target).value, 'contains')"
         />
       </div>
