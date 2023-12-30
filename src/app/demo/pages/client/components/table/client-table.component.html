@@ -30,7 +30,7 @@
   </div>
   <p-table
     #dt
-    [value]="clientData"
+    [value]="clients"
     [globalFilterFields]="['taxpayerName']"
     [scrollable]="true"
     scrollHeight="100%"
@@ -49,10 +49,10 @@
     <ng-template pTemplate="body" let-client>
       <tr class="text-sm h-3rem">
         <td>{{ client.taxpayerId | null }}</td>
-        <td>{{ client.taxpayerName | uppercase }}</td>
+        <td>{{ client.taxpayerName }}</td>
         <td>{{ client.taxpayerEmail | null }}</td>
         <td>{{ client.taxpayerPhone | null }}</td>
-        <td>{{ client.contactName | null | uppercase }}</td>
+        <td>{{ client.contactName | null }}</td>
         <td>
           <p-button
             icon="pi pi-window-maximize"

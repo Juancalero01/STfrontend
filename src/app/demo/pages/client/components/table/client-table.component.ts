@@ -4,7 +4,6 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ClientFormComponent } from '../form/client-form.component';
 import { ClientService } from '../../../../api/services/client.service';
 import { IClient } from '../../../../api/interfaces/client.interface';
-import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-client-table',
@@ -16,24 +15,18 @@ export class ClientTableComponent {
     private readonly dialogService: DialogService
   ) {}
 
-  public clientData: IClient[] = [];
+  public clients: IClient[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
 
   public ngOnInit(): void {
     this.loadClients();
   }
 
-  public ngDestroy(): void {
-    if (this.ref) this.ref.close();
-  }
-
   private loadClients(): void {
     this.clientService.findAll().subscribe({
       next: (clients: IClient[]) => {
-        this.clientData = clients;
+        this.clients = clients;
       },
-      error: () => {},
-      complete: () => {},
     });
   }
 

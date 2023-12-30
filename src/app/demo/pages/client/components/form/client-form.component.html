@@ -16,12 +16,12 @@
   <div class="flex gap-2 w-full">
     <div class="flex flex-column w-full">
       <label>CUIT</label>
-      <p-inputMask
+      <input
+        pInputText
         formControlName="taxpayerId"
-        mask="99-99999999-9"
-        pKeyFilter="num"
+        maxlength="13"
         placeholder="Ingrese el CUIT del cliente"
-        styleClass="w-full"
+        pKeyFilter="num"
       />
     </div>
     <div class="flex flex-column w-full">
@@ -31,6 +31,7 @@
         [options]="taxConditions"
         optionLabel="name"
         optionValue="id"
+        [showClear]="true"
         [filter]="true"
         placeholder="Seleccionar condición fiscal del cliente"
         filterPlaceholder="Buscar condición fiscal"
@@ -57,7 +58,6 @@
         formControlName="taxpayerPhone"
         maxlength="20"
         placeholder="Ingrese el teléfono o celular del cliente"
-        pKeyFilter="num"
       />
     </div>
   </div>
@@ -69,6 +69,7 @@
         [options]="provinces"
         optionLabel="name"
         optionValue="id"
+        [showClear]="true"
         [filter]="true"
         placeholder="Seleccionar provincia del cliente"
         styleClass="w-full"
@@ -88,7 +89,7 @@
   </div>
   <div class="flex gap-2 w-full">
     <div class="flex flex-column w-full">
-      <label>NÚMERO</label>
+      <label>NÚMERO DE CALLE</label>
       <input
         pInputText
         formControlName="number"
@@ -108,7 +109,7 @@
       />
     </div>
     <div class="flex flex-column w-full">
-      <label>DEPARTAMENTO / OFICINA</label>
+      <label>DEPARTAMENTO(s) / OFICINA(s)</label>
       <input
         pInputText
         formControlName="office"
@@ -156,12 +157,11 @@
         formControlName="contactPhone"
         maxlength="20"
         placeholder="Ingrese el teléfono o celular de la persona de contacto"
-        pKeyFilter="num"
       />
     </div>
   </div>
   <div class="flex flex-column w-full">
-    <label>COMENTARIO ADICIONAL</label>
+    <label>COMENTARIOS</label>
     <textarea
       pInputTextarea
       formControlName="comment"
@@ -170,7 +170,6 @@
       class="w-full"
       [autoResize]="true"
       rows="5"
-      count
     ></textarea>
   </div>
   <div class="flex justify-content-end gap-2 w-full">

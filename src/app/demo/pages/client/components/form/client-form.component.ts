@@ -33,23 +33,60 @@ export class ClientFormComponent {
   public ngOnInit(): void {
     this.getProvinces();
     this.getTaxConditions();
-    this.config.data ? this.loadForm(this.config.data) : null;
+    if (this.config.data) {
+      this.loadForm(this.config.data);
+      this.buttonLabel = 'ACTUALIZAR FORMULARIO';
+    }
   }
 
   private buildForm(): FormGroup {
     return this.formBuilder.group({
-      taxpayerName: [null, [Validators.required]],
-      taxpayerId: [null, [Validators.maxLength(13)]],
+      taxpayerName: [
+        null,
+        [
+          Validators.required,
+          Validators.maxLength(150),
+          Validators.pattern(/^[a-zA-Z0-9\s.]+$/),
+        ],
+      ],
+      taxpayerId: [
+        null,
+        [Validators.minLength(13), Validators.pattern(/^\d{2}-\d{8}-\d{1}$/)],
+      ],
       taxpayerEmail: [null, [Validators.email, Validators.maxLength(120)]],
-      taxpayerPhone: [null, [Validators.maxLength(20)]],
-      street: [null, [Validators.maxLength(150)]],
-      number: [null, [Validators.maxLength(10)]],
-      floor: [null, [Validators.maxLength(10)]],
-      office: [null, [Validators.maxLength(10)]],
-      postalCode: [null, [Validators.maxLength(8)]],
-      contactName: [null, [Validators.maxLength(120)]],
+      taxpayerPhone: [
+        null,
+        [Validators.maxLength(20), Validators.pattern(/^[0-9()+-\s]+$/)],
+      ],
+      street: [
+        null,
+        [Validators.maxLength(150), Validators.pattern(/^[a-zA-Z0-9\s.,#-]+$/)],
+      ],
+      number: [
+        null,
+        [Validators.maxLength(10), Validators.pattern(/^[0-9]+$/)],
+      ],
+      floor: [
+        null,
+        [Validators.maxLength(10), Validators.pattern(/^[a-zA-Z0-9]+$/)],
+      ],
+      office: [
+        null,
+        [Validators.maxLength(10), Validators.pattern(/^[\w\s-,]+$/)],
+      ],
+      postalCode: [
+        null,
+        [Validators.maxLength(8), Validators.pattern(/^[a-zA-Z0-9]+$/)],
+      ],
+      contactName: [
+        null,
+        [Validators.maxLength(120), Validators.pattern(/^[a-zA-Z\s]+$/)],
+      ],
       contactEmail: [null, [Validators.email, Validators.maxLength(120)]],
-      contactPhone: [null, [Validators.maxLength(20)]],
+      contactPhone: [
+        null,
+        [Validators.maxLength(20), Validators.pattern(/^[0-9()+-\s]+$/)],
+      ],
       comment: [null, [Validators.maxLength(250)]],
       taxCondition: [null],
       province: [null],
@@ -57,10 +94,11 @@ export class ClientFormComponent {
   }
 
   private loadForm(client: IClient): void {
-    this.clientForm.patchValue(client);
-    this.clientForm.get('taxCondition')?.setValue(client.taxCondition?.id);
-    this.clientForm.get('province')?.setValue(client.province?.id);
-    this.buttonLabel = 'ACTUALIZAR FORMULARIO';
+    this.clientForm.patchValue({
+      ...client,
+      taxCondition: client.taxCondition?.id,
+      province: client.province?.id,
+    });
   }
 
   private getProvinces(): void {
@@ -84,7 +122,11 @@ export class ClientFormComponent {
   }
 
   public submitForm(): void {
-    !this.config.data ? this.createClient() : this.updateClient();
+    if (!this.config.data) {
+      this.createClient();
+    } else {
+      this.updateClient();
+    }
   }
 
   public closeForm(): void {
@@ -121,9 +163,8 @@ export class ClientFormComponent {
               summary: 'Operación exitosa',
               detail: 'Registro creado correctamente',
             });
+            this.ref.close();
           },
-          error: () => {},
-          complete: () => this.ref.close(),
         });
       },
     });
@@ -148,11 +189,11 @@ export class ClientFormComponent {
               this.messageService.add({
                 severity: 'success',
                 summary: 'Operación exitosa',
-                detail: 'El registro se actualizó',
+                detail: 'Registro actualizado correctamente',
               });
+
+              this.ref.close();
             },
-            error: () => {},
-            complete: () => this.ref.close(),
           });
       },
     });
