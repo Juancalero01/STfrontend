@@ -25,7 +25,10 @@ export class AuthFormLoginComponent {
 
   private buildForm(): FormGroup {
     return this.formBuilder.group({
-      username: [null, [Validators.required]],
+      username: [
+        null,
+        [Validators.required, Validators.pattern(/^[a-zA-Z]+$/)],
+      ],
       password: [null, [Validators.required]],
     });
   }
