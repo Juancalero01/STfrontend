@@ -28,10 +28,6 @@ export class AppTopbarComponent {
       icon: 'pi pi-fw pi-user',
       items: [
         {
-          label: 'Perfil',
-          icon: 'pi pi-fw pi-user',
-        },
-        {
           label: 'Cerrar Sesión',
           icon: 'pi pi-fw pi-sign-out',
           command: () => {
