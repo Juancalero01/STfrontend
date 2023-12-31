@@ -23,18 +23,21 @@ export class FailureTypeFormComponent {
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
 
   public ngOnInit(): void {
-    if (this.config.data) this.loadForm(this.config.data);
+    if (this.config.data) {
+      this.loadForm(this.config.data);
+      this.buttonLabel = 'ACTUALIZAR FORMULARIO';
+    }
   }
 
   private buildForm(): FormGroup {
     return this.formBuilder.group({
-      name: [null, [Validators.required]],
+      name: [null, [Validators.required, Validators.maxLength(60)]],
+      description: [null, [Validators.maxLength(250)]],
     });
   }
 
   private loadForm(failureType: IFailureType): void {
     this.failureTypeForm.patchValue(failureType);
-    this.buttonLabel = 'ACTUALIZAR FORMULARIO';
   }
 
   public validateForm(controlName: string): boolean | undefined {
@@ -45,7 +48,11 @@ export class FailureTypeFormComponent {
   }
 
   public submitForm(): void {
-    !this.config.data ? this.createFailureType() : this.updateFailureType();
+    if (!this.config.data) {
+      this.createFailureType();
+    } else {
+      this.updateFailureType();
+    }
   }
 
   public cancelForm(): void {
@@ -80,11 +87,10 @@ export class FailureTypeFormComponent {
             this.messageService.add({
               severity: 'success',
               summary: 'Operación exitosa',
-              detail: 'El registro se creó',
+              detail: 'Registro creado correctamente',
             });
+            this.ref.close();
           },
-          error: () => {},
-          complete: () => this.ref.close(),
         });
       },
     });
@@ -109,11 +115,10 @@ export class FailureTypeFormComponent {
               this.messageService.add({
                 severity: 'success',
                 summary: 'Operación exitosa',
-                detail: 'El registro se actualizó',
+                detail: 'Registro actualizado correctamente',
               });
+              this.ref.close();
             },
-            error: () => {},
-            complete: () => this.ref.close(),
           });
       },
     });

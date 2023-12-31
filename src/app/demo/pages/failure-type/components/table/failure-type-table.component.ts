@@ -15,31 +15,29 @@ export class FailureTypeTableComponent {
     private readonly dialogService: DialogService
   ) {}
 
-  public failureTypeData: IFailureType[] = [];
+  public failureTypes: IFailureType[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
 
   public ngOnInit() {
     this.loadFailureTypes();
   }
 
-  public ngDestroy(): void {
-    if (this.ref) this.ref.close();
-  }
-
   private loadFailureTypes(): void {
     this.failureTypeService.findAll().subscribe({
-      next: (failureTypes: IFailureType[]) =>
-        (this.failureTypeData = failureTypes),
+      next: (failureTypes: IFailureType[]) => {
+        this.failureTypes = failureTypes;
+      },
     });
   }
 
-  public openFailureTypeForm(failureType?: IFailureType) {
+  public openFailureTypeForm(failureType?: IFailureType): void {
     const header = failureType
       ? 'FORMULARIO DE ACTUALIZACIÓN DE TIPO DE FALLA'
       : 'FORMULARIO DE REGISTRO DE TIPO DE FALLA';
     this.ref = this.dialogService.open(FailureTypeFormComponent, {
       header: header,
       width: '50%',
+      height: 'auto',
       closable: false,
       closeOnEscape: false,
       dismissableMask: false,
@@ -47,9 +45,15 @@ export class FailureTypeTableComponent {
       position: 'center',
       data: failureType,
     });
+
+    this.ref.onClose.subscribe({
+      next: () => {
+        this.loadFailureTypes();
+      },
+    });
   }
 
-  public cleanFilters(table: Table, filter: any) {
+  public cleanFilters(table: Table, filter: any): void {
     table.clear();
     filter.value = '';
   }

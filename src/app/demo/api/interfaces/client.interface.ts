@@ -3,7 +3,7 @@ import { ITaxCondition } from './tax-condition.interface';
 
 export interface IClient {
   id: number;
-  state?: boolean;
+  isActive?: boolean;
   createdAt?: string;
   updatedAt?: string;
   taxpayerName: string | null;

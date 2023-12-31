@@ -3,7 +3,7 @@ import { IProductType } from './product-type.interface';
 
 export interface IProduct {
   id: number;
-  state?: boolean;
+  isActive?: boolean;
   createdAt?: string;
   updatedAt?: string;
   serial: string;
