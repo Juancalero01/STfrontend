@@ -1,10 +1,14 @@
 import { IFailureType } from './failure-type.interface';
 import { IProduct } from './product.interface';
+import { ISupportHistory } from './support-history.interface';
 import { ISupportPriority } from './support-priority.interface';
 import { ISupportState } from './support-state.interface';
 
 export interface ISupport {
   id: number;
+  isActive?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
   reclaim: string;
   startReference: string | null;
   endReference: string | null;
@@ -20,4 +24,5 @@ export interface ISupport {
   state: ISupportState;
   priority: ISupportPriority;
   failureTypes: IFailureType[];
+  serviceHistory: ISupportHistory[];
 }

@@ -15,7 +15,7 @@ export class SupportHistoryTableComponent {
     private readonly dialogService: DialogService
   ) {}
 
-  public supportData: ISupport[] = [];
+  public supports: ISupport[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
 
   public ngOnInit(): void {
@@ -25,23 +25,21 @@ export class SupportHistoryTableComponent {
   public loadSupports(): void {
     this.supportService.findAll().subscribe({
       next: (supports: ISupport[]) => {
-        this.supportData = supports;
+        this.supports = supports;
       },
-      error: () => {},
-      complete() {},
     });
   }
 
-  public cleanFilters(table: Table, filter: any) {
+  public cleanFilters(table: Table, filter: any): void {
     table.clear();
     filter.value = '';
   }
 
-  public openSupportHistoryForm(support?: ISupport) {
+  public openSupportHistoryForm(support?: ISupport): void {
     this.ref = this.dialogService.open(SupportHistoryFormComponent, {
       header: `INFORMACIÓN DEL SERVICIO`,
-      width: '70%',
-      height: '75%',
+      width: '80%',
+      height: '80%',
       closable: true,
       closeOnEscape: false,
       dismissableMask: false,
@@ -54,10 +52,8 @@ export class SupportHistoryTableComponent {
   public getTagSeverity(stateId: number): string {
     if (stateId === 11) {
       return 'success';
-    } else if (stateId === 12) {
-      return 'danger';
     } else {
-      return 'info';
+      return 'warning';
     }
   }
 }

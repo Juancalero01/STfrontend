@@ -37,7 +37,6 @@ export class FailureTypeTableComponent {
     this.ref = this.dialogService.open(FailureTypeFormComponent, {
       header: header,
       width: '50%',
-      height: 'auto',
       closable: false,
       closeOnEscape: false,
       dismissableMask: false,

@@ -31,11 +31,12 @@ body {
   border: none;
 }
 
-.p-menu .p-submenu-header {
-  color: #212529;
-  background: transparent;
-}
-
 .p-datatable .p-datatable-thead > tr > th {
   border: none;
+}
+
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  background: transparent !important;
+  border-color: var(--blue-500) !important;
+  color: var(--blue-500) !important;
 }

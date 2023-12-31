@@ -12,7 +12,17 @@
       <ng-template pTemplate="body">
         <tr class="text-sm h-3rem">
           <td class="w-16rem">NÚMERO DE RECLAMO</td>
-          <td>{{ supports.reclaim }}</td>
+          <td class="font-semibold">{{ supports.reclaim }}</td>
+        </tr>
+        <tr class="text-sm h-3rem">
+          <td class="w-16rem">CLIENTE</td>
+          <td class="font-semibold">
+            {{ supports.product.client.taxpayerName }}
+          </td>
+        </tr>
+        <tr class="text-sm h-3rem">
+          <td class="w-16rem">TIPO DE PRODUCTO</td>
+          <td class="font-semibold">{{ supports.product.productType.name }}</td>
         </tr>
         <tr class="text-sm h-3rem">
           <td class="w-16rem">FECHA DE INGRESO</td>
@@ -52,14 +62,14 @@
         </tr>
         <tr class="text-sm h-3rem">
           <td class="w-16rem">OBSERVACIONES</td>
-          <td>{{ supports.remarks | null }}</td>
+          <td class="white-space-normal">{{ supports.remarks | null }}</td>
         </tr>
       </ng-template>
     </p-table>
   </p-tabPanel>
   <p-tabPanel header="FALLAS">
     <p-table
-      [value]="failureTypes"
+      [value]="supports.failureTypes"
       styleClass="p-datatable-striped p-datatable-sm"
     >
       <ng-template pTemplate="header">
@@ -88,7 +98,7 @@
   </p-tabPanel>
   <p-tabPanel header="HISTORIAL">
     <p-table
-      [value]="supportHistories"
+      [value]="supports.serviceHistory"
       styleClass="p-datatable-striped p-datatable-sm"
     >
       <ng-template pTemplate="header">
@@ -96,15 +106,15 @@
           <th colspan="4">CAMBIOS DE ESTADO DEL SERVICIO</th>
         </tr>
         <tr class="text-sm h-3rem">
-          <th>FECHA DE REGISTRO</th>
-          <th>ESTADO</th>
-          <th>COMENTARIOS</th>
-          <th>USUARIO</th>
+          <th class="w-2">FECHA Y HORA DE REGISTRO</th>
+          <th class="w-2">ESTADO</th>
+          <th class="white-space-normal">COMENTARIOS</th>
+          <th class="w-2">USUARIO</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-supportHistory>
         <tr class="text-sm h-3rem">
-          <td>{{ supportHistory.dateEntry | date : "dd/MM/yyyy" }}</td>
+          <td>{{ supportHistory.dateEntry | date : "dd/MM/yyyy HH:mm" }}</td>
           <td>{{ supportHistory.stateCurrent.name }}</td>
           <td>{{ supportHistory.remarks }}</td>
           <td>{{ supportHistory.user.fullname }}</td>
