@@ -4,6 +4,7 @@ import { Table } from 'primeng/table';
 import { IUser } from 'src/app/demo/api/interfaces/user.interface';
 import { UserService } from 'src/app/demo/api/services/user.service';
 import { UserFormComponent } from '../form/user-form.component';
+import { TokenService } from 'src/app/demo/api/services/token.service';
 
 @Component({
   selector: 'app-table-user',
@@ -12,7 +13,8 @@ import { UserFormComponent } from '../form/user-form.component';
 export class TableUserComponent {
   constructor(
     private readonly userService: UserService,
-    private readonly dialogService: DialogService
+    private readonly dialogService: DialogService,
+    private readonly tokenService: TokenService
   ) {}
 
   public users: IUser[] = [];
@@ -22,13 +24,11 @@ export class TableUserComponent {
     this.getUsers();
   }
 
-  public ngDestroy() {
-    this.ref ? this.ref.close() : null;
-  }
-
   private getUsers(): void {
     this.userService.findAll().subscribe({
-      next: (user: IUser[]) => (this.users = user),
+      next: (users: IUser[]) => {
+        this.users = users;
+      },
     });
   }
 
@@ -39,7 +39,7 @@ export class TableUserComponent {
 
     this.ref = this.dialogService.open(UserFormComponent, {
       header: header,
-      width: '50%',
+      width: '60%',
       closable: false,
       closeOnEscape: false,
       dismissableMask: false,
@@ -47,11 +47,26 @@ export class TableUserComponent {
       position: 'center',
       data: user,
     });
-    this.ref.onClose.subscribe(() => this.getUsers());
+    this.ref.onClose.subscribe({
+      complete: () => {
+        this.getUsers();
+      },
+    });
   }
 
   public cleanFilters(table: Table, filter: any) {
     table.clear();
     filter.value = '';
+  }
+
+  public isDisabledButton(user: IUser): boolean {
+    const currentUserId = this.tokenService.getUserId();
+    const currentUsername = this.tokenService.getUserFullname();
+
+    return this.tokenService.isAdmin()
+      ? (currentUsername === 'CONTROLNET' && currentUserId === `${user.id}`) ||
+          (currentUsername !== 'CONTROLNET' &&
+            user.role.name === 'ADMINISTRADOR')
+      : true;
   }
 }

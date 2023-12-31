@@ -1,28 +1,26 @@
 <div class="w-full h-full flex flex-column gap-4">
-  <div class="flex justify-content-between">
-    <div class="flex gap-2">
-      <p-button
-        label="NUEVO USUARIO"
-        icon="pi pi-plus"
-        styleClass="p-button-info p-button-sm h-full"
-        (onClick)="openUserForm()"
-      />
-    </div>
-    <div class="flex gap-2">
+  <div class="flex flex-column md:flex-row justify-content-between gap-2">
+    <p-button
+      label="NUEVO USUARIO"
+      icon="pi pi-plus"
+      styleClass="p-button-info p-button-sm h-3rem w-full"
+      (onClick)="openUserForm()"
+    />
+    <div class="flex flex-column-reverse md:flex-row gap-2">
       <p-button
         label="LIMPIAR FILTROS"
         icon="pi pi-filter-slash"
-        styleClass="p-button-danger p-button-sm h-full"
+        styleClass="p-button-danger p-button-sm h-3rem w-full"
         (onClick)="cleanFilters(dt, fi)"
       />
-      <div class="p-input-icon-right">
+      <div class="p-input-icon-right h-3rem">
         <i class="pi pi-search"></i>
         <input
           #fi
           pInputText
           type="text"
           placeholder="Buscar por nombre de usuario"
-          class="w-20rem"
+          class="w-full md:w-22rem h-full"
           (input)="dt.filterGlobal($any($event.target).value, 'contains')"
         />
       </div>
@@ -31,15 +29,20 @@
   <p-table
     #dt
     [value]="users"
+    [rows]="10"
+    [paginator]="true"
     [globalFilterFields]="['username']"
+    [rowsPerPageOptions]="[10, 25, 50, 100]"
     [scrollable]="true"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Mostrando {first} a {last}"
     scrollHeight="640px"
     styleClass="p-datatable-striped p-datatable-sm"
   >
     <ng-template pTemplate="header">
       <tr class="text-sm h-3rem">
         <th>NOMBRE DE USUARIO</th>
-        <th>NOMBRE COMPLETO</th>
+        <th>NOMBRE Y APELLIDO</th>
         <th>CORREO ELECTRÓNICO</th>
         <th>PERFIL</th>
         <th>ESTADO</th>
@@ -63,6 +66,7 @@
             icon="pi pi-window-maximize"
             styleClass="p-button-text p-button-secondary"
             (onClick)="openUserForm(user)"
+            [disabled]="isDisabledButton(user)"
           />
         </td>
       </tr>

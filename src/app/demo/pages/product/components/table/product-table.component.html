@@ -125,7 +125,7 @@
         <td>{{ product.serial }}</td>
         <td>{{ product.client.taxpayerName }}</td>
         <td>{{ product.productType.name }}</td>
-        <td>{{ product.reference }}</td>
+        <td>{{ product.reference | null }}</td>
         <td>{{ product.deliveryDate | date : "dd/MM/yyyy" }}</td>
         <td>
           <p-button

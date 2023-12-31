@@ -24,31 +24,54 @@ export class UserFormComponent {
 
   public userForm: FormGroup = this.buildForm();
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
-  public buttonStatusLabel: string = 'test';
-  public alphaUppercaseSpace: RegExp = /^[A-Z ]*$/;
-  public alphaUppercase: RegExp = /^[A-Z]+$/;
-  public showButtonResetPassword: boolean = false;
-  public showButtonDisableUser: boolean = false;
+  public buttonStatusLabel: string = '';
+  public showButtons: boolean = false;
   public roles: IRole[] = [];
 
   public ngOnInit(): void {
     this.getRoles();
     if (this.config.data) {
       this.loadForm(this.config.data);
-      this.showButtonResetPassword = true;
-      this.showButtonDisableUser = true;
+      this.showButtons = true;
+      this.buttonLabel = 'ACTUALIZAR FORMULARIO';
     }
   }
 
+  private getRoles(): void {
+    this.roleService.findAll().subscribe({
+      next: (roles: IRole[]) => {
+        this.roles = roles;
+      },
+    });
+  }
+
   public submitForm(): void {
-    !this.config.data ? this.createUser() : this.updateUser();
+    if (!this.config.data) {
+      this.createUser();
+    } else {
+      this.updateUser();
+    }
   }
 
   public buildForm(): FormGroup {
     return this.formBuilder.group({
-      username: [null, [Validators.required]],
-      fullname: [null, [Validators.required]],
-      email: [null, [Validators.required]],
+      username: [
+        null,
+        [
+          Validators.required,
+          Validators.pattern(/^[a-z]+$/),
+          Validators.maxLength(255),
+        ],
+      ],
+      fullname: [
+        null,
+        [
+          Validators.required,
+          Validators.pattern(/^[a-zA-Z\s]+$/),
+          Validators.maxLength(255),
+        ],
+      ],
+      email: [null, [Validators.email, Validators.required]],
       password: [{ value: null, disabled: true }],
       role: [null, [Validators.required]],
     });
@@ -59,7 +82,6 @@ export class UserFormComponent {
       ...user,
       role: user.role.id,
     });
-    this.buttonLabel = 'ACTUALIZAR FORMULARIO';
     this.buttonStatusLabel = user.isActive
       ? 'DESHABILITAR USUARIO'
       : 'HABILITAR USUARIO';
@@ -102,11 +124,8 @@ export class UserFormComponent {
             this.messageService.add({
               severity: 'success',
               summary: 'Operación exitosa',
-              detail: 'El registro se creó',
+              detail: 'Registro creado correctamente',
             });
-          },
-          error: () => {},
-          complete: () => {
             this.ref.close();
           },
         });
@@ -128,17 +147,14 @@ export class UserFormComponent {
       rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
         this.userService
-          .update(this.config.data?.id, this.userForm.value)
+          .update(this.config.data.id, this.userForm.value)
           .subscribe({
             next: () => {
               this.messageService.add({
                 severity: 'success',
                 summary: 'Operación exitosa',
-                detail: 'El registro se actualizó',
+                detail: 'Registro actualizado correctamente',
               });
-            },
-            error: () => {},
-            complete: () => {
               this.ref.close();
             },
           });
@@ -163,7 +179,7 @@ export class UserFormComponent {
             this.messageService.add({
               severity: 'success',
               summary: 'Operación exitosa',
-              detail: 'La contraseña se restableció',
+              detail: 'Contraseña reseteada correctamente',
             });
           },
           error: () => {},
@@ -194,11 +210,8 @@ export class UserFormComponent {
             this.messageService.add({
               severity: 'success',
               summary: 'Operación exitosa',
-              detail: 'Se modifico el estado del usuario',
+              detail: 'Estado actualizado correctamente',
             });
-          },
-          error: () => {},
-          complete: () => {
             this.ref.close();
           },
         });
@@ -206,13 +219,14 @@ export class UserFormComponent {
     });
   }
 
-  private getRoles(): void {
-    this.roleService.findAll().subscribe({
-      next: (roles: IRole[]) => (this.roles = roles),
-    });
-  }
-
   public getChangesToUpdate(): boolean {
     return !this.userForm.pristine;
+  }
+
+  public validateForm(controlName: string): boolean | undefined {
+    return (
+      this.userForm.get(controlName)?.invalid &&
+      this.userForm.get(controlName)?.touched
+    );
   }
 }
