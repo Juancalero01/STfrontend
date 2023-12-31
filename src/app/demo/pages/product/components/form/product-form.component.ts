@@ -29,21 +29,26 @@ export class ProductFormComponent {
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
   public clients: IClient[] = [];
   public productTypes: IProductType[] = [];
-  public numberWithHyphen: RegExp = /^[0-9 -]*$/;
-  public alphaNumberUppercase: RegExp = /^[A-Z0-9 -]*$/;
+
   public ngOnInit(): void {
     this.getClients();
     this.getProductTypes();
 
-    if (this.config.data) this.loadForm(this.config.data);
+    if (this.config.data) {
+      this.loadForm(this.config.data);
+      this.buttonLabel = 'ACTUALIZAR FORMULARIO';
+    }
   }
 
   public buildForm(): FormGroup {
     return this.formBuilder.group({
       client: [null, [Validators.required]],
       productType: [null, [Validators.required]],
-      serial: ['', [Validators.required]],
-      reference: [null],
+      serial: [
+        null,
+        [Validators.required, Validators.pattern(/^\d{1,4}(-\d{4,5})?$/)],
+      ],
+      reference: [null, [Validators.pattern(/^[a-zA-Z0-9]+$/)]],
       deliveryDate: [null, [Validators.required]],
     });
   }
@@ -55,7 +60,6 @@ export class ProductFormComponent {
       productType: product.productType.id,
       deliveryDate: new Date(product.deliveryDate),
     });
-    this.buttonLabel = 'ACTUALIZAR FORMULARIO';
   }
 
   private getClients(): void {
@@ -79,7 +83,11 @@ export class ProductFormComponent {
   }
 
   public submitForm(): void {
-    !this.config.data ? this.createProduct() : this.updateProduct();
+    if (!this.config.data) {
+      this.createProduct();
+    } else {
+      this.updateProduct();
+    }
   }
 
   public closeForm(): void {
@@ -114,11 +122,10 @@ export class ProductFormComponent {
             this.messageService.add({
               severity: 'success',
               summary: 'Operación exitosa',
-              detail: 'El registro se creó',
+              detail: 'Registro creado correctamente',
             });
+            this.ref.close();
           },
-          error: () => {},
-          complete: () => this.ref.close(),
         });
       },
     });
@@ -137,17 +144,16 @@ export class ProductFormComponent {
       rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
         this.productService
-          .update(this.config.data?.id, this.productForm.value)
+          .update(this.config.data.id, this.productForm.value)
           .subscribe({
             next: () => {
               this.messageService.add({
                 severity: 'success',
                 summary: 'Operación exitosa',
-                detail: 'El registro se actualizó',
+                detail: 'Registro actualizado correctamente',
               });
+              this.ref.close();
             },
-            error: () => {},
-            complete: () => this.ref.close(),
           });
       },
     });
@@ -155,21 +161,21 @@ export class ProductFormComponent {
 
   public onProductTypeChange(): void {
     const productTypeId = this.productForm.get('productType')?.value;
-    const productType = this.productTypes.find((productType) => {
-      return (
-        productType.id === productTypeId &&
-        productType.prefix !== null &&
-        productType.prefix !== undefined
-      );
-    });
+    const productType = this.productTypes.find(
+      (type) =>
+        type.id === productTypeId &&
+        type.prefix !== null &&
+        type.prefix !== undefined
+    );
     if (productType) {
       const currentSerialValue = this.productForm.get('serial')?.value;
-      const newSerialValue = `${productType.prefix}-${
-        currentSerialValue.split('-')[1] || ''
-      }`;
+      const newSerialValue =
+        currentSerialValue !== null
+          ? `${productType.prefix}-${currentSerialValue.split('-')[1] || ''}`
+          : `${productType.prefix}-`;
       this.productForm.get('serial')?.setValue(newSerialValue);
     } else {
-      this.productForm.get('serial')?.setValue('');
+      this.productForm.get('serial')?.setValue(null);
     }
   }
 

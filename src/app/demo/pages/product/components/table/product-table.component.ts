@@ -27,29 +27,25 @@ export class ProductTableComponent {
   public ref: DynamicDialogRef = new DynamicDialogRef();
 
   public ngOnInit(): void {
-    this.getClients();
-    this.getProductTypes();
-    this.getProducts();
+    this.loadClients();
+    this.loadProductTypes();
+    this.loadProducts();
   }
 
-  public ngDestroy(): void {
-    this.ref ? this.ref.close() : null;
-  }
-
-  private getClients(): void {
+  private loadClients(): void {
     this.clientService.findAll().subscribe({
       next: (clients: IClient[]) => (this.clients = clients),
     });
   }
 
-  private getProductTypes(): void {
+  private loadProductTypes(): void {
     this.productTypeService.findAll().subscribe({
       next: (productTypes: IProductType[]) =>
         (this.productTypes = productTypes),
     });
   }
 
-  private getProducts(): void {
+  private loadProducts(): void {
     this.productService.findAll().subscribe({
       next: (products: IProduct[]) => (this.products = products),
     });
@@ -71,7 +67,7 @@ export class ProductTableComponent {
       data: product,
     });
 
-    this.ref.onClose.subscribe(() => this.getProducts());
+    this.ref.onClose.subscribe(() => this.loadProducts());
   }
 
   public cleanFilters(table: Table, filter: any) {

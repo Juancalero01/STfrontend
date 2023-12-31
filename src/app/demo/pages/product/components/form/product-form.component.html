@@ -1,14 +1,14 @@
-<form class="flex flex-wrap gap-4" [formGroup]="productForm">
-  <div class="flex flex-column w-full">
+<form class="grid" [formGroup]="productForm">
+  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
     <label>CLIENTE</label>
     <p-dropdown
-      [options]="clients"
       formControlName="client"
       optionLabel="taxpayerName"
       optionValue="id"
-      [filter]="true"
       placeholder="Seleccionar cliente del producto"
       styleClass="w-full"
+      [options]="clients"
+      [filter]="true"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('client') }"
       [showClear]="true"
     >
@@ -17,60 +17,51 @@
       Campo requerido*
     </small>
   </div>
-
-  <div class="flex flex-column w-full">
+  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
     <label>TIPO DE PRODUCTO</label>
     <p-dropdown
-      [options]="productTypes"
       formControlName="productType"
       optionLabel="name"
       optionValue="id"
-      [filter]="true"
       placeholder="Seleccionar tipo de producto del cliente"
       styleClass="w-full"
+      [options]="productTypes"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('productType') }"
-      (onChange)="onProductTypeChange()"
+      [filter]="true"
       [showClear]="true"
+      (onChange)="onProductTypeChange()"
     >
     </p-dropdown>
     <small *ngIf="validateForm('productType')" class="p-error">
       Campo requerido*
     </small>
   </div>
-
-  <div class="flex flex-column w-full">
-    <label for="serial">NÚMERO DE SERIE</label>
+  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+    <label>NÚMERO DE SERIE</label>
     <input
-      id="serial"
       type="text"
       pInputText
       formControlName="serial"
       placeholder="Ingresar número de serie del producto"
       class="w-full"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('serial') }"
       maxlength="10"
-      [pKeyFilter]="numberWithHyphen"
+      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('serial') }"
     />
     <small *ngIf="validateForm('serial')" class="p-error">
       Campo requerido*
     </small>
   </div>
-  <div class="flex flex-column w-full">
-    <label for="reference"
-      >NÚMERO DE REMITO (Remito del envio del producto al cliente)</label
-    >
+  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+    <label>NÚMERO DE REMITO (Remito del envio del producto al cliente)</label>
     <input
-      id="reference"
       type="text"
       pInputText
       formControlName="reference"
       placeholder="Ingresar número de remito del producto"
       class="w-full"
-      [pKeyFilter]="alphaNumberUppercase"
     />
   </div>
-
-  <div class="flex flex-column w-full">
+  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
     <label
       >FECHA DE DESPACHO (Fecha en la que se envio el producto al
       cliente)</label
@@ -89,17 +80,16 @@
       Campo requerido*
     </small>
   </div>
-
-  <div class="flex justify-content-end gap-2 w-full">
+  <div class="flex gap-2 col-12 lg:flex-row justify-content-end flex-column">
     <p-button
       label="SALIR DEL FORMULARIO"
-      styleClass="p-button-secondary"
+      styleClass="p-button-secondary w-full"
       (onClick)="closeForm()"
     />
     <p-button
       [label]="buttonLabel"
       [disabled]="productForm.invalid || !getChangesToUpdate()"
-      styleClass="p-button-info "
+      styleClass="p-button-info w-full"
       (onClick)="submitForm()"
     />
   </div>
