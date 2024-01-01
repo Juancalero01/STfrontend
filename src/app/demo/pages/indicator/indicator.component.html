@@ -68,9 +68,9 @@
           {{ dateFrom | date : "dd/MM/yyyy" }} al
           {{ dateUntil | date : "dd/MM/yyyy" }}
         </span>
-        <!-- <span class="text-lg font-medium text-gray-500"
-          >Tipo de producto: {{ productType.name | null }}
-        </span> -->
+        <span class="text-lg font-medium text-gray-500"
+          >Tipo de producto: {{ productType }}
+        </span>
       </div>
     </div>
     <div class="grid">
@@ -155,7 +155,7 @@
             <span class="block text-500 font-medium">TIPO DE PRODUCTO</span>
           </div>
           <p-chart
-            type="doughnut"
+            type="pie"
             [data]="productTypesData"
             [options]="options"
             width="500"
@@ -172,3 +172,4 @@
     </div>
   </ng-template>
 </section>
+<p-toast position="bottom-right" />

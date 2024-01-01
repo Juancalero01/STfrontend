@@ -3,6 +3,7 @@ import { IProductType } from '../../api/interfaces/product-type.interface';
 import { ProductTypeService } from '../../api/services/product-type.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SupportService } from '../../api/services/support.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-indicator',
@@ -12,21 +13,19 @@ export class IndicatorComponent {
   constructor(
     private readonly productTypeService: ProductTypeService,
     private readonly formBuilder: FormBuilder,
-    private readonly supportService: SupportService
+    private readonly supportService: SupportService,
+    private readonly messageService: MessageService
   ) {}
   public productTypes: IProductType[] = [];
   public indicatorForm: FormGroup = this.buildForm();
   public dateFrom: string = '';
   public dateUntil: string = '';
-  public productType: IProductType = {} as IProductType;
+  public productType: string = '';
   public showIndicator: boolean = false;
-  public isValid: boolean = false;
   public indicatorData: any = [];
 
   public failureTypesData: any;
   public productTypesData: any;
-  // public failureOptions: any;
-  // public productOptions: any;
   public options: any;
 
   public ngOnInit() {
@@ -44,19 +43,35 @@ export class IndicatorComponent {
 
   public generateIndicators(): void {
     const dataSend = {
-      dateFrom: (this.dateFrom = this.indicatorForm.get('dateFrom')?.value),
-      dateUntil: (this.dateUntil = this.indicatorForm.get('dateUntil')?.value),
-      productTypeId: (this.productType =
-        this.indicatorForm.get('productType')?.value),
+      dateFrom: this.indicatorForm.get('dateFrom')?.value,
+      dateUntil: this.indicatorForm.get('dateUntil')?.value,
+      productTypeId: this.indicatorForm.get('productType')?.value,
     };
+
     this.supportService.getServiceIndicators(dataSend).subscribe({
       next: (data: any) => {
-        this.indicatorData = data;
-        this.generateFailures();
-        this.generateProducts();
-      },
-      complete: () => {
-        this.showIndicator = true;
+        if (data !== null) {
+          this.indicatorData = data;
+
+          this.generateFailures();
+          this.generateProducts();
+          this.dateFrom = this.indicatorForm.get('dateFrom')?.value;
+          this.dateUntil = this.indicatorForm.get('dateUntil')?.value;
+          const productTypeId = this.indicatorForm.get('productType')?.value;
+          const selectedProductType = this.productTypes.find(
+            (pt) => pt.id === productTypeId
+          );
+          selectedProductType
+            ? (this.productType = selectedProductType.name)
+            : (this.productType = 'TODOS');
+          this.showIndicator = true;
+        } else {
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Operación',
+            detail: 'Sin resultados',
+          });
+        }
       },
     });
   }
