@@ -21,18 +21,8 @@ export class SupportService {
     return this.httpClient.get<ISupport[]>(this.URL);
   }
 
-  //! VERIFICAR SI SE PUEDE PONER EN UNA SOLA QUERY LOS DATOS ESTOS.
-
-  public findAllWithoutCancel(): Observable<number> {
-    return this.httpClient.get<number>(`${this.URL}/allwoc`);
-  }
-
-  public findAllWithoutRepair(): Observable<number> {
-    return this.httpClient.get<number>(`${this.URL}/allwor`);
-  }
-
-  public findAllWithRepair(): Observable<number> {
-    return this.httpClient.get<number>(`${this.URL}/allwr`);
+  public getServiceMain(): Observable<any> {
+    return this.httpClient.get<any>(`${this.URL}/h`);
   }
 
   public findOne(id: number): Observable<ISupport> {
