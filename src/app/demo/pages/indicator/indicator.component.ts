@@ -20,15 +20,18 @@ export class IndicatorComponent {
   public dateUntil: string = '';
   public productType: IProductType = {} as IProductType;
   public showIndicator: boolean = false;
-  isValid: boolean = false;
-
+  public isValid: boolean = false;
   public indicatorData: any = [];
 
-  public data: any;
+  public failureTypesData: any;
+  public productTypesData: any;
+  // public failureOptions: any;
+  // public productOptions: any;
   public options: any;
 
   public ngOnInit() {
     this.loadProductTypes();
+    this.getConfigGlobalChart();
   }
 
   private loadProductTypes(): void {
@@ -49,7 +52,8 @@ export class IndicatorComponent {
     this.supportService.getServiceIndicators(dataSend).subscribe({
       next: (data: any) => {
         this.indicatorData = data;
-        this.generateTest();
+        this.generateFailures();
+        this.generateProducts();
       },
       complete: () => {
         this.showIndicator = true;
@@ -69,47 +73,7 @@ export class IndicatorComponent {
     return !this.indicatorForm.pristine;
   }
 
-  // private generateTest() {
-  //   const documentStyle = getComputedStyle(document.documentElement);
-  //   const textColor = documentStyle.getPropertyValue('--text-color');
-
-  //   const labels = this.indicatorData.failureServices.map(
-  //     (item: any) => item.failure
-  //   );
-  //   const percentages = this.indicatorData.failureServices.map(
-  //     (item: any) => item.percentage
-  //   );
-
-  //   this.data = {
-  //     labels: labels,
-  //     datasets: [
-  //       {
-  //         data: percentages,
-  //         text: percentages.map((percentage: any) => `${percentage}%`),
-  //       },
-  //     ],
-  //   };
-
-  //   this.options = {
-  //     plugins: {
-  //       legend: {
-  //         labels: {
-  //           usePointStyle: true,
-  //           color: textColor,
-  //         },
-  //       },
-  //       title: {
-  //         display: true,
-  //         text: 'Tasa e indice de tipo de fallas',
-  //       },
-  //     },
-  //   };
-  // }
-
-  private generateTest() {
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-color');
-
+  private generateFailures() {
     const labels = this.indicatorData.failureServices.map(
       (item: any) => item.failure
     );
@@ -117,11 +81,28 @@ export class IndicatorComponent {
       (item: any) => item.percentage
     );
 
-    this.data = {
+    this.failureTypesData = {
       labels: labels,
       datasets: [{ data: percentages }],
     };
+  }
 
+  private generateProducts() {
+    const labels = this.indicatorData.productTypeServices.map(
+      (item: any) => item.productType
+    );
+    const percentages = this.indicatorData.productTypeServices.map(
+      (item: any) => item.percentage
+    );
+
+    this.productTypesData = {
+      labels: labels,
+      datasets: [{ data: percentages }],
+    };
+  }
+  private getConfigGlobalChart() {
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue('--text-color');
     this.options = {
       plugins: {
         tooltip: {
@@ -135,20 +116,19 @@ export class IndicatorComponent {
           labels: {
             color: textColor,
           },
+          font: {
+            size: 20,
+          },
         },
         dataLabels: {
           display: true,
           align: 'center',
           font: {
-            size: 15,
+            size: 20,
           },
         },
         label: {
           display: true,
-        },
-        title: {
-          display: true,
-          text: 'Tasa e índice de tipo de fallas',
         },
       },
     };

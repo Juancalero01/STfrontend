@@ -1,5 +1,5 @@
-<section class="grid" style="height: 100%">
-  <section class="col-12 lg:col-12 xl:col-2">
+<section class="grid">
+  <section class="col-12 md:col-12 lg:col-12 xl:col-3">
     <form class="flex flex-wrap gap-2" [formGroup]="indicatorForm">
       <div class="w-full mb-2">
         <span class="font-medium text-2xl">FILTROS</span>
@@ -18,7 +18,7 @@
           styleClass="w-full"
           [showClear]="true"
         />
-        <small class="p-error"> Campo requerido* </small>
+        <small class="text-green-500"> Campo opcional* </small>
       </div>
       <div class="flex flex-column w-full">
         <label>FECHA DESDE</label>
@@ -57,7 +57,7 @@
     </form>
   </section>
   <section
-    class="col-12 lg:col-12 xl:col-10 px-4"
+    class="col-12 lg:col-12 xl:col-9 px-4"
     *ngIf="showIndicator; else elseBlock"
   >
     <div class="flex flex-column gap-3 w-full mb-3">
@@ -74,7 +74,7 @@
       </div>
     </div>
     <div class="grid">
-      <div class="col-12 lg:col-6 xl:col-3">
+      <div class="col-12 lg:col-6 xl:col-6">
         <div class="p-card shadow-none p-3 border-1 border-gray-200">
           <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium">SERVICIOS</span>
@@ -86,7 +86,7 @@
           </div>
         </div>
       </div>
-      <div class="col-12 lg:col-6 xl:col-3">
+      <div class="col-12 lg:col-6 xl:col-6">
         <div class="p-card shadow-none p-3 border-1 border-gray-200">
           <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium"
@@ -100,43 +100,63 @@
           </div>
         </div>
       </div>
-      <div class="col-12 lg:col-6 xl:col-3">
+      <div class="col-12 lg:col-6 xl:col-6">
         <div class="p-card shadow-none p-3 border-1 border-gray-200">
           <div class="flex justify-content-between mb-3">
-            <span class="block text-500 font-medium">TIEMPO DE REPARACIÓN</span>
+            <span class="block text-500 font-medium"
+              >TIEMPO DE REPARACIÓN <small>(Promedio)</small></span
+            >
           </div>
           <div class="flex gap-2 align-items-center">
             <span class="text-4xl font-medium">
-              {{ indicatorData.repairTime.averageHours }} Hrs prom.</span
+              {{ indicatorData.repairTime.averageHours }} Hrs</span
             >
-            <span class="text-green-400 font-medium"
-              >{{ indicatorData.repairTime.totalHours }} Hrs</span
+            <span class="text-green-500 font-medium"
+              >{{ indicatorData.repairTime.totalHours }} Hrs totales</span
             >
           </div>
         </div>
       </div>
-      <div class="col-12 lg:col-6 xl:col-3">
+      <div class="col-12 lg:col-6 xl:col-6">
         <div class="p-card shadow-none p-3 border-1 border-gray-200">
           <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium"
-              >TIEMPO DE PERMANENCIA</span
+              >TIEMPO DE PERMANENCIA <small>(Promedio)</small></span
             >
           </div>
           <div class="flex gap-2 align-items-center">
             <span class="text-4xl font-medium"
-              >{{ indicatorData.repairTimeOfStay.averageDays }} Días prom.
+              >{{ indicatorData.repairTimeOfStay.averageDays }} Días
             </span>
-            <span class="text-green-400 font-medium">
-              {{ indicatorData.repairTimeOfStay.totalDays }} Días</span
+            <span class="text-green-500 font-medium">
+              {{ indicatorData.repairTimeOfStay.totalDays }} Días totales</span
             >
           </div>
         </div>
       </div>
       <div class="col-12 lg:col-12 xl:col-6">
-        <div class="p-card shadow-none border-1 border-gray-200 py-2">
+        <div class="p-card shadow-none p-3 border-1 border-gray-200 py-2">
+          <div class="flex justify-content-between mb-3">
+            <span class="block text-500 font-medium"
+              >TASA E ÍNDICE DE TIPO DE FALLA</span
+            >
+          </div>
           <p-chart
             type="pie"
-            [data]="data"
+            [data]="failureTypesData"
+            [options]="options"
+            width="500"
+          ></p-chart>
+        </div>
+      </div>
+      <div class="col-12 lg:col-12 xl:col-6">
+        <div class="p-card shadow-none p-3 border-1 border-gray-200 py-2">
+          <div class="flex justify-content-between mb-3">
+            <span class="block text-500 font-medium">TIPO DE PRODUCTO</span>
+          </div>
+          <p-chart
+            type="doughnut"
+            [data]="productTypesData"
             [options]="options"
             width="500"
           ></p-chart>
