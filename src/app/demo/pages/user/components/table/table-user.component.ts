@@ -47,10 +47,8 @@ export class TableUserComponent {
       position: 'center',
       data: user,
     });
-    this.ref.onClose.subscribe({
-      complete: () => {
-        this.getUsers();
-      },
+    this.ref.onClose.subscribe(() => {
+      this.getUsers();
     });
   }
 
