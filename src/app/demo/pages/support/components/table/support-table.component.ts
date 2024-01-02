@@ -40,8 +40,6 @@ export class SupportTableComponent {
     });
   }
 
-  // !IMPORTANTE ARREGLAR PORQUE NO ACTUALIZA DE INMEDIATO LA TABLA AL MOMENTO DE HACERLO MEDIANTE EL FORM COMPONENT DEL HISTORy
-
   public openSupportForm(support?: ISupport) {
     this.ref = this.dialogService.open(SupportFormComponent, {
       header: support
@@ -58,7 +56,7 @@ export class SupportTableComponent {
     });
 
     this.ref.onClose.subscribe({
-      complete: () => {
+      next: () => {
         this.loadSupports();
       },
     });

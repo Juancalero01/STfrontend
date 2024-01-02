@@ -179,16 +179,14 @@ export class SupportFormHistoryComponent {
                       .setDateDeparture(this.config.data.id, new Date())
                       .subscribe();
                   }
+                  this.messageService.add({
+                    severity: 'success',
+                    summary: 'Operación exitosa',
+                    detail: 'El estado se actualizo correctamente',
+                  });
+                  this.ref.close();
                 },
               });
-          },
-          complete: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Operación exitosa',
-              detail: 'El estado se actualizo correctamente',
-            });
-            this.ref.close();
           },
         });
       },
