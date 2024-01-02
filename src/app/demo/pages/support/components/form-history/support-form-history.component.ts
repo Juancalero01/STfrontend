@@ -30,11 +30,9 @@ export class SupportFormHistoryComponent {
   public supportHistoryForm: FormGroup = this.buildForm();
   public currentStates: ISupportState[] = [];
   public nextStates: ISupportState[] = [];
-  public historyStateBySupport: Number[] = [];
   public today: Date = new Date();
   public minDate: Date = new Date(this.config.data.dateEntry);
   public maxDate: Date = this.today;
-  public alphaNumberUppercaseSpaceHyphenDotComma: RegExp = /^[A-Z0-9 .,-]*$/;
   public showHours: boolean = false;
 
   public ngOnInit(): void {
@@ -42,7 +40,6 @@ export class SupportFormHistoryComponent {
     this.findLastDateEntry();
     this.loadStates();
     this.loadForm(this.config.data);
-    this.getCheckHistoryState();
   }
 
   private loadForm(data: ISupport): void {
@@ -71,9 +68,19 @@ export class SupportFormHistoryComponent {
               state.id > stateCurrentValue && state.id <= stateCurrentValue + 4
           );
           return;
+        } else if (stateCurrentValue === 4) {
+          this.nextStates = states.filter((state) =>
+            this.getCheckHistoryState(5)
+              ? [6, 7].includes(state.id)
+              : [5, 6, 7].includes(state.id)
+          );
+
+          return;
         } else if (stateCurrentValue === 5) {
           this.nextStates = states.filter((state) =>
-            [4, 5, 6, 7].includes(state.id)
+            this.getCheckHistoryState(4)
+              ? [6, 7].includes(state.id)
+              : [4, 6, 7].includes(state.id)
           );
           return;
         } else if (stateCurrentValue === 6) {
@@ -112,12 +119,12 @@ export class SupportFormHistoryComponent {
   private buildForm(): FormGroup {
     return this.formBuilder.group({
       dateEntry: [null, [Validators.required]],
+      repairedTime: [{ value: null, disabled: true }],
       stateCurrent: [{ value: null, disabled: true }],
       stateNext: [null, [Validators.required]],
-      remarks: [null, [Validators.required]],
+      remarks: [null, [Validators.required, Validators.maxLength(500)]],
       service: [null, [Validators.required]],
       user: [null, [Validators.required]],
-      repairedTime: [{ value: null, disabled: true }],
     });
   }
 
@@ -173,11 +180,8 @@ export class SupportFormHistoryComponent {
                       .subscribe();
                   }
                 },
-                error: () => {},
-                complete: () => {},
               });
           },
-          error: () => {},
           complete: () => {
             this.messageService.add({
               severity: 'success',
@@ -199,24 +203,27 @@ export class SupportFormHistoryComponent {
   }
 
   private findLastDateEntry(): void {
-    if (this.config.data.state.id !== 1) {
-      this.supportHistoryService
-        .findLastDateEntry(this.config.data.id)
-        .subscribe({
-          next: (lastSupportHistory: ISupportHistory) => {
-            if (new Date(lastSupportHistory.dateEntry) > this.minDate) {
-              this.minDate = new Date(lastSupportHistory.dateEntry);
-            }
-          },
-        });
+    if (
+      this.config.data.state.id !== 1 &&
+      this.config.data.serviceHistory.length > 0
+    ) {
+      const lastSupportHistory =
+        this.config.data.serviceHistory[
+          this.config.data.serviceHistory.length - 1
+        ];
+
+      if (new Date(lastSupportHistory.dateEntry) > this.minDate) {
+        this.minDate = new Date(lastSupportHistory.dateEntry);
+      }
     }
   }
 
-  private getCheckHistoryState() {
-    this.supportHistoryService.findByService(this.config.data.id).subscribe({
-      next: (data: ISupportHistory[]) => {
-        this.historyStateBySupport = data.map((state) => state.stateCurrent.id);
-      },
-    });
+  private getCheckHistoryState(stateIdToCheck: number): boolean {
+    if (this.config.data.serviceHistory) {
+      return this.config.data.serviceHistory.some(
+        (history: ISupportHistory) => history.stateCurrent.id === stateIdToCheck
+      );
+    }
+    return false;
   }
 }

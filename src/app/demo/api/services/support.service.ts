@@ -41,13 +41,9 @@ export class SupportService {
     return this.httpClient.put<ISupport>(`${this.URL}/${id}`, support);
   }
 
-  public updateState(
-    id: number,
-    state: ISupportState
-  ): Observable<ISupportState> {
-    return this.httpClient.put<ISupportState>(`${this.URL}/s/${id}`, {
-      id: state,
-    });
+  public updateState(id: number, state: number): Observable<any> {
+    const requestBody = { state };
+    return this.httpClient.put<any>(`${this.URL}/s/${id}`, requestBody);
   }
 
   public setDateDeparture(id: number, dateDeparture: Date): Observable<any> {

@@ -17,10 +17,9 @@ export class SupportTableComponent {
     private readonly tokenService: TokenService
   ) {}
 
-  public supportData: ISupport[] = [];
+  public supports: ISupport[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
   public visibleAdmin: boolean = this.tokenService.isAdmin();
-  public today: Date = new Date();
 
   public priorityColors: any = {
     INMEDIATA: 'bg-red-500 ',
@@ -33,19 +32,11 @@ export class SupportTableComponent {
     this.loadSupports();
   }
 
-  public ngDestroy(): void {
-    if (this.ref) this.ref.close();
-  }
-
   public loadSupports(): void {
     this.supportService.findAllActiveServices().subscribe({
       next: (supports: ISupport[]) => {
-        this.supportData = supports.sort(
-          (a, b) => a.priority.id - b.priority.id
-        );
+        this.supports = supports;
       },
-      error: () => {},
-      complete() {},
     });
   }
 
@@ -65,8 +56,11 @@ export class SupportTableComponent {
       position: 'center',
       data: support,
     });
-    this.ref.onClose.subscribe(() => {
-      this.loadSupports();
+
+    this.ref.onClose.subscribe({
+      complete: () => {
+        this.loadSupports();
+      },
     });
   }
 

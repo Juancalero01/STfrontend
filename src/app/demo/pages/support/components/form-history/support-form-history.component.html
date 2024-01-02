@@ -1,50 +1,52 @@
-<form
-  class="w-full flex flex-column gap-3 py-2"
-  [formGroup]="supportHistoryForm"
->
-  <div class="w-full">
+<form class="grid" [formGroup]="supportHistoryForm">
+  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
     <label>FECHA</label>
     <p-calendar
       formControlName="dateEntry"
       dateFormat="dd-mm-yy"
-      styleClass="w-full"
       appendTo="body"
+      styleClass="w-full"
+      placeholder="Seleccionar fecha de cambio de estado"
       [showButtonBar]="true"
       [minDate]="minDate"
       [maxDate]="maxDate"
       [showClear]="true"
       [autofocus]="true"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('dateEntry') }"
-      placeholder="Seleccionar fecha de cambio de estado"
     />
+    <small *ngIf="validateForm('dateEntry')" class="p-error">
+      Campo requerido*
+    </small>
   </div>
-  <div class="w-full">
+  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
     <label>ESTADO ACTUAL</label>
     <p-dropdown
       [options]="currentStates"
       optionLabel="name"
       optionValue="id"
-      styleClass="w-full uppercase"
+      styleClass="w-full"
       formControlName="stateCurrent"
       dropdownIcon="none"
+      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('stateCurrent') }"
     />
   </div>
-  <div class="w-full">
+  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
     <label>ESTADO SIGUIENTE</label>
     <p-dropdown
       [options]="nextStates"
       optionLabel="name"
       optionValue="id"
-      styleClass="w-full uppercase"
+      styleClass="w-full"
       formControlName="stateNext"
-      placeholder="Seleccionar..."
+      placeholder="Seleccionar estado siguiente"
+      [showClear]="true"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('stateNext') }"
     />
     <small *ngIf="validateForm('stateNext')" class="p-error">
       Campo requerido*
     </small>
   </div>
-  <div class="w-full" *ngIf="showHours">
+  <div class="flex flex-column col-12 lg:col-12 xl:col-12" *ngIf="showHours">
     <label>TIEMPO DE REPARACIÓN (horas aproximadas)</label>
     <input
       formControlName="repairedTime"
@@ -60,7 +62,7 @@
       Campo requerido*
     </small>
   </div>
-  <div class="w-full">
+  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
     <label>COMENTARIOS (Estado actual)</label>
     <textarea
       pInputTextarea
@@ -68,22 +70,21 @@
       maxlength="500"
       class="w-full"
       [autoResize]="true"
-      rows="6"
+      rows="5"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('remarks') }"
-      [pKeyFilter]="alphaNumberUppercaseSpaceHyphenDotComma"
     ></textarea>
     <small *ngIf="validateForm('remarks')" class="p-error">
       Campo requerido*
     </small>
   </div>
-  <div class="flex justify-content-end gap-2 w-full">
+  <div class="flex gap-2 col-12 lg:flex-row justify-content-end flex-column">
     <p-button
       label="SALIR DEL FORMULARIO"
-      styleClass="p-button-secondary"
+      styleClass="p-button-secondary w-full"
       (onClick)="exitForm()"
     />
     <p-button
-      styleClass="p-button-info"
+      styleClass="p-button-info w-full"
       label="REGISTRAR FORMULARIO"
       [disabled]="supportHistoryForm.invalid"
       (onClick)="saveForm()"

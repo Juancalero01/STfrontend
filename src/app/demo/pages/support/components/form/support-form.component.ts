@@ -268,8 +268,10 @@ export class SupportFormComponent {
       position: 'center',
       data: this.config.data,
     });
-    this.refHistory.onClose.subscribe(() => {
-      this.ref.close();
+    this.refHistory.onClose.subscribe({
+      next: () => {
+        this.ref.close();
+      },
     });
   }
 
