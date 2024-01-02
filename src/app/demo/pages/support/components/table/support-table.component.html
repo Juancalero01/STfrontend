@@ -7,7 +7,12 @@
       (onClick)="openSupportForm()"
       *ngIf="visibleAdmin"
     />
-    <div class="flex flex-column-reverse md:flex-row gap-2">
+    <div
+      class="flex flex-column-reverse md:flex-row gap-2"
+      [ngClass]="{
+        'w-full justify-content-end': !visibleAdmin
+      }"
+    >
       <p-button
         label="SINCRONIZAR DATOS"
         icon="pi pi-sync"
