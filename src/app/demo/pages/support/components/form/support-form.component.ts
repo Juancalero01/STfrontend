@@ -55,10 +55,6 @@ export class SupportFormComponent {
   public minDate: Date = new Date(
     new Date().setMonth(new Date().getMonth() - 1)
   );
-  public alphaUppercaseSpace: RegExp = /^[A-Z ]*$/;
-  public alphaNumberUppercaseSpaceHyphenDotComma: RegExp =
-    /^[A-Z0-9\u00C0-\u00D6\u00D8-\u00DE .,\-]*$/;
-
   public maxDate: Date = this.today;
 
   public ngOnInit() {
@@ -84,19 +80,21 @@ export class SupportFormComponent {
 
   private buildForm(): FormGroup {
     return this.formBuilder.group({
-      search: [null, [Validators.required]],
+      search: [
+        null,
+        [Validators.required, Validators.pattern(/^\d{1,4}(-\d{4,5})?$/)],
+      ],
       warrantyProduction: [{ value: null, disabled: true }],
       warrantyService: [{ value: null, disabled: true }],
       client: [{ value: null, disabled: true }],
       productType: [{ value: null, disabled: true }],
       productDateEntry: [{ value: null, disabled: true }],
       productSerial: [{ value: null, disabled: true }],
-      product: [null, [Validators.required]],
-      dateEntry: [null, [Validators.required]],
       dateDeparture: [{ value: null, disabled: true }],
-      priority: [null, [Validators.required]],
       reclaim: [{ value: null, disabled: true }],
       state: [{ value: null, disabled: true }],
+      dateEntry: [null, [Validators.required]],
+      priority: [null, [Validators.required]],
       warranty: [null, [Validators.required]],
       startReference: [null, [Validators.maxLength(255)]],
       endReference: [null, [Validators.maxLength(255)]],
@@ -106,6 +104,7 @@ export class SupportFormComponent {
       failure: [null, [Validators.maxLength(255)]],
       failureTypes: [null],
       remarks: [null, [Validators.maxLength(500)]],
+      product: [null, [Validators.required]],
     });
   }
 
