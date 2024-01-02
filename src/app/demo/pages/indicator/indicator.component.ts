@@ -115,6 +115,7 @@ export class IndicatorComponent {
       datasets: [{ data: percentages }],
     };
   }
+
   private getConfigGlobalChart() {
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
