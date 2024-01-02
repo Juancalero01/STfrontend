@@ -36,6 +36,7 @@
       <div class="flex flex-column w-full">
         <label>FECHA HASTA</label>
         <p-calendar
+          [minDate]="indicatorForm.get('dateFrom')?.value"
           formControlName="dateUntil"
           dateFormat="dd-mm-yy"
           styleClass="w-full"
