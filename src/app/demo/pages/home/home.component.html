@@ -71,4 +71,54 @@
       <span class="text-500">Total de servicios no reparados.</span>
     </div>
   </div>
+  <div class="col-12">
+    <div class="mb-0 p-4">
+      <div>
+        <span class="block text-500 font-medium mb-3">SERVICIOS ACTIVOS</span>
+      </div>
+      <p-table
+        [value]="supports"
+        [scrollable]="true"
+        scrollHeight="640px"
+        styleClass="p-datatable-sm"
+      >
+        <ng-template pTemplate="header">
+          <tr class="text-sm h-3rem">
+            <th>NÚMERO DE RECLAMO</th>
+            <th>FECHA DE INGRESO</th>
+            <th>NÚMERO DE SERIE</th>
+            <th>TIPO DE PRODUCTO</th>
+            <th>CLIENTE</th>
+            <th>ESTADO DEL SERVICIO</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-support>
+          <tr class="text-sm h-3rem">
+            <td>
+              <div class="flex align-items-center justify-content-between">
+                <span class="font-semibold">{{ support.reclaim }}</span>
+              </div>
+            </td>
+            <td>{{ support.dateEntry | date : "dd/MM/yyyy" }}</td>
+            <td>{{ support.product.serial }}</td>
+            <td>{{ support.product.productType.name }}</td>
+            <td>{{ support.product.client.taxpayerName }}</td>
+            <td>
+              <p-tag [value]="support.state.name" severity="info" />
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr class="text-sm w-full">
+            <td colspan="4">
+              <div class="flex gap-2 align-items-center">
+                <i class="pi pi-info-circle"></i>
+                <span class="font-medium">No hay actividad reciente</span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
 </section>

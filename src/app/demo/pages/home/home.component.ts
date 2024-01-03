@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { SupportService } from 'src/app/demo/api/services/support.service';
+import { ISupport } from '../../api/interfaces/support.interface';
 
 @Component({
   selector: 'app-home',
@@ -12,9 +13,11 @@ export class HomeComponent {
   public servicesActive: number = 0;
   public servicesRepair: number = 0;
   public servicesWithOutRepair: number = 0;
+  public supports: ISupport[] = [];
 
   public ngOnInit() {
     this.countAllServices();
+    this.loadSupportsMain();
   }
 
   private countAllServices() {
@@ -24,6 +27,14 @@ export class HomeComponent {
         this.servicesActive = supports.servicesActive;
         this.servicesRepair = supports.servicesRepair;
         this.servicesWithOutRepair = supports.servicesWithOutRepair;
+      },
+    });
+  }
+
+  private loadSupportsMain() {
+    this.supportService.findAllActiveServices().subscribe({
+      next: (supports: ISupport[]) => {
+        this.supports = supports;
       },
     });
   }
