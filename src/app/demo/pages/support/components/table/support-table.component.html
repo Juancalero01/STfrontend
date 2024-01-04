@@ -80,7 +80,9 @@
         <td>
           <p-tag
             [styleClass]="priorityColors[support.priority.name]"
-            [value]="support.priority.name"
+            [value]="
+              support.priority.name + ' - ' + support.priority.days + ' días'
+            "
           />
         </td>
         <td>
