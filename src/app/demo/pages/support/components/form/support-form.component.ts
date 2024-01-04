@@ -102,6 +102,13 @@ export class SupportFormComponent {
       orderNumber: [null, [Validators.maxLength(255)]],
       quoteNumber: [null, [Validators.maxLength(255)]],
       securityStrap: [null],
+      bitrixUrl: [
+        null,
+        [
+          Validators.required,
+          Validators.pattern(/^https:\/\/controlnet\.bitrix24\.es\/.*$/),
+        ],
+      ],
       failure: [null, [Validators.maxLength(255)]],
       failureTypes: [null],
       remarks: [null, [Validators.maxLength(500)]],

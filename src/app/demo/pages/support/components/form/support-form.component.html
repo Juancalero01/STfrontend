@@ -59,6 +59,20 @@
       Campo requerido*
     </small>
   </div>
+  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+    <label>TAREA ASOCIADA (Bitrix)</label>
+    <input
+      type="text"
+      pInputText
+      class="w-full"
+      formControlName="bitrixUrl"
+      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('bitrixUrl') }"
+      placeholder="Ingresar URL de la tarea asociada"
+    />
+    <small *ngIf="validateForm('bitrixUrl')" class="p-error">
+      Campo requerido*
+    </small>
+  </div>
   <div class="flex flex-column col-12 lg:col-6 xl:col-6">
     <label>NÚMERO DE RECLAMO</label>
     <input type="text" pInputText class="w-full" formControlName="reclaim" />
