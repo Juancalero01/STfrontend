@@ -4,7 +4,6 @@ import { ISupport } from 'src/app/demo/api/interfaces/support.interface';
 import { SupportFormComponent } from '../form/support-form.component';
 import { SupportService } from 'src/app/demo/api/services/support.service';
 import { Table } from 'primeng/table';
-import { TokenService } from 'src/app/demo/api/services/token.service';
 
 @Component({
   selector: 'app-support-table',
@@ -13,13 +12,11 @@ import { TokenService } from 'src/app/demo/api/services/token.service';
 export class SupportTableComponent {
   constructor(
     private readonly supportService: SupportService,
-    private readonly dialogService: DialogService,
-    private readonly tokenService: TokenService
+    private readonly dialogService: DialogService
   ) {}
 
   public supports: ISupport[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
-  public visibleAdmin: boolean = this.tokenService.isAdmin();
 
   public priorityColors: any = {
     INMEDIATA: 'bg-red-500 ',

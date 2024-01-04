@@ -76,6 +76,7 @@ export class SupportFormComponent {
   private setDefaultFormData(): void {
     this.supportForm.get('state')?.setValue(1);
     this.supportForm.get('dateEntry')?.setValue(this.today);
+    this.supportForm.get('priority')?.setValue(4);
   }
 
   private buildForm(): FormGroup {
@@ -122,7 +123,7 @@ export class SupportFormComponent {
     });
     this.supportForm.get('dateEntry')?.disable();
     this.supportForm.get('search')?.clearValidators();
-    this.calculateWarranty(support.product.deliveryDate);
+    this.calculateWarranty(support.product.deliveryDate, true);
     this.mainButtonLabel = 'ACTUALIZAR FORMULARIO';
   }
 
@@ -134,7 +135,9 @@ export class SupportFormComponent {
 
   private loadPriorities(): void {
     this.supportPriorityService.findAll().subscribe({
-      next: (priorities: ISupportPriority[]) => (this.priorities = priorities),
+      next: (priorities: ISupportPriority[]) => {
+        this.priorities = priorities;
+      },
     });
   }
 
@@ -177,7 +180,7 @@ export class SupportFormComponent {
               productDateEntry: new Date(product.deliveryDate),
               productSerial: product.serial,
             });
-            this.calculateWarranty(product.deliveryDate, product.id);
+            this.calculateWarranty(product.deliveryDate);
           },
         });
       },
@@ -290,6 +293,7 @@ export class SupportFormComponent {
           dateEntry: this.supportForm.get('dateEntry')?.value,
           reclaim: this.supportForm.get('reclaim')?.value,
           state: this.supportForm.get('state')?.value,
+          priority: this.supportForm.get('priority')?.value,
         });
         this.messageService.add({
           severity: 'info',
@@ -300,31 +304,44 @@ export class SupportFormComponent {
     });
   }
 
-  //TODO VERIFICAR NUEVAMENTE LA GARANTIA TT
-  private calculateWarranty(deliveryDate: Date, id?: number): void {
+  private calculateWarranty(
+    deliveryDate: Date,
+    isUpdate: boolean = false
+  ): void {
     const oneYearLater = new Date(deliveryDate);
     oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
     const sixMonthsLater = new Date(oneYearLater);
     sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
 
-    if (this.today >= oneYearLater) {
+    let warrantyProductionStatus: string;
+    let warrantyServiceStatus: string;
+    let warranty: boolean;
+
+    if (this.today <= oneYearLater) {
+      warrantyProductionStatus = 'GARANTÍA DE PRODUCCIÓN VÁLIDA';
+      warrantyServiceStatus = 'N/A';
+      warranty = true;
+    } else if (this.today <= sixMonthsLater) {
+      warrantyProductionStatus = 'GARANTÍA DE PRODUCCIÓN VENCIDA';
+      warrantyServiceStatus = 'GARANTÍA DE SERVICIO TÉCNICO VÁLIDA';
+      warranty = true;
+    } else {
+      warrantyProductionStatus = 'GARANTÍA DE PRODUCCIÓN VENCIDA';
+      warrantyServiceStatus = 'GARANTÍA DE SERVICIO TÉCNICO VENCIDA';
+      warranty = false;
+    }
+
+    if (isUpdate) {
       this.supportForm.patchValue({
-        warrantyProduction: 'GARANTÍA DE PRODUCCIÓN VENCIDA',
+        warrantyProduction: warrantyProductionStatus,
+        warrantyService: warrantyServiceStatus,
       });
-      if (this.today <= sixMonthsLater) {
-        this.supportForm.patchValue({
-          warrantyService: 'GARANTÍA DE SERVICIO TÉCNICO VÁLIDA',
-        });
-      } else {
-        this.supportForm.patchValue({
-          warrantyService: 'GARANTÍA DE SERVICIO TÉCNICO VENCIDA',
-        });
-      }
     } else {
       this.supportForm.patchValue({
-        warrantyProduction: 'GARANTÍA DE PRODUCCIÓN VÁLIDA',
+        warrantyProduction: warrantyProductionStatus,
+        warrantyService: warrantyServiceStatus,
+        warranty: warranty,
       });
-      this.supportForm.patchValue({ warrantyService: 'N/A' });
     }
   }
 
