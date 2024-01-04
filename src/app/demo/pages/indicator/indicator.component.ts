@@ -4,6 +4,7 @@ import { ProductTypeService } from '../../api/services/product-type.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SupportService } from '../../api/services/support.service';
 import { MessageService } from 'primeng/api';
+import { ExcelService } from 'src/app/shared/utils/services/excel.service';
 
 @Component({
   selector: 'app-indicator',
@@ -14,7 +15,8 @@ export class IndicatorComponent {
     private readonly productTypeService: ProductTypeService,
     private readonly formBuilder: FormBuilder,
     private readonly supportService: SupportService,
-    private readonly messageService: MessageService
+    private readonly messageService: MessageService,
+    private readonly excelService: ExcelService
   ) {}
   public productTypes: IProductType[] = [];
   public indicatorForm: FormGroup = this.buildForm();
@@ -22,6 +24,7 @@ export class IndicatorComponent {
   public dateUntil: string = '';
   public productType: string = '';
   public showIndicator: boolean = false;
+  public showExcel: boolean = false;
   public indicatorData: any = [];
 
   public failureTypesData: any;
@@ -65,6 +68,7 @@ export class IndicatorComponent {
             ? (this.productType = selectedProductType.name)
             : (this.productType = 'TODOS');
           this.showIndicator = true;
+          this.showExcel = true;
         } else {
           this.messageService.add({
             severity: 'info',
@@ -148,5 +152,17 @@ export class IndicatorComponent {
         },
       },
     };
+  }
+
+  public exportToExcel(): void {
+    const fileName = 'CNET_indicadores';
+    this.excelService.export(
+      {
+        dateFrom: this.dateFrom,
+        dateUntil: this.dateUntil,
+        ...this.indicatorData,
+      },
+      fileName
+    );
   }
 }

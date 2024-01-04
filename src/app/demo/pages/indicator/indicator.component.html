@@ -51,8 +51,18 @@
         <p-button
           label="GENERAR ESTADÍSTICAS"
           styleClass="w-full p-button-info"
+          icon="pi pi-chart-pie"
           [disabled]="indicatorForm.invalid || !getChangesToUpdate()"
           (onClick)="generateIndicators()"
+        />
+      </div>
+      <div class="w-full">
+        <p-button
+          label="EXPORTAR EXCEL"
+          styleClass="w-full p-button-success"
+          icon="pi pi-file-excel"
+          *ngIf="showExcel"
+          (onClick)="exportToExcel()"
         />
       </div>
     </form>
