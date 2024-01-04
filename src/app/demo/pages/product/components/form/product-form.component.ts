@@ -48,7 +48,14 @@ export class ProductFormComponent {
         null,
         [Validators.required, Validators.pattern(/^\d{1,4}(-\d{4,5})?$/)],
       ],
-      reference: [null, [Validators.pattern(/^[a-zA-Z0-9]+$/)]],
+      reference: [
+        null,
+        [
+          Validators.required,
+          Validators.pattern(/^\d{4}-[A-Z]-\d{8}$/),
+          Validators.minLength(15),
+        ],
+      ],
       deliveryDate: [null, [Validators.required]],
     });
   }

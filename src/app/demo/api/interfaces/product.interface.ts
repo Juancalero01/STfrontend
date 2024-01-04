@@ -7,7 +7,7 @@ export interface IProduct {
   createdAt?: string;
   updatedAt?: string;
   serial: string;
-  reference?: string | null;
+  reference: string;
   deliveryDate: Date;
   client: IClient;
   productType: IProductType;

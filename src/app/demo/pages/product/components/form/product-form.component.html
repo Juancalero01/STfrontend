@@ -44,7 +44,7 @@
       formControlName="serial"
       placeholder="Ingresar número de serie del producto"
       class="w-full"
-      maxlength="10"
+      [minlength]="15"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('serial') }"
     />
     <small *ngIf="validateForm('serial')" class="p-error">
@@ -59,7 +59,11 @@
       formControlName="reference"
       placeholder="Ingresar número de remito del producto"
       class="w-full"
+      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('reference') }"
     />
+    <small *ngIf="validateForm('reference')" class="p-error">
+      Campo requerido*
+    </small>
   </div>
   <div class="flex flex-column col-12 lg:col-12 xl:col-12">
     <label
