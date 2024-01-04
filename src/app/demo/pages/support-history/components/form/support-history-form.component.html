@@ -11,6 +11,22 @@
       </ng-template>
       <ng-template pTemplate="body">
         <tr class="text-sm h-3rem">
+          <td class="w-16rem">TAREA ASOCIADA (Bitrix)</td>
+          <td class="font-semibold">
+            <a
+              [href]="supports.bitrixUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <p-button
+                label="Ir al enlace (Bitrix)"
+                styleClass="p-button-sm p-button-text"
+                icon="pi pi-link"
+              ></p-button>
+            </a>
+          </td>
+        </tr>
+        <tr class="text-sm h-3rem">
           <td class="w-16rem">NÚMERO DE RECLAMO</td>
           <td class="font-semibold">{{ supports.reclaim }}</td>
         </tr>

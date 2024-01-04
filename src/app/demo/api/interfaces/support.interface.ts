@@ -20,6 +20,7 @@ export interface ISupport {
   dateDeparture: Date | null;
   warranty: boolean | null;
   securityTrap: boolean | null;
+  bitrixUrl: string;
   product: IProduct;
   state: ISupportState;
   priority: ISupportPriority;
