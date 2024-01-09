@@ -18,6 +18,7 @@ import { SupportStateService } from 'src/app/demo/api/services/support-state.ser
 import { SupportService } from 'src/app/demo/api/services/support.service';
 import { SupportFormHistoryComponent } from '../form-history/support-form-history.component';
 import { TokenService } from 'src/app/demo/api/services/token.service';
+import { ISupportHistory } from 'src/app/demo/api/interfaces/support-history.interface';
 
 @Component({
   selector: 'app-support-form',
@@ -43,6 +44,7 @@ export class SupportFormComponent {
   public mainButtonLabel: string = 'REGISTRAR FORMULARIO';
   public showButtonState: boolean = false;
   public showButtonClean: boolean = true;
+  public showButtonHistory: boolean = false;
   public showSearch: boolean = true;
   public booleanDropdown: any[] = [
     { value: true, label: 'SI' },
@@ -51,6 +53,7 @@ export class SupportFormComponent {
   public failureTypes: IFailureType[] = [];
   public states: ISupportState[] = [];
   public priorities: ISupportPriority[] = [];
+  public supportHistory: ISupportHistory[] = [];
   public refHistory: DynamicDialogRef = new DynamicDialogRef();
   public today: Date = new Date();
   public minDate: Date = new Date(
@@ -69,7 +72,9 @@ export class SupportFormComponent {
       this.showButtonState = true;
       this.showButtonClean = false;
       this.showSearch = false;
+      this.loadSupportHistory(this.config.data.serviceHistory);
       this.requiredFieldsByState(this.config.data.state.id);
+      this.showButtonHistory = true;
     } else {
       this.getLastReclaimNumber();
     }
@@ -155,6 +160,10 @@ export class SupportFormComponent {
       next: (failureTypes: IFailureType[]) =>
         (this.failureTypes = failureTypes),
     });
+  }
+
+  private loadSupportHistory(supportHistory: ISupportHistory[]): void {
+    this.supportHistory = supportHistory;
   }
 
   public searchProduct() {
@@ -399,7 +408,6 @@ export class SupportFormComponent {
     }
   }
 
-  //TODO: EN DESARROLLO  (current) Posible modificaciones.
   private requiredFieldsByState(state: number): void {
     switch (state) {
       case 2:
@@ -426,9 +434,17 @@ export class SupportFormComponent {
           this.supportForm.get('orderNumber')?.invalid ||
           false;
         break;
-      case 7:
-        // hacer caso con if ya que necesita obtener el ultimo user y aprobar si es diferente para que deje pasar y si hay devuleta lo que seria el en reparacion a reparado otra vez porque no paso el test entonces
-        // tiene que reajustar el if para que sea el diferente al que lo repara denuevo. (El caso este es solamente si no pasa el test, hay que ver que pasa con las estadisticas)
+      case 6:
+        if (
+          this.getLastUser(this.config.data).id ===
+          Number(this.tokenService.getUserId())
+        ) {
+          console.log(this.getLastUser(this.config.data));
+
+          this.disableButtonHistory = true;
+        } else {
+          this.disableButtonHistory = false;
+        }
         break;
       case 8:
         this.supportForm
@@ -474,12 +490,16 @@ export class SupportFormComponent {
           this.supportForm.get('failureTypes')?.invalid ||
           this.supportForm.get('endReference')?.invalid ||
           false;
-
         break;
     }
   }
 
   public getChangesToUpdate(): boolean {
     return !this.supportForm.pristine;
+  }
+
+  private getLastUser(support: ISupport): any {
+    const supportHistory = support.serviceHistory;
+    return supportHistory[supportHistory.length - 1].user;
   }
 }

@@ -1,331 +1,381 @@
-<form class="grid" [formGroup]="supportForm">
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12" *ngIf="showSearch">
-    <label>BUSCADOR</label>
-    <div class="w-full flex md:flex-row flex-column gap-2">
-      <input
-        formControlName="search"
-        type="text"
-        pInputText
-        class="w-full"
-        maxlength="10"
-        minlength="1"
-        placeholder="Ingresar número de serie"
-        [ngClass]="{
-          'ng-invalid ng-dirty': validateForm('search')
-        }"
-      />
-      <p-button
-        label="BUSCAR"
-        styleClass=" p-button-info w-full"
-        (onClick)="searchProduct()"
-        [disabled]="supportForm.get('search')?.invalid"
-      />
-    </div>
-    <small *ngIf="validateForm('search')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-6">
-    <label>FECHA DE REGISTRO</label>
-    <p-calendar
-      formControlName="dateEntry"
-      dateFormat="dd-mm-yy"
-      styleClass="w-full"
-      appendTo="body"
-      [showButtonBar]="true"
-      [minDate]="minDate"
-      [maxDate]="maxDate"
-      [showClear]="true"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('dateEntry') }"
-      placeholder="Seleccionar fecha de registro del servicio"
-    />
-    <small *ngIf="validateForm('dateEntry')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-6">
-    <label>TIPO DE PRIORIDAD</label>
-    <p-dropdown
-      [options]="priorities"
-      optionLabel="name"
-      optionValue="id"
-      placeholder="Seleccionar prioridad del servicio"
-      styleClass="w-full"
-      formControlName="priority"
-      [showClear]="true"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('priority') }"
-    />
-    <small *ngIf="validateForm('priority')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-    <label>TAREA ASOCIADA (Bitrix)</label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      formControlName="bitrixUrl"
-      placeholder="Ingresar URL de la tarea asociada"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('bitrixUrl') }"
-    />
-    <small *ngIf="validateForm('bitrixUrl')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-6">
-    <label>NÚMERO DE RECLAMO</label>
-    <input type="text" pInputText class="w-full" formControlName="reclaim" />
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-6">
-    <label>ESTADO DEL SERVICIO</label>
-    <p-dropdown
-      [options]="states"
-      optionLabel="name"
-      optionValue="id"
-      styleClass="w-full"
-      formControlName="state"
-      dropdownIcon="none"
-    />
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-3">
-    <label>RAZÓN SOCIAL</label>
-    <input type="text" pInputText class="w-full" formControlName="client" />
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-3">
-    <label>NÚMERO DE SERIE DEL PRODUCTO</label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      formControlName="productSerial"
-    />
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-3">
-    <label>NOMBRE DEL PRODUCTO</label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      formControlName="productType"
-    />
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-3">
-    <label>FECHA DE DESPACHO DEL PRODUCTO</label>
-    <p-calendar
-      formControlName="productDateEntry"
-      dateFormat="dd-mm-yy"
-      styleClass="w-full"
-    />
-  </div>
-  <div class="flex flex-column col-12 lg:col-4 xl:col-4">
-    <label>GARANTÍA DE PRODUCCIÓN</label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      formControlName="warrantyProduction"
-      [class]="
-        supportForm.get('warrantyProduction')?.value ===
-        'GARANTÍA DE PRODUCCIÓN VENCIDA'
-          ? 'bg-red-100 text-red-600'
-          : supportForm.get('warrantyProduction')?.value === 'N/A'
-          ? 'bg-gray-100 text-gray-600'
-          : supportForm.get('warrantyProduction')?.value
-          ? 'bg-green-100 text-green-600'
-          : 'bg-gray-100 text-gray-600'
-      "
-    />
-  </div>
-  <div class="flex flex-column col-12 lg:col-4 xl:col-4">
-    <label>GARANTÍA DE SERVICIO TÉCNICO</label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      formControlName="warrantyService"
-      [class]="
-        supportForm.get('warrantyService')?.value ===
-        'GARANTÍA DE SERVICIO TÉCNICO VENCIDA'
-          ? 'bg-red-100 text-red-600'
-          : supportForm.get('warrantyService')?.value === 'N/A'
-          ? 'bg-gray-100 text-gray-600'
-          : supportForm.get('warrantyService')?.value
-          ? 'bg-green-100 text-green-600'
-          : 'bg-gray-100 text-gray-600'
-      "
-    />
-  </div>
-  <div class="flex flex-column col-12 lg:col-4 xl:col-4">
-    <label>GARANTIA</label>
-    <p-dropdown
-      [options]="booleanDropdown"
-      optionLabel="label"
-      optionValue="value"
-      placeholder="Seleccionar aprobación de garantía"
-      styleClass="w-full"
-      formControlName="warranty"
-      [showClear]="true"
-    />
-  </div>
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-    <label>FALLA REPORTADA POR EL CLIENTE</label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      formControlName="failure"
-      placeholder="Ingresar falla reportada por el cliente"
-      [maxlength]="255"
-      [ngClass]="{
-        'ng-invalid ng-dirty': validateForm('failure')
-      }"
-    />
-    <small *ngIf="validateForm('failure')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-6">
-    <label>REMITO DE PRODUCTO ENTRANTE</label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      formControlName="startReference"
-      placeholder="Ingresar número de remito de producto entrante"
-      [maxLength]="255"
-    />
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-6">
-    <label>REMITO DE PRODUCTO SALIENTE</label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      formControlName="endReference"
-      placeholder="Ingresar número de remito de producto saliente"
-      [maxLength]="255"
-      [ngClass]="{
-        'ng-invalid ng-dirty': validateForm('endReference')
-      }"
-    />
-    <small *ngIf="validateForm('endReference')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-6">
-    <label>NÚMERO DE COTIZACIÓN</label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      formControlName="quoteNumber"
-      placeholder="Ingresar número de cotización si corresponde"
-      [maxlength]="255"
-      [maxLength]="255"
-      [ngClass]="{
-        'ng-invalid ng-dirty': validateForm('quoteNumber')
-      }"
-    />
-    <small *ngIf="validateForm('quoteNumber')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-6">
-    <label>NÚMERO DE ORDEN DE COMPRA</label>
-    <input
-      type="text"
-      pInputText
-      class="w-full"
-      formControlName="orderNumber"
-      placeholder="Ingresar número de orden de compra si corresponde"
-      [maxLength]="255"
-      [ngClass]="{
-        'ng-invalid ng-dirty': validateForm('orderNumber')
-      }"
-    />
-    <small *ngIf="validateForm('orderNumber')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-    <label>FAJA DE SEGURIDAD</label>
-    <p-dropdown
-      [options]="booleanDropdown"
-      optionLabel="label"
-      optionValue="value"
-      styleClass="w-full"
-      formControlName="securityStrap"
-      placeholder="Seleccionar aprobación de faja de seguridad"
-      [showClear]="true"
-      [ngClass]="{
-        'ng-invalid ng-dirty': validateForm('securityStrap')
-      }"
-    />
-    <small *ngIf="validateForm('securityStrap')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-    <label>FALLAS ENCONTRADAS</label>
-    <p-multiSelect
-      [options]="failureTypes"
-      display="chip"
-      formControlName="failureTypes"
-      optionLabel="name"
-      optionValue="id"
-      styleClass="w-full"
-      placeholder="Seleccionar fallas encontradas"
-      [showToggleAll]="false"
-      [showClear]="true"
-      [ngClass]="{
-        'ng-invalid ng-dirty': validateForm('failureTypes')
-      }"
-    />
-    <small *ngIf="validateForm('failureTypes')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-    <label>OBSERVACIONES</label>
-    <textarea
-      pInputTextarea
-      [maxlength]="500"
-      class="w-full"
-      rows="6"
-      formControlName="remarks"
-      placeholder="Ingresar observaciones del servicio"
-      [autoResize]="true"
-    ></textarea>
-  </div>
-  <div class="flex flex-column xl:flex-row col-12 lg:col-12 xl:col-3">
-    <p-button
-      *ngIf="showButtonClean"
-      label="LIMPIAR FORMULARIO"
-      styleClass="p-button-danger w-full"
-      (onClick)="cleanForm()"
-    />
-    <p-button
-      *ngIf="showButtonState"
-      [disabled]="getChangesToUpdate() || disableButtonHistory"
-      label="ACTUALIZAR ESTADO DEL SERVICIO"
-      styleClass="p-button-info w-full"
-      (onClick)="openHistoryForm()"
-    />
-  </div>
-  <div
-    class="flex flex-column justify-content-end xl:flex-row gap-2 col-12 lg:col-12 xl:col-9"
-  >
-    <p-button
-      label="SALIR DEL FORMULARIO"
-      styleClass="p-button-secondary w-full"
-      (onClick)="exitForm()"
-    />
-    <p-button
-      [label]="mainButtonLabel"
-      [disabled]="supportForm.invalid || !getChangesToUpdate()"
-      styleClass="p-button-info w-full"
-      (onClick)="submitForm()"
-    />
-  </div>
-</form>
+<p-tabView>
+  <p-tabPanel header="FORMULARIO"
+    ><form class="grid" [formGroup]="supportForm">
+      <div
+        class="flex flex-column col-12 lg:col-12 xl:col-12"
+        *ngIf="showSearch"
+      >
+        <label>BUSCADOR</label>
+        <div class="w-full flex md:flex-row flex-column gap-2">
+          <input
+            formControlName="search"
+            type="text"
+            pInputText
+            class="w-full"
+            maxlength="10"
+            minlength="1"
+            placeholder="Ingresar número de serie"
+            [ngClass]="{
+              'ng-invalid ng-dirty': validateForm('search')
+            }"
+          />
+          <p-button
+            label="BUSCAR"
+            styleClass=" p-button-info w-full"
+            (onClick)="searchProduct()"
+            [disabled]="supportForm.get('search')?.invalid"
+          />
+        </div>
+        <small *ngIf="validateForm('search')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+      <div class="flex flex-column col-12 lg:col-6 xl:col-6">
+        <label>FECHA DE REGISTRO</label>
+        <p-calendar
+          formControlName="dateEntry"
+          dateFormat="dd-mm-yy"
+          styleClass="w-full"
+          appendTo="body"
+          [showButtonBar]="true"
+          [minDate]="minDate"
+          [maxDate]="maxDate"
+          [showClear]="true"
+          [ngClass]="{ 'ng-invalid ng-dirty': validateForm('dateEntry') }"
+          placeholder="Seleccionar fecha de registro del servicio"
+        />
+        <small *ngIf="validateForm('dateEntry')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+      <div class="flex flex-column col-12 lg:col-6 xl:col-6">
+        <label>TIPO DE PRIORIDAD</label>
+        <p-dropdown
+          [options]="priorities"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="Seleccionar prioridad del servicio"
+          styleClass="w-full"
+          formControlName="priority"
+          [showClear]="true"
+          [ngClass]="{ 'ng-invalid ng-dirty': validateForm('priority') }"
+        />
+        <small *ngIf="validateForm('priority')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+      <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+        <label>TAREA ASOCIADA (Bitrix)</label>
+        <input
+          type="text"
+          pInputText
+          class="w-full"
+          formControlName="bitrixUrl"
+          placeholder="Ingresar URL de la tarea asociada"
+          [ngClass]="{ 'ng-invalid ng-dirty': validateForm('bitrixUrl') }"
+        />
+        <small *ngIf="validateForm('bitrixUrl')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+      <div class="flex flex-column col-12 lg:col-6 xl:col-6">
+        <label>NÚMERO DE RECLAMO</label>
+        <input
+          type="text"
+          pInputText
+          class="w-full"
+          formControlName="reclaim"
+        />
+      </div>
+      <div class="flex flex-column col-12 lg:col-6 xl:col-6">
+        <label>ESTADO DEL SERVICIO</label>
+        <p-dropdown
+          [options]="states"
+          optionLabel="name"
+          optionValue="id"
+          styleClass="w-full"
+          formControlName="state"
+          dropdownIcon="none"
+        />
+      </div>
+      <div class="flex flex-column col-12 lg:col-6 xl:col-3">
+        <label>RAZÓN SOCIAL</label>
+        <input type="text" pInputText class="w-full" formControlName="client" />
+      </div>
+      <div class="flex flex-column col-12 lg:col-6 xl:col-3">
+        <label>NÚMERO DE SERIE DEL PRODUCTO</label>
+        <input
+          type="text"
+          pInputText
+          class="w-full"
+          formControlName="productSerial"
+        />
+      </div>
+      <div class="flex flex-column col-12 lg:col-6 xl:col-3">
+        <label>NOMBRE DEL PRODUCTO</label>
+        <input
+          type="text"
+          pInputText
+          class="w-full"
+          formControlName="productType"
+        />
+      </div>
+      <div class="flex flex-column col-12 lg:col-6 xl:col-3">
+        <label>FECHA DE DESPACHO DEL PRODUCTO</label>
+        <p-calendar
+          formControlName="productDateEntry"
+          dateFormat="dd-mm-yy"
+          styleClass="w-full"
+        />
+      </div>
+      <div class="flex flex-column col-12 lg:col-4 xl:col-4">
+        <label>GARANTÍA DE PRODUCCIÓN</label>
+        <input
+          type="text"
+          pInputText
+          class="w-full"
+          formControlName="warrantyProduction"
+          [class]="
+            supportForm.get('warrantyProduction')?.value ===
+            'GARANTÍA DE PRODUCCIÓN VENCIDA'
+              ? 'bg-red-100 text-red-600'
+              : supportForm.get('warrantyProduction')?.value === 'N/A'
+              ? 'bg-gray-100 text-gray-600'
+              : supportForm.get('warrantyProduction')?.value
+              ? 'bg-green-100 text-green-600'
+              : 'bg-gray-100 text-gray-600'
+          "
+        />
+      </div>
+      <div class="flex flex-column col-12 lg:col-4 xl:col-4">
+        <label>GARANTÍA DE SERVICIO TÉCNICO</label>
+        <input
+          type="text"
+          pInputText
+          class="w-full"
+          formControlName="warrantyService"
+          [class]="
+            supportForm.get('warrantyService')?.value ===
+            'GARANTÍA DE SERVICIO TÉCNICO VENCIDA'
+              ? 'bg-red-100 text-red-600'
+              : supportForm.get('warrantyService')?.value === 'N/A'
+              ? 'bg-gray-100 text-gray-600'
+              : supportForm.get('warrantyService')?.value
+              ? 'bg-green-100 text-green-600'
+              : 'bg-gray-100 text-gray-600'
+          "
+        />
+      </div>
+      <div class="flex flex-column col-12 lg:col-4 xl:col-4">
+        <label>GARANTIA</label>
+        <p-dropdown
+          [options]="booleanDropdown"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Seleccionar aprobación de garantía"
+          styleClass="w-full"
+          formControlName="warranty"
+          [showClear]="true"
+        />
+      </div>
+      <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+        <label>FALLA REPORTADA POR EL CLIENTE</label>
+        <input
+          type="text"
+          pInputText
+          class="w-full"
+          formControlName="failure"
+          placeholder="Ingresar falla reportada por el cliente"
+          [maxlength]="255"
+          [ngClass]="{
+            'ng-invalid ng-dirty': validateForm('failure')
+          }"
+        />
+        <small *ngIf="validateForm('failure')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+      <div class="flex flex-column col-12 lg:col-6 xl:col-6">
+        <label>REMITO DE PRODUCTO ENTRANTE</label>
+        <input
+          type="text"
+          pInputText
+          class="w-full"
+          formControlName="startReference"
+          placeholder="Ingresar número de remito de producto entrante"
+          [maxLength]="255"
+        />
+      </div>
+      <div class="flex flex-column col-12 lg:col-6 xl:col-6">
+        <label>REMITO DE PRODUCTO SALIENTE</label>
+        <input
+          type="text"
+          pInputText
+          class="w-full"
+          formControlName="endReference"
+          placeholder="Ingresar número de remito de producto saliente"
+          [maxLength]="255"
+          [ngClass]="{
+            'ng-invalid ng-dirty': validateForm('endReference')
+          }"
+        />
+        <small *ngIf="validateForm('endReference')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+      <div class="flex flex-column col-12 lg:col-6 xl:col-6">
+        <label>NÚMERO DE COTIZACIÓN</label>
+        <input
+          type="text"
+          pInputText
+          class="w-full"
+          formControlName="quoteNumber"
+          placeholder="Ingresar número de cotización si corresponde"
+          [maxlength]="255"
+          [maxLength]="255"
+          [ngClass]="{
+            'ng-invalid ng-dirty': validateForm('quoteNumber')
+          }"
+        />
+        <small *ngIf="validateForm('quoteNumber')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+      <div class="flex flex-column col-12 lg:col-6 xl:col-6">
+        <label>NÚMERO DE ORDEN DE COMPRA</label>
+        <input
+          type="text"
+          pInputText
+          class="w-full"
+          formControlName="orderNumber"
+          placeholder="Ingresar número de orden de compra si corresponde"
+          [maxLength]="255"
+          [ngClass]="{
+            'ng-invalid ng-dirty': validateForm('orderNumber')
+          }"
+        />
+        <small *ngIf="validateForm('orderNumber')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+      <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+        <label>FAJA DE SEGURIDAD</label>
+        <p-dropdown
+          [options]="booleanDropdown"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full"
+          formControlName="securityStrap"
+          placeholder="Seleccionar aprobación de faja de seguridad"
+          [showClear]="true"
+          [ngClass]="{
+            'ng-invalid ng-dirty': validateForm('securityStrap')
+          }"
+        />
+        <small *ngIf="validateForm('securityStrap')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+      <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+        <label>FALLAS ENCONTRADAS</label>
+        <p-multiSelect
+          [options]="failureTypes"
+          display="chip"
+          formControlName="failureTypes"
+          optionLabel="name"
+          optionValue="id"
+          styleClass="w-full"
+          placeholder="Seleccionar fallas encontradas"
+          [showToggleAll]="false"
+          [showClear]="true"
+          [ngClass]="{
+            'ng-invalid ng-dirty': validateForm('failureTypes')
+          }"
+        />
+        <small *ngIf="validateForm('failureTypes')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+      <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+        <label>OBSERVACIONES</label>
+        <textarea
+          pInputTextarea
+          [maxlength]="500"
+          class="w-full"
+          rows="6"
+          formControlName="remarks"
+          placeholder="Ingresar observaciones del servicio"
+          [autoResize]="true"
+        ></textarea>
+      </div>
+      <div class="flex flex-column xl:flex-row col-12 lg:col-12 xl:col-3">
+        <p-button
+          *ngIf="showButtonClean"
+          label="LIMPIAR FORMULARIO"
+          styleClass="p-button-danger w-full"
+          (onClick)="cleanForm()"
+        />
+        <p-button
+          *ngIf="showButtonState"
+          [disabled]="getChangesToUpdate() || disableButtonHistory"
+          label="ACTUALIZAR ESTADO DEL SERVICIO"
+          styleClass="p-button-info w-full"
+          (onClick)="openHistoryForm()"
+        />
+      </div>
+      <div
+        class="flex flex-column justify-content-end xl:flex-row gap-2 col-12 lg:col-12 xl:col-9"
+      >
+        <p-button
+          label="SALIR DEL FORMULARIO"
+          styleClass="p-button-secondary w-full"
+          (onClick)="exitForm()"
+        />
+        <p-button
+          [label]="mainButtonLabel"
+          [disabled]="supportForm.invalid || !getChangesToUpdate()"
+          styleClass="p-button-info w-full"
+          (onClick)="submitForm()"
+        />
+      </div></form
+  ></p-tabPanel>
+  <p-tabPanel header="HISTORIAL" *ngIf="showButtonHistory">
+    <p-table
+      [value]="supportHistory"
+      styleClass="p-datatable-striped p-datatable-sm"
+    >
+      <ng-template pTemplate="header">
+        <tr class="text-sm h-3rem">
+          <th colspan="4">CAMBIOS DE ESTADO DEL SERVICIO</th>
+        </tr>
+        <tr class="text-sm h-3rem">
+          <th class="w-2">FECHA Y HORA DE REGISTRO</th>
+          <th class="w-2">ESTADO</th>
+          <th class="white-space-normal">COMENTARIOS</th>
+          <th class="w-2">USUARIO</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-supportHistory>
+        <tr class="text-sm h-3rem">
+          <td>{{ supportHistory.dateEntry | date : "dd/MM/yyyy HH:mm" }}</td>
+          <td>{{ supportHistory.stateCurrent.name }}</td>
+          <td>{{ supportHistory.remarks }}</td>
+          <td>{{ supportHistory.user.fullname }}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr class="text-sm w-full">
+          <td colspan="4">
+            <div class="flex gap-2 align-items-center">
+              <i class="pi pi-info-circle"></i>
+              <span class="font-medium"
+                >No existen registros de cambio de estados para el
+                servicio</span
+              >
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-tabPanel>
+</p-tabView>
