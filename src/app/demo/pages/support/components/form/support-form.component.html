@@ -66,8 +66,8 @@
       pInputText
       class="w-full"
       formControlName="bitrixUrl"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('bitrixUrl') }"
       placeholder="Ingresar URL de la tarea asociada"
+      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('bitrixUrl') }"
     />
     <small *ngIf="validateForm('bitrixUrl')" class="p-error">
       Campo requerido*
@@ -177,7 +177,13 @@
       formControlName="failure"
       placeholder="Ingresar falla reportada por el cliente"
       [maxlength]="255"
+      [ngClass]="{
+        'ng-invalid ng-dirty': validateForm('failure')
+      }"
     />
+    <small *ngIf="validateForm('failure')" class="p-error">
+      Campo requerido*
+    </small>
   </div>
   <div class="flex flex-column col-12 lg:col-6 xl:col-6">
     <label>REMITO DE PRODUCTO ENTRANTE</label>
@@ -199,7 +205,13 @@
       formControlName="endReference"
       placeholder="Ingresar número de remito de producto saliente"
       [maxLength]="255"
+      [ngClass]="{
+        'ng-invalid ng-dirty': validateForm('endReference')
+      }"
     />
+    <small *ngIf="validateForm('endReference')" class="p-error">
+      Campo requerido*
+    </small>
   </div>
   <div class="flex flex-column col-12 lg:col-6 xl:col-6">
     <label>NÚMERO DE COTIZACIÓN</label>
@@ -210,7 +222,14 @@
       formControlName="quoteNumber"
       placeholder="Ingresar número de cotización si corresponde"
       [maxlength]="255"
+      [maxLength]="255"
+      [ngClass]="{
+        'ng-invalid ng-dirty': validateForm('quoteNumber')
+      }"
     />
+    <small *ngIf="validateForm('quoteNumber')" class="p-error">
+      Campo requerido*
+    </small>
   </div>
   <div class="flex flex-column col-12 lg:col-6 xl:col-6">
     <label>NÚMERO DE ORDEN DE COMPRA</label>
@@ -221,7 +240,13 @@
       formControlName="orderNumber"
       placeholder="Ingresar número de orden de compra si corresponde"
       [maxLength]="255"
+      [ngClass]="{
+        'ng-invalid ng-dirty': validateForm('orderNumber')
+      }"
     />
+    <small *ngIf="validateForm('orderNumber')" class="p-error">
+      Campo requerido*
+    </small>
   </div>
   <div class="flex flex-column col-12 lg:col-12 xl:col-12">
     <label>FAJA DE SEGURIDAD</label>
@@ -233,7 +258,13 @@
       formControlName="securityStrap"
       placeholder="Seleccionar aprobación de faja de seguridad"
       [showClear]="true"
+      [ngClass]="{
+        'ng-invalid ng-dirty': validateForm('securityStrap')
+      }"
     />
+    <small *ngIf="validateForm('securityStrap')" class="p-error">
+      Campo requerido*
+    </small>
   </div>
   <div class="flex flex-column col-12 lg:col-12 xl:col-12">
     <label>FALLAS ENCONTRADAS</label>
@@ -247,7 +278,13 @@
       placeholder="Seleccionar fallas encontradas"
       [showToggleAll]="false"
       [showClear]="true"
+      [ngClass]="{
+        'ng-invalid ng-dirty': validateForm('failureTypes')
+      }"
     />
+    <small *ngIf="validateForm('failureTypes')" class="p-error">
+      Campo requerido*
+    </small>
   </div>
   <div class="flex flex-column col-12 lg:col-12 xl:col-12">
     <label>OBSERVACIONES</label>
@@ -270,7 +307,7 @@
     />
     <p-button
       *ngIf="showButtonState"
-      [disabled]="getChangesToUpdate()"
+      [disabled]="getChangesToUpdate() || disableButtonHistory"
       label="ACTUALIZAR ESTADO DEL SERVICIO"
       styleClass="p-button-info w-full"
       (onClick)="openHistoryForm()"

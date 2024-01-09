@@ -39,6 +39,7 @@ export class SupportFormComponent {
     private readonly tokenService: TokenService
   ) {}
   public supportForm: FormGroup = this.buildForm();
+  public disableButtonHistory: boolean = false;
   public mainButtonLabel: string = 'REGISTRAR FORMULARIO';
   public showButtonState: boolean = false;
   public showButtonClean: boolean = true;
@@ -68,6 +69,7 @@ export class SupportFormComponent {
       this.showButtonState = true;
       this.showButtonClean = false;
       this.showSearch = false;
+      this.requiredFieldsByState(this.config.data.state.id);
     } else {
       this.getLastReclaimNumber();
     }
@@ -385,7 +387,7 @@ export class SupportFormComponent {
     );
   }
 
-  public fieldsWIthoutAdmin() {
+  private fieldsWIthoutAdmin(): void {
     if (!this.tokenService.isAdmin()) {
       this.supportForm.get('priority')?.disable();
       this.supportForm.get('warranty')?.disable();
@@ -394,6 +396,86 @@ export class SupportFormComponent {
       this.supportForm.get('orderNumber')?.disable();
       this.supportForm.get('quoteNumber')?.disable();
       this.supportForm.get('failure')?.disable();
+    }
+  }
+
+  //TODO: EN DESARROLLO  (current) Posible modificaciones.
+  private requiredFieldsByState(state: number): void {
+    switch (state) {
+      case 2:
+        this.supportForm.get('failure')?.addValidators(Validators.required);
+        this.supportForm.get('failure')?.updateValueAndValidity();
+        this.disableButtonHistory =
+          this.supportForm.get('failure')?.invalid || false;
+        break;
+      case 3:
+        this.supportForm
+          .get('securityStrap')
+          ?.addValidators(Validators.required);
+        this.supportForm.get('securityStrap')?.updateValueAndValidity();
+        this.disableButtonHistory =
+          this.supportForm.get('securityStrap')?.invalid || false;
+        break;
+      case 5:
+        this.supportForm.get('quoteNumber')?.addValidators(Validators.required);
+        this.supportForm.get('quoteNumber')?.updateValueAndValidity();
+        this.supportForm.get('orderNumber')?.addValidators(Validators.required);
+        this.supportForm.get('orderNumber')?.updateValueAndValidity();
+        this.disableButtonHistory =
+          this.supportForm.get('quoteNumber')?.invalid ||
+          this.supportForm.get('orderNumber')?.invalid ||
+          false;
+        break;
+      case 7:
+        // hacer caso con if ya que necesita obtener el ultimo user y aprobar si es diferente para que deje pasar y si hay devuleta lo que seria el en reparacion a reparado otra vez porque no paso el test entonces
+        // tiene que reajustar el if para que sea el diferente al que lo repara denuevo. (El caso este es solamente si no pasa el test, hay que ver que pasa con las estadisticas)
+        break;
+      case 8:
+        this.supportForm
+          .get('failureTypes')
+          ?.addValidators(Validators.required);
+        this.supportForm.get('failureTypes')?.updateValueAndValidity();
+        this.disableButtonHistory =
+          this.supportForm.get('failureTypes')?.invalid || false;
+        break;
+      case 9:
+        this.supportForm
+          .get('endReference')
+          ?.addValidators(Validators.required);
+        this.supportForm.get('endReference')?.updateValueAndValidity();
+        this.disableButtonHistory =
+          this.supportForm.get('endReference')?.invalid || false;
+        break;
+      case 10:
+        this.supportForm.get('failure')?.addValidators(Validators.required);
+        this.supportForm.get('failure')?.updateValueAndValidity();
+        this.supportForm
+          .get('securityStrap')
+          ?.addValidators(Validators.required);
+        this.supportForm.get('securityStrap')?.updateValueAndValidity();
+        this.supportForm.get('quoteNumber')?.addValidators(Validators.required);
+        this.supportForm.get('quoteNumber')?.updateValueAndValidity();
+        this.supportForm.get('orderNumber')?.addValidators(Validators.required);
+        this.supportForm.get('orderNumber')?.updateValueAndValidity();
+        this.supportForm
+          .get('failureTypes')
+          ?.addValidators(Validators.required);
+        this.supportForm.get('failureTypes')?.updateValueAndValidity();
+
+        this.supportForm
+          .get('endReference')
+          ?.addValidators(Validators.required);
+        this.supportForm.get('endReference')?.updateValueAndValidity();
+        this.disableButtonHistory =
+          this.supportForm.get('failure')?.invalid ||
+          this.supportForm.get('securityStrap')?.invalid ||
+          this.supportForm.get('quoteNumber')?.invalid ||
+          this.supportForm.get('orderNumber')?.invalid ||
+          this.supportForm.get('failureTypes')?.invalid ||
+          this.supportForm.get('endReference')?.invalid ||
+          false;
+
+        break;
     }
   }
 
