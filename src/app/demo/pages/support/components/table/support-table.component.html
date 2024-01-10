@@ -45,15 +45,155 @@
         <th>NÚMERO DE RECLAMO</th>
         <th>FECHA DE INGRESO</th>
         <th>NÚMERO DE SERIE</th>
-        <th>TIPO DE PRODUCTO</th>
-        <th>CLIENTE</th>
-        <th>ESTADO DEL SERVICIO</th>
-        <th>PRIORIDAD DEL SERVICIO</th>
+        <th>
+          <div class="flex align-items-center justify-content-between">
+            <span>TIPO DE PRODUCTO</span>
+            <p-columnFilter
+              field="product.productType.name"
+              matchMode="in"
+              display="chip"
+              [showMatchModes]="false"
+              [showOperator]="false"
+              [showAddButton]="false"
+              [showApplyButton]="false"
+              [showClearButton]="false"
+            >
+              <ng-template
+                pTemplate="filter"
+                let-value
+                let-filter="filterCallback"
+              >
+                <p-multiSelect
+                  [options]="productTypes"
+                  [showToggleAll]="false"
+                  optionLabel="name"
+                  optionValue="name"
+                  placeholder="Filtrar por tipo de producto"
+                  emptyFilterMessage="No hay resultados"
+                  filterPlaceHolder="Buscar..."
+                  (onChange)="filter($event.value)"
+                >
+                  <ng-template let-productType pTemplate="item">
+                    <span>{{ productType.name }}</span>
+                  </ng-template>
+                </p-multiSelect>
+              </ng-template>
+            </p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="flex align-items-center justify-content-between">
+            <span>CLIENTE</span>
+            <p-columnFilter
+              field="product.client.taxpayerName"
+              matchMode="in"
+              display="chip"
+              [showMatchModes]="false"
+              [showOperator]="false"
+              [showAddButton]="false"
+              [showApplyButton]="false"
+              [showClearButton]="false"
+            >
+              <ng-template
+                pTemplate="filter"
+                let-value
+                let-filter="filterCallback"
+              >
+                <p-multiSelect
+                  [options]="clients"
+                  [showToggleAll]="false"
+                  optionLabel="taxpayerName"
+                  optionValue="taxpayerName"
+                  placeholder="Filtrar por cliente"
+                  emptyFilterMessage="No hay resultados"
+                  filterPlaceHolder="Buscar..."
+                  (onChange)="filter($event.value)"
+                >
+                  <ng-template let-client pTemplate="item">
+                    <span>{{ client.taxpayerName }}</span>
+                  </ng-template>
+                </p-multiSelect>
+              </ng-template>
+            </p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="flex align-items-center justify-content-between">
+            <span>ESTADO DEL SERVICIO</span>
+            <p-columnFilter
+              field="state.name"
+              matchMode="in"
+              display="chip"
+              [showMatchModes]="false"
+              [showOperator]="false"
+              [showAddButton]="false"
+              [showApplyButton]="false"
+              [showClearButton]="false"
+            >
+              <ng-template
+                pTemplate="filter"
+                let-value
+                let-filter="filterCallback"
+              >
+                <p-multiSelect
+                  [options]="states"
+                  [showToggleAll]="false"
+                  optionLabel="name"
+                  optionValue="name"
+                  placeholder="Filtrar por estado"
+                  emptyFilterMessage="No hay resultados"
+                  filterPlaceHolder="Buscar..."
+                  (onChange)="filter($event.value)"
+                >
+                  <ng-template let-productType pTemplate="item">
+                    <span>{{ productType.name }}</span>
+                  </ng-template>
+                </p-multiSelect>
+              </ng-template>
+            </p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="flex align-items-center justify-content-between">
+            <span>PRIORIDAD DEL SERVICIO</span>
+            <p-columnFilter
+              field="priority.name"
+              matchMode="in"
+              display="chip"
+              [showMatchModes]="false"
+              [showOperator]="false"
+              [showAddButton]="false"
+              [showApplyButton]="false"
+              [showClearButton]="false"
+            >
+              <ng-template
+                pTemplate="filter"
+                let-value
+                let-filter="filterCallback"
+              >
+                <p-multiSelect
+                  [options]="priorities"
+                  [showToggleAll]="false"
+                  optionLabel="name"
+                  optionValue="name"
+                  placeholder="Filtrar por prioridad"
+                  emptyFilterMessage="No hay resultados"
+                  filterPlaceHolder="Buscar..."
+                  (onChange)="filter($event.value)"
+                >
+                  <ng-template let-productType pTemplate="item">
+                    <span>{{ productType.name }}</span>
+                  </ng-template>
+                </p-multiSelect>
+              </ng-template>
+            </p-columnFilter>
+          </div>
+        </th>
         <th class="w-1">ACCIONES</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-support>
-      <tr class="text-sm h-3rem">
+      <tr class="text-sm h-3rem" [ngClass]="calculateBackgroundColor(support)">
         <td>
           <div class="flex align-items-center justify-content-between">
             <span class="font-semibold">{{ support.reclaim }}</span>

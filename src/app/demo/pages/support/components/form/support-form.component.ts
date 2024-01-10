@@ -400,11 +400,11 @@ export class SupportFormComponent {
     if (!this.tokenService.isAdmin()) {
       this.supportForm.get('priority')?.disable();
       this.supportForm.get('warranty')?.disable();
-      this.supportForm.get('startReference')?.disable();
-      this.supportForm.get('endReference')?.disable();
-      this.supportForm.get('orderNumber')?.disable();
-      this.supportForm.get('quoteNumber')?.disable();
-      this.supportForm.get('failure')?.disable();
+      // this.supportForm.get('startReference')?.disable();
+      // this.supportForm.get('endReference')?.disable();
+      // this.supportForm.get('orderNumber')?.disable();
+      // this.supportForm.get('quoteNumber')?.disable();
+      // this.supportForm.get('failure')?.disable();
     }
   }
 
@@ -439,8 +439,6 @@ export class SupportFormComponent {
           this.getLastUser(this.config.data).id ===
           Number(this.tokenService.getUserId())
         ) {
-          console.log(this.getLastUser(this.config.data));
-
           this.disableButtonHistory = true;
         } else {
           this.disableButtonHistory = false;
