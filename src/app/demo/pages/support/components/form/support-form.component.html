@@ -358,7 +358,9 @@
       <ng-template pTemplate="body" let-supportHistory>
         <tr class="text-sm h-3rem">
           <td>{{ supportHistory.dateEntry | date : "dd/MM/yyyy HH:mm" }}</td>
-          <td>{{ supportHistory.stateCurrent.name }}</td>
+          <td>
+            <p-tag [value]="supportHistory.stateCurrent.name" severity="info" />
+          </td>
           <td>{{ supportHistory.remarks }}</td>
           <td>{{ supportHistory.user.fullname }}</td>
         </tr>
