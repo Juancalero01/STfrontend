@@ -11,6 +11,15 @@
       </ng-template>
       <ng-template pTemplate="body">
         <tr class="text-sm h-3rem">
+          <td class="w-16rem">ESTADO DEL SERVICIO</td>
+          <td>
+            <p-tag
+              [severity]="getTagSeverity(supports.state.id)"
+              [value]="supports.state.name"
+            />
+          </td>
+        </tr>
+        <tr class="text-sm h-3rem">
           <td class="w-16rem">TAREA ASOCIADA (Bitrix)</td>
           <td class="font-semibold">
             <a

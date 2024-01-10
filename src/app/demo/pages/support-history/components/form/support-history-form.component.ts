@@ -21,4 +21,12 @@ export class SupportHistoryFormComponent {
   private loadTable(): void {
     this.supports = this.config.data;
   }
+
+  public getTagSeverity(stateId: number): string {
+    if (stateId === 11) {
+      return 'success';
+    } else {
+      return 'warning';
+    }
+  }
 }
