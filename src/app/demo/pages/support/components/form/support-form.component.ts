@@ -400,11 +400,6 @@ export class SupportFormComponent {
     if (!this.tokenService.isAdmin()) {
       this.supportForm.get('priority')?.disable();
       this.supportForm.get('warranty')?.disable();
-      // this.supportForm.get('startReference')?.disable();
-      // this.supportForm.get('endReference')?.disable();
-      // this.supportForm.get('orderNumber')?.disable();
-      // this.supportForm.get('quoteNumber')?.disable();
-      // this.supportForm.get('failure')?.disable();
     }
   }
 
@@ -434,16 +429,6 @@ export class SupportFormComponent {
           this.supportForm.get('orderNumber')?.invalid ||
           false;
         break;
-      case 6:
-        if (
-          this.getLastUser(this.config.data).id ===
-          Number(this.tokenService.getUserId())
-        ) {
-          this.disableButtonHistory = true;
-        } else {
-          this.disableButtonHistory = false;
-        }
-        break;
       case 8:
         this.supportForm
           .get('failureTypes')
@@ -453,14 +438,16 @@ export class SupportFormComponent {
           this.supportForm.get('failureTypes')?.invalid || false;
         break;
       case 9:
-        this.supportForm
-          .get('endReference')
-          ?.addValidators(Validators.required);
-        this.supportForm.get('endReference')?.updateValueAndValidity();
-        this.disableButtonHistory =
-          this.supportForm.get('endReference')?.invalid || false;
+        if (
+          this.getLastUser(this.config.data).id ===
+          Number(this.tokenService.getUserId())
+        ) {
+          this.disableButtonHistory = true;
+        } else {
+          this.disableButtonHistory = false;
+        }
         break;
-      case 10:
+      case 11:
         this.supportForm.get('failure')?.addValidators(Validators.required);
         this.supportForm.get('failure')?.updateValueAndValidity();
         this.supportForm

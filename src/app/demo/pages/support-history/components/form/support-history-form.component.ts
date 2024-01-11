@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
-import { IFailureType } from 'src/app/demo/api/interfaces/failure-type.interface';
-import { ISupportHistory } from 'src/app/demo/api/interfaces/support-history.interface';
 import { ISupport } from 'src/app/demo/api/interfaces/support.interface';
 
 @Component({
@@ -23,7 +21,7 @@ export class SupportHistoryFormComponent {
   }
 
   public getTagSeverity(stateId: number): string {
-    if (stateId === 11) {
+    if (stateId === 12) {
       return 'success';
     } else {
       return 'warning';

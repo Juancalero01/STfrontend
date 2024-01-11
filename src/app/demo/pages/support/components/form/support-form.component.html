@@ -342,6 +342,8 @@
   <p-tabPanel header="HISTORIAL" *ngIf="showButtonHistory">
     <p-table
       [value]="supportHistory"
+      sortField="id"
+      [sortOrder]="-1"
       styleClass="p-datatable-striped p-datatable-sm"
     >
       <ng-template pTemplate="header">
@@ -361,7 +363,9 @@
           <td>
             <p-tag [value]="supportHistory.stateCurrent.name" severity="info" />
           </td>
-          <td>{{ supportHistory.remarks }}</td>
+          <td>
+            {{ supportHistory.remarks }}
+          </td>
           <td>{{ supportHistory.user.fullname }}</td>
         </tr>
       </ng-template>

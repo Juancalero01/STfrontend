@@ -50,7 +50,7 @@ export class SupportHistoryTableComponent {
   }
 
   public getTagSeverity(stateId: number): string {
-    if (stateId === 11) {
+    if (stateId === 12) {
       return 'success';
     } else {
       return 'warning';

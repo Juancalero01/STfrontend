@@ -50,6 +50,7 @@ export class SupportFormHistoryComponent {
     });
   }
 
+  //!MODIFICAR SEGUN ESTADO DE REPARACIÓN A TEST FINAL, TAMBIEN VER QUE MOSTRAR.
   private loadStates(): void {
     this.supportStateService.findAll().subscribe({
       next: (states: ISupportState[]) => {
@@ -96,7 +97,12 @@ export class SupportFormHistoryComponent {
             ]);
           return;
         } else if (stateCurrentValue === 7) {
-          this.nextStates = states.filter((state) => [9].includes(state.id));
+          this.nextStates = states.filter((state) => [10].includes(state.id));
+          return;
+        } else if (stateCurrentValue === 9) {
+          this.nextStates = states.filter((state) =>
+            [6, 10].includes(state.id)
+          );
           return;
         } else {
           optionsToShow = 1;
@@ -169,11 +175,17 @@ export class SupportFormHistoryComponent {
                   if (
                     this.supportHistoryForm.get('stateCurrent')?.value === 6
                   ) {
+                    const currentRepairedTime = this.config.data.repairedTime;
+                    const newRepairedTime =
+                      currentRepairedTime === null
+                        ? +repairedTime
+                        : +currentRepairedTime + +repairedTime;
+
                     this.supportService
-                      .setRepairedTime(this.config.data.id, repairedTime)
+                      .setRepairedTime(this.config.data.id, newRepairedTime)
                       .subscribe();
                   } else if (
-                    this.supportHistoryForm.get('stateCurrent')?.value === 10
+                    this.supportHistoryForm.get('stateCurrent')?.value === 11
                   ) {
                     this.supportService
                       .setDateDeparture(this.config.data.id, new Date())
