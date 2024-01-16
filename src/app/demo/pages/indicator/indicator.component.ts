@@ -5,6 +5,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SupportService } from '../../api/services/support.service';
 import { MessageService } from 'primeng/api';
 import { ExcelService } from 'src/app/shared/utils/services/excel.service';
+import { IClient } from '../../api/interfaces/client.interface';
+import { ClientService } from '../../api/services/client.service';
 
 @Component({
   selector: 'app-indicator',
@@ -13,18 +15,22 @@ import { ExcelService } from 'src/app/shared/utils/services/excel.service';
 export class IndicatorComponent {
   constructor(
     private readonly productTypeService: ProductTypeService,
+    private readonly clientService: ClientService,
     private readonly formBuilder: FormBuilder,
     private readonly supportService: SupportService,
     private readonly messageService: MessageService,
     private readonly excelService: ExcelService
   ) {}
   public productTypes: IProductType[] = [];
+  public clients: IClient[] = [];
   public indicatorForm: FormGroup = this.buildForm();
   public dateFrom: string = '';
   public dateUntil: string = '';
   public productType: string = '';
+  public client: string = '';
   public showIndicator: boolean = false;
   public showExcel: boolean = false;
+  public showCleanFilters: boolean = false;
   public indicatorData: any = [];
 
   public failureTypesData: any;
@@ -33,6 +39,7 @@ export class IndicatorComponent {
 
   public ngOnInit() {
     this.loadProductTypes();
+    this.loadClients();
     this.getConfigGlobalChart();
   }
 
@@ -44,10 +51,19 @@ export class IndicatorComponent {
     });
   }
 
+  private loadClients(): void {
+    this.clientService.findAll().subscribe({
+      next: (clients: IClient[]) => {
+        this.clients = clients;
+      },
+    });
+  }
+
   public generateIndicators(): void {
     const dataSend = {
       dateFrom: this.indicatorForm.get('dateFrom')?.value,
       dateUntil: this.indicatorForm.get('dateUntil')?.value,
+      clientId: this.indicatorForm.get('client')?.value,
       productTypeId: this.indicatorForm.get('productType')?.value,
     };
 
@@ -61,14 +77,23 @@ export class IndicatorComponent {
           this.dateFrom = this.indicatorForm.get('dateFrom')?.value;
           this.dateUntil = this.indicatorForm.get('dateUntil')?.value;
           const productTypeId = this.indicatorForm.get('productType')?.value;
+          const clientId = this.indicatorForm.get('client')?.value;
           const selectedProductType = this.productTypes.find(
             (pt) => pt.id === productTypeId
           );
+          const selectedClient = this.clients.find((c) => c.id === clientId);
+
           selectedProductType
             ? (this.productType = selectedProductType.name)
-            : (this.productType = 'TODOS');
+            : (this.productType = 'N/A');
+
+          selectedClient
+            ? (this.client = selectedClient.taxpayerName)
+            : (this.client = 'N/A');
+
           this.showIndicator = true;
           this.showExcel = true;
+          this.showCleanFilters = true;
         } else {
           this.messageService.add({
             severity: 'info',
@@ -82,6 +107,7 @@ export class IndicatorComponent {
 
   private buildForm(): FormGroup {
     return this.formBuilder.group({
+      client: [null],
       productType: [null],
       dateFrom: [null, [Validators.required]],
       dateUntil: [null, [Validators.required]],
@@ -93,12 +119,14 @@ export class IndicatorComponent {
   }
 
   private generateFailures() {
-    const labels = this.indicatorData.failureServices.map(
-      (item: any) => item.failure
+    const sortedData = this.indicatorData.failureServices.sort(
+      (a: any, b: any) => b.percentage - a.percentage
     );
-    const percentages = this.indicatorData.failureServices.map(
-      (item: any) => item.percentage
+
+    const labels = sortedData.map(
+      (item: any) => `${item.failure} ${item.percentage}%`
     );
+    const percentages = sortedData.map((item: any) => item.percentage);
 
     this.failureTypesData = {
       labels: labels,
@@ -107,12 +135,14 @@ export class IndicatorComponent {
   }
 
   private generateProducts() {
-    const labels = this.indicatorData.productTypeServices.map(
-      (item: any) => item.productType
+    const sortedData = this.indicatorData.productTypeServices.sort(
+      (a: any, b: any) => b.percentage - a.percentage
     );
-    const percentages = this.indicatorData.productTypeServices.map(
-      (item: any) => item.percentage
+
+    const labels = sortedData.map(
+      (item: any) => `${item.productType} ${item.percentage}%`
     );
+    const percentages = sortedData.map((item: any) => item.percentage);
 
     this.productTypesData = {
       labels: labels,
@@ -160,9 +190,23 @@ export class IndicatorComponent {
       {
         dateFrom: this.dateFrom,
         dateUntil: this.dateUntil,
+        client: this.client,
+        productType: this.productType,
         ...this.indicatorData,
       },
       fileName
     );
+  }
+
+  public cleanFormAndIndicators() {
+    this.indicatorForm.reset();
+    this.showExcel = false;
+    this.showIndicator = false;
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Operación',
+      detail: 'Filtros reseteados',
+    });
+    this.showCleanFilters = false;
   }
 }

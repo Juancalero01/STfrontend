@@ -23,6 +23,8 @@ export class ExcelService {
     sheetData.push(['INDICADORES SERVICIO TÉCNICO']);
     sheetData.push([]);
     sheetData.push([]);
+    sheetData.push(['CLIENTE', data.client]);
+    sheetData.push(['TIPO DE PRODUCTO', data.productType]);
     sheetData.push(['FECHA DESDE', data.dateFrom]);
     sheetData.push(['FECHA HASTA', data.dateUntil]);
     sheetData.push([]);

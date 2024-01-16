@@ -5,6 +5,22 @@
         <span class="font-medium text-2xl">FILTROS</span>
       </div>
       <div class="flex flex-column w-full">
+        <label>CLIENTE</label>
+        <p-dropdown
+          [options]="clients"
+          formControlName="client"
+          optionLabel="taxpayerName"
+          optionValue="id"
+          [filter]="true"
+          placeholder="Seleccionar cliente"
+          filterPlaceholder="Buscar"
+          emptyFilterMessage="No hay resultados"
+          styleClass="w-full"
+          [showClear]="true"
+        />
+        <small class="text-green-500"> Campo opcional* </small>
+      </div>
+      <div class="flex flex-column w-full">
         <label>TIPO DE PRODUCTO</label>
         <p-dropdown
           [options]="productTypes"
@@ -65,6 +81,16 @@
           (onClick)="exportToExcel()"
         />
       </div>
+
+      <div class="w-full">
+        <p-button
+          label="LIMPIAR FILTROS"
+          styleClass="w-full p-button-danger"
+          icon="pi pi-filter-slash"
+          *ngIf="showCleanFilters"
+          (onClick)="cleanFormAndIndicators()"
+        />
+      </div>
     </form>
   </section>
   <section
@@ -78,6 +104,9 @@
           Estadísticas de Servicio Técnico desde el
           {{ dateFrom | date : "dd/MM/yyyy" }} al
           {{ dateUntil | date : "dd/MM/yyyy" }}
+        </span>
+        <span class="text-lg font-medium text-gray-500"
+          >Cliente: {{ client }}
         </span>
         <span class="text-lg font-medium text-gray-500"
           >Tipo de producto: {{ productType }}
@@ -146,7 +175,7 @@
           </div>
           <div>
             <span class="text-4xl font-medium"
-              >{{ indicatorData.warranty.inWarranty }} %
+              >{{ indicatorData.warranty.inWarranty }}%
             </span>
           </div>
         </div>
@@ -160,7 +189,7 @@
           </div>
           <div>
             <span class="text-4xl font-medium"
-              >{{ indicatorData.warranty.notInWarranty }} %
+              >{{ indicatorData.warranty.notInWarranty }}%
             </span>
           </div>
         </div>

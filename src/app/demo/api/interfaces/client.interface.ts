@@ -6,7 +6,7 @@ export interface IClient {
   isActive?: boolean;
   createdAt?: string;
   updatedAt?: string;
-  taxpayerName: string | null;
+  taxpayerName: string;
   taxpayerId?: string | null;
   taxpayerEmail?: string | null;
   taxpayerPhone?: string | null;
