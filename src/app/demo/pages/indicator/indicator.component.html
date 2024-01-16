@@ -100,6 +100,32 @@
       <div class="col-12 lg:col-6 xl:col-6">
         <div class="p-card shadow-none p-3 border-1 border-gray-200">
           <div class="flex justify-content-between mb-3">
+            <span class="block text-500 font-medium">SERVICIOS REPARADOS</span>
+          </div>
+          <div>
+            <span class="text-4xl font-medium"
+              >{{ indicatorData.numberOfServicesRepair }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 lg:col-6 xl:col-6">
+        <div class="p-card shadow-none p-3 border-1 border-gray-200">
+          <div class="flex justify-content-between mb-3">
+            <span class="block text-500 font-medium"
+              >SERVICIOS NO REPARADOS</span
+            >
+          </div>
+          <div>
+            <span class="text-4xl font-medium"
+              >{{ indicatorData.numberOfServicesNotRepair }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 lg:col-6 xl:col-6">
+        <div class="p-card shadow-none p-3 border-1 border-gray-200">
+          <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium"
               >SERVICIOS REINGRESADOS</span
             >
@@ -107,6 +133,34 @@
           <div>
             <span class="text-4xl font-medium"
               >{{ indicatorData.reentryServices }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 lg:col-6 xl:col-6">
+        <div class="p-card shadow-none p-3 border-1 border-gray-200">
+          <div class="flex justify-content-between mb-3">
+            <span class="block text-500 font-medium"
+              >SERVICIOS EN GARANTIA</span
+            >
+          </div>
+          <div>
+            <span class="text-4xl font-medium"
+              >{{ indicatorData.warranty.inWarranty }} %
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 lg:col-6 xl:col-6">
+        <div class="p-card shadow-none p-3 border-1 border-gray-200">
+          <div class="flex justify-content-between mb-3">
+            <span class="block text-500 font-medium"
+              >SERVICIOS FUERA DE GARANTIA</span
+            >
+          </div>
+          <div>
+            <span class="text-4xl font-medium"
+              >{{ indicatorData.warranty.notInWarranty }} %
             </span>
           </div>
         </div>

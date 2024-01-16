@@ -22,12 +22,23 @@ export class ExcelService {
     const sheetData: any[] = [];
     sheetData.push(['INDICADORES SERVICIO TÉCNICO']);
     sheetData.push([]);
+    sheetData.push([]);
     sheetData.push(['FECHA DESDE', data.dateFrom]);
     sheetData.push(['FECHA HASTA', data.dateUntil]);
     sheetData.push([]);
     sheetData.push([]);
     sheetData.push(['SERVICIOS', data.numberOfServices]);
+    sheetData.push(['SERVICIOS REPARADOS', data.numberOfServicesRepair]);
+    sheetData.push(['SERVICIOS NO REPARADOS', data.numberOfServicesNotRepair]);
     sheetData.push(['SERVICIOS REINGRESADOS', data.reentryServices]);
+    sheetData.push([]);
+    sheetData.push([]);
+    sheetData.push(['SERVICIOS EN GARANTIA', `${data.warranty.inWarranty}%`]);
+    sheetData.push([
+      'SERVICIOS FUERA DE GARANTIA',
+      `${data.warranty.notInWarranty}%`,
+    ]);
+    sheetData.push([]);
     sheetData.push([]);
     sheetData.push([
       'TIEMPO DE REPARACIÓN (PROMEDIO)',
