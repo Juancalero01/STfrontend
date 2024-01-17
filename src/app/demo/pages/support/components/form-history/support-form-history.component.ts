@@ -28,6 +28,7 @@ export class SupportFormHistoryComponent {
   ) {}
 
   public supportHistoryForm: FormGroup = this.buildForm();
+  public supportHistoryNoteForm: FormGroup = this.buildFormNote();
   public currentStates: ISupportState[] = [];
   public nextStates: ISupportState[] = [];
   public today: Date = new Date();
@@ -44,13 +45,12 @@ export class SupportFormHistoryComponent {
 
   private loadForm(data: ISupport): void {
     this.supportHistoryForm.patchValue({
-      stateCurrent: data.state.id,
-      service: data,
-      user: Number(this.tokenService.getUserId()),
+      stateCurrent: data.state.id, //!EL ESTADO QUE SE OBTIENE ES DEL SERVICIO Y NO DEL CAMBIO DEL HISTORIAL.
+      service: data, //!LA DATA DEL SERVICE SERIA EL ID O REFERENCIA DE ESE MISMO SERVICE.
+      user: Number(this.tokenService.getUserId()), //!LO OBTENEMOS MEDIANTE EL TOKEN, PRACTICAMENTE MEDIANTE EL serviceTOKEN.
     });
   }
 
-  //!MODIFICAR SEGUN ESTADO DE REPARACIÓN A TEST FINAL, TAMBIEN VER QUE MOSTRAR.
   private loadStates(): void {
     this.supportStateService.findAll().subscribe({
       next: (states: ISupportState[]) => {
@@ -134,6 +134,15 @@ export class SupportFormHistoryComponent {
     });
   }
 
+  private buildFormNote(): FormGroup {
+    return this.formBuilder.group({
+      dateEntry: [null],
+      comment: [null, [Validators.required, Validators.maxLength(500)]],
+      serviceHistory: [null],
+      user: [null],
+    });
+  }
+
   public exitForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea salir del formulario?',
@@ -163,6 +172,9 @@ export class SupportFormHistoryComponent {
       accept: () => {
         const { repairedTime, ...dataSend } =
           this.supportHistoryForm.getRawValue();
+
+        //!VERIFICAR CON UN IF SI YA EXISTE ESE SUPPORTHISTORY CON ESE STATECURRENT PARA QUE SOLAMENTE ACTUALICE SI ES QUE NO SE AGREGA UN COMENTARIO
+        //!ENTONCES LO CREA Y REGISTRA EL CAMBIO DE ESTADO
         this.supportHistoryService.create(dataSend).subscribe({
           next: () => {
             this.supportService
@@ -212,6 +224,13 @@ export class SupportFormHistoryComponent {
     );
   }
 
+  public validateFormNote(controlName: string): boolean | undefined {
+    return (
+      this.supportHistoryNoteForm.get(controlName)?.invalid &&
+      this.supportHistoryNoteForm.get(controlName)?.touched
+    );
+  }
+
   private findLastDateEntry(): void {
     if (
       this.config.data.state.id !== 1 &&
@@ -235,5 +254,9 @@ export class SupportFormHistoryComponent {
       );
     }
     return false;
+  }
+
+  public saveFormNote() {
+    console.log(this.supportHistoryNoteForm.value);
   }
 }

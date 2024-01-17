@@ -163,6 +163,7 @@ export class SupportFormComponent {
   }
 
   private loadSupportHistory(supportHistory: ISupportHistory[]): void {
+    //!MODIFICAR PARA QUE NO TRAIGA LOS QUE NO TENGAN STATENEXT, SI TIENEN STATECURRENT Y STATENEXT SE AGREGA ACA, UNA VEZ QUE SE REGISTRE EL CAMBIO.
     this.supportHistory = supportHistory;
   }
 

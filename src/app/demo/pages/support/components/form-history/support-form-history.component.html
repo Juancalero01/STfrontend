@@ -1,93 +1,188 @@
-<form class="grid" [formGroup]="supportHistoryForm">
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-    <label>FECHA</label>
-    <p-calendar
-      formControlName="dateEntry"
-      dateFormat="dd-mm-yy"
-      appendTo="body"
-      styleClass="w-full"
-      placeholder="Seleccionar fecha de cambio de estado"
-      [showButtonBar]="true"
-      [minDate]="minDate"
-      [maxDate]="maxDate"
-      [showClear]="true"
-      [autofocus]="true"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('dateEntry') }"
-    />
-    <small *ngIf="validateForm('dateEntry')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-    <label>ESTADO ACTUAL</label>
-    <p-dropdown
-      [options]="currentStates"
-      optionLabel="name"
-      optionValue="id"
-      styleClass="w-full"
-      formControlName="stateCurrent"
-      dropdownIcon="none"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('stateCurrent') }"
-    />
-  </div>
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-    <label>ESTADO SIGUIENTE</label>
-    <p-dropdown
-      [options]="nextStates"
-      optionLabel="name"
-      optionValue="id"
-      styleClass="w-full"
-      formControlName="stateNext"
-      placeholder="Seleccionar estado siguiente"
-      [showClear]="true"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('stateNext') }"
-    />
-    <small *ngIf="validateForm('stateNext')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12" *ngIf="showHours">
-    <label>TIEMPO DE REPARACIÓN (horas aproximadas)</label>
-    <input
-      formControlName="repairedTime"
-      type="text"
-      pInputText
-      class="w-full"
-      [pKeyFilter]="'num'"
-      [maxlength]="2"
-      placeholder="Ingrese horas de reparación"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('repairedTime') }"
-    />
-    <small *ngIf="validateForm('repairedTime')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-    <label>COMENTARIOS (Estado actual)</label>
-    <textarea
-      pInputTextarea
-      formControlName="remarks"
-      maxlength="500"
-      class="w-full"
-      [autoResize]="true"
-      rows="5"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('remarks') }"
-    ></textarea>
-    <small *ngIf="validateForm('remarks')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
-  <div class="flex gap-2 col-12 lg:flex-row justify-content-end flex-column">
-    <p-button
-      label="SALIR DEL FORMULARIO"
-      styleClass="p-button-secondary w-full"
-      (onClick)="exitForm()"
-    />
-    <p-button
-      styleClass="p-button-info w-full"
-      label="REGISTRAR FORMULARIO"
-      [disabled]="supportHistoryForm.invalid"
-      (onClick)="saveForm()"
-    />
-  </div>
-</form>
+<p-tabView>
+  <p-tabPanel header="FORMULARIO"
+    ><form class="grid" [formGroup]="supportHistoryForm">
+      <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+        <label>FECHA</label>
+        <p-calendar
+          formControlName="dateEntry"
+          dateFormat="dd-mm-yy"
+          appendTo="body"
+          styleClass="w-full"
+          placeholder="Seleccionar fecha de cambio de estado"
+          [showButtonBar]="true"
+          [minDate]="minDate"
+          [maxDate]="maxDate"
+          [showClear]="true"
+          [ngClass]="{ 'ng-invalid ng-dirty': validateForm('dateEntry') }"
+        />
+        <small *ngIf="validateForm('dateEntry')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+      <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+        <label>ESTADO ACTUAL</label>
+        <p-dropdown
+          [options]="currentStates"
+          optionLabel="name"
+          optionValue="id"
+          styleClass="w-full"
+          formControlName="stateCurrent"
+          dropdownIcon="none"
+          [ngClass]="{ 'ng-invalid ng-dirty': validateForm('stateCurrent') }"
+        />
+      </div>
+      <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+        <label>ESTADO SIGUIENTE</label>
+        <p-dropdown
+          [options]="nextStates"
+          optionLabel="name"
+          optionValue="id"
+          styleClass="w-full"
+          formControlName="stateNext"
+          placeholder="Seleccionar estado siguiente"
+          [showClear]="true"
+          [ngClass]="{ 'ng-invalid ng-dirty': validateForm('stateNext') }"
+        />
+        <small *ngIf="validateForm('stateNext')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+      <div
+        class="flex flex-column col-12 lg:col-12 xl:col-12"
+        *ngIf="showHours"
+      >
+        <label>TIEMPO DE REPARACIÓN (horas aproximadas)</label>
+        <input
+          formControlName="repairedTime"
+          type="text"
+          pInputText
+          class="w-full"
+          [pKeyFilter]="'num'"
+          [maxlength]="2"
+          placeholder="Ingrese horas de reparación"
+          [ngClass]="{ 'ng-invalid ng-dirty': validateForm('repairedTime') }"
+        />
+        <small *ngIf="validateForm('repairedTime')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+      <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+        <label>COMENTARIOS (Estado actual)</label>
+        <textarea
+          pInputTextarea
+          formControlName="remarks"
+          maxlength="500"
+          class="w-full"
+          [autoResize]="true"
+          rows="5"
+          [ngClass]="{ 'ng-invalid ng-dirty': validateForm('remarks') }"
+        ></textarea>
+        <small *ngIf="validateForm('remarks')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+      <div
+        class="flex gap-2 col-12 lg:flex-row justify-content-end flex-column"
+      >
+        <p-button
+          label="SALIR DEL FORMULARIO"
+          styleClass="p-button-secondary w-full"
+          (onClick)="exitForm()"
+        />
+        <p-button
+          styleClass="p-button-info w-full"
+          label="REGISTRAR FORMULARIO"
+          [disabled]="supportHistoryForm.invalid"
+          (onClick)="saveForm()"
+        />
+      </div>
+    </form>
+  </p-tabPanel>
+  <p-tabPanel header="NOTAS">
+    <div class="flex flex-column gap-2">
+      <div class="p-card shadow-none border-1 border-gray-300 py-3 px-2">
+        <div class="p-card-header flex flex-column gap-2">
+          <p class="p-tag w-fit p-tag-info">Fernando Martinez</p>
+          <small>17-01-2024 11:18</small>
+        </div>
+        <div class="p-card-content">
+          <p class="small">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dicta
+            impedit aliquid earum ullam rem totam alias reprehenderit vitae
+            asperiores natus minus fugiat accusamus voluptatum, laudantium quasi
+            eligendi magnam ipsam amet. Eos quia iusto assumenda quaerat
+            doloribus culpa! Modi facilis quis distinctio molestias qui odio eos
+            reiciendis, ea, vero repudiandae animi ducimus porro consequuntur
+            similique maiores placeat?
+          </p>
+        </div>
+      </div>
+      <div class="p-card shadow-none border-1 border-gray-300 py-3 px-2">
+        <div class="p-card-header flex flex-column gap-2">
+          <p class="p-tag w-fit p-tag-info">Antonio Cuenca</p>
+          <small>17-01-2024 12:01</small>
+        </div>
+        <div class="p-card-content">
+          <p class="small">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dicta
+            impedit aliquid earum ullam rem totam alias reprehenderit vitae
+            asperiores natus minus fugiat accusamus voluptatum, laudantium quasi
+            eligendi magnam ipsam amet. Eos quia iusto assumenda quaerat
+            doloribus culpa!
+          </p>
+        </div>
+      </div>
+      <div class="p-card shadow-none border-1 border-gray-300 py-3 px-2">
+        <div class="p-card-header flex flex-column gap-2">
+          <p class="p-tag w-fit p-tag-info">Lucas Boros</p>
+          <small>17-01-2024 15:59</small>
+        </div>
+        <div class="p-card-content">
+          <p class="small">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio,
+            provident autem. Alias ratione debitis quas nisi, id iure fugit vel,
+            tenetur quidem culpa nemo provident beatae et recusandae ea
+            corrupti. Sapiente necessitatibus eaque alias delectus, suscipit
+            laborum aliquam maiores voluptate minima eos eveniet. Dicta aliquid,
+            quae dolores culpa omnis inventore, laudantium soluta delectus
+            necessitatibus rerum tenetur architecto eligendi, porro aspernatur.
+            Nemo repellat necessitatibus doloremque quisquam quod est laboriosam
+            voluptatibus earum, veniam iste autem minus sequi id suscipit quos
+            dolorem. Autem, non earum tempore vel fugiat officia quam corrupti
+            recusandae impedit! Veritatis pariatur incidunt nisi rem voluptate
+            quisquam ullam hic numquam optio quod, laboriosam quidem asperiores
+            et iusto saepe dolores velit architecto dolore eum quaerat tempora
+            voluptatem, ab doloribus ducimus?
+          </p>
+        </div>
+      </div>
+    </div>
+    <form class="grid m-2 w-full" [formGroup]="supportHistoryNoteForm">
+      <div class="flex flex-column col-12 lg:col-12 xl:col-12 w-full">
+        <div class="w-full flex flex-row gap-2 align-items-center">
+          <textarea
+            pInputTextarea
+            formControlName="comment"
+            maxlength="500"
+            class="w-full h-full"
+            [rows]="5"
+            [autoResize]="true"
+            placeholder="Ingrese un comentario nuevo si es necesario"
+            [ngClass]="{ 'ng-invalid ng-dirty': validateFormNote('comment') }"
+          ></textarea>
+          <p-button
+            icon="pi pi-send"
+            styleClass="p-button-secondary p-button-text"
+            (onClick)="saveFormNote()"
+            [disabled]="supportHistoryNoteForm.invalid"
+          />
+        </div>
+        <small *ngIf="validateFormNote('comment')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+    </form>
+  </p-tabPanel>
+  <!-- SE NECESITA DOS COSAS PRIMERO, TRAE SI O SI DEL ESTADO ACTUAL LAS NOTAS CORRESPONDIENTES -->
+  <!-- TENER UN FORMULARIO PARA AGREGAR MAS NOTAS, SIEMPRE ACTUALIZAR LO QUE SERIA EL COMENTARIO -->
+</p-tabView>
