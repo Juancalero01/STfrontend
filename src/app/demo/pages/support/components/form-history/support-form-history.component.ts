@@ -3,9 +3,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ISupportHistory } from 'src/app/demo/api/interfaces/support-history.interface';
+import { ISupportNote } from 'src/app/demo/api/interfaces/support-note.interface';
 import { ISupportState } from 'src/app/demo/api/interfaces/support-state.interface';
 import { ISupport } from 'src/app/demo/api/interfaces/support.interface';
 import { SupportHistoryService } from 'src/app/demo/api/services/support-history.service';
+import { SupportNoteService } from 'src/app/demo/api/services/support-note.service';
 import { SupportStateService } from 'src/app/demo/api/services/support-state.service';
 import { SupportService } from 'src/app/demo/api/services/support.service';
 import { TokenService } from 'src/app/demo/api/services/token.service';
@@ -23,6 +25,7 @@ export class SupportFormHistoryComponent {
     private readonly messageService: MessageService,
     private readonly confirmationService: ConfirmationService,
     private readonly supportHistoryService: SupportHistoryService,
+    private readonly supportNoteService: SupportNoteService,
     private readonly supportService: SupportService,
     private readonly tokenService: TokenService
   ) {}
@@ -31,6 +34,7 @@ export class SupportFormHistoryComponent {
   public supportHistoryNoteForm: FormGroup = this.buildFormNote();
   public currentStates: ISupportState[] = [];
   public nextStates: ISupportState[] = [];
+  public notes: ISupportNote[] = [];
   public today: Date = new Date();
   public minDate: Date = new Date(this.config.data.dateEntry);
   public maxDate: Date = this.today;
@@ -41,6 +45,7 @@ export class SupportFormHistoryComponent {
     this.findLastDateEntry();
     this.loadStates();
     this.loadForm(this.config.data);
+    this.loadNotes();
   }
 
   private loadForm(data: ISupport): void {
@@ -49,6 +54,18 @@ export class SupportFormHistoryComponent {
       service: data, //!LA DATA DEL SERVICE SERIA EL ID O REFERENCIA DE ESE MISMO SERVICE.
       user: Number(this.tokenService.getUserId()), //!LO OBTENEMOS MEDIANTE EL TOKEN, PRACTICAMENTE MEDIANTE EL serviceTOKEN.
     });
+  }
+
+  private loadNotes(): void {
+    this.supportNoteService
+      .findByServiceHistory(
+        this.getLastServiceHistory(this.config.data.serviceHistory)
+      )
+      .subscribe({
+        next: (notes: ISupportNote[]) => {
+          this.notes = notes;
+        },
+      });
   }
 
   private loadStates(): void {
@@ -139,6 +156,7 @@ export class SupportFormHistoryComponent {
       dateEntry: [null],
       comment: [null, [Validators.required, Validators.maxLength(500)]],
       serviceHistory: [null],
+      state: [null],
       user: [null],
     });
   }
@@ -155,6 +173,103 @@ export class SupportFormHistoryComponent {
       acceptButtonStyleClass: 'p-button-sm p-button-info',
       rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => this.ref.close(),
+    });
+  }
+
+  public validateForm(controlName: string): boolean | undefined {
+    return (
+      this.supportHistoryForm.get(controlName)?.invalid &&
+      this.supportHistoryForm.get(controlName)?.touched
+    );
+  }
+
+  public validateFormNote(controlName: string): boolean | undefined {
+    return (
+      this.supportHistoryNoteForm.get(controlName)?.invalid &&
+      this.supportHistoryNoteForm.get(controlName)?.touched
+    );
+  }
+
+  private findLastDateEntry(): void {
+    if (
+      this.config.data.state.id !== 1 &&
+      this.config.data.serviceHistory.length > 0
+    ) {
+      const lastSupportHistory =
+        this.config.data.serviceHistory[
+          this.config.data.serviceHistory.length - 1
+        ];
+
+      if (new Date(lastSupportHistory.dateEntry) > this.minDate) {
+        this.minDate = new Date(lastSupportHistory.dateEntry);
+      }
+    }
+  }
+
+  private getCheckHistoryState(stateIdToCheck: number): boolean {
+    if (this.config.data.serviceHistory) {
+      return this.config.data.serviceHistory.some(
+        (history: ISupportHistory) => history.stateCurrent.id === stateIdToCheck
+      );
+    }
+    return false;
+  }
+
+  private getLastServiceHistory(supportHistory: ISupportHistory[]): number {
+    return supportHistory[0].id;
+  }
+
+  //!TESTEO FALTA RESOLVER
+
+  //!Se requiere que se haga una condición, en la cual primero verifique el ultimo historial
+  //!Si el estado del ultimo historial es igual al estado actual del servicio entonces NO se deberia registrar, solamente deberia crear la nota.
+  //!Del caso contrario si el ultimo historial es diferente del estado actual del servicio entonces SI se deberia registrar el historial, y luego
+  //!crear el la nota con ese id del historial
+  //!La idea es que el historial quede bien y las notas correspondan a su propio historial, recordar que hay que modificar los gets
+  //!en varias oportunidades.
+
+  public saveFormNote() {
+    this.supportHistoryNoteForm.patchValue({
+      dateEntry: this.today,
+      user: this.tokenService.getUserId(),
+      state: this.config.data.state,
+    });
+    this.confirmationService.confirm({
+      message: '¿Está seguro que desea guardar los cambios?',
+      header: 'CONFIRMAR',
+      icon: 'pi pi-info-circle',
+      acceptLabel: 'CONFIRMAR',
+      rejectLabel: 'CANCELAR',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
+      accept: () => {
+        const { repairedTime, ...dataSend } =
+          this.supportHistoryForm.getRawValue();
+        this.supportHistoryService.create(dataSend).subscribe({
+          next: () => {
+            this.supportHistoryService
+              .findLastHistory(this.config.data.id)
+              .subscribe({
+                next: (supportHistory: ISupportHistory) => {
+                  this.supportHistoryNoteForm.patchValue({
+                    serviceHistory: supportHistory.id,
+                  });
+                  this.supportNoteService
+                    .create({
+                      ...this.supportHistoryNoteForm.value,
+                    })
+                    .subscribe({
+                      next: () => {
+                        this.loadNotes();
+                      },
+                    });
+                },
+              });
+          },
+        });
+      },
     });
   }
 
@@ -215,48 +330,5 @@ export class SupportFormHistoryComponent {
         });
       },
     });
-  }
-
-  public validateForm(controlName: string): boolean | undefined {
-    return (
-      this.supportHistoryForm.get(controlName)?.invalid &&
-      this.supportHistoryForm.get(controlName)?.touched
-    );
-  }
-
-  public validateFormNote(controlName: string): boolean | undefined {
-    return (
-      this.supportHistoryNoteForm.get(controlName)?.invalid &&
-      this.supportHistoryNoteForm.get(controlName)?.touched
-    );
-  }
-
-  private findLastDateEntry(): void {
-    if (
-      this.config.data.state.id !== 1 &&
-      this.config.data.serviceHistory.length > 0
-    ) {
-      const lastSupportHistory =
-        this.config.data.serviceHistory[
-          this.config.data.serviceHistory.length - 1
-        ];
-
-      if (new Date(lastSupportHistory.dateEntry) > this.minDate) {
-        this.minDate = new Date(lastSupportHistory.dateEntry);
-      }
-    }
-  }
-
-  private getCheckHistoryState(stateIdToCheck: number): boolean {
-    if (this.config.data.serviceHistory) {
-      return this.config.data.serviceHistory.some(
-        (history: ISupportHistory) => history.stateCurrent.id === stateIdToCheck
-      );
-    }
-    return false;
-  }
-
-  public saveFormNote() {
-    console.log(this.supportHistoryNoteForm.value);
   }
 }

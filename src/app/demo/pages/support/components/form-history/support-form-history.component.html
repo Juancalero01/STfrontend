@@ -100,62 +100,30 @@
   </p-tabPanel>
   <p-tabPanel header="NOTAS">
     <div class="flex flex-column gap-2">
-      <div class="p-card shadow-none border-1 border-gray-300 py-3 px-2">
-        <div class="p-card-header flex flex-column gap-2">
-          <p class="p-tag w-fit p-tag-info">Fernando Martinez</p>
-          <small>17-01-2024 11:18</small>
-        </div>
-        <div class="p-card-content">
-          <p class="small">
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dicta
-            impedit aliquid earum ullam rem totam alias reprehenderit vitae
-            asperiores natus minus fugiat accusamus voluptatum, laudantium quasi
-            eligendi magnam ipsam amet. Eos quia iusto assumenda quaerat
-            doloribus culpa! Modi facilis quis distinctio molestias qui odio eos
-            reiciendis, ea, vero repudiandae animi ducimus porro consequuntur
-            similique maiores placeat?
-          </p>
+      <div *ngIf="notes.length > 0; else noNotes">
+        <div
+          *ngFor="let note of notes"
+          class="p-card shadow-none border-1 border-gray-300 py-3 px-2 mb-2"
+        >
+          <div class="p-card-header flex flex-column gap-2">
+            <p class="p-tag w-fit p-tag-info">{{ note.user.fullname }}</p>
+            <small>{{ note.dateEntry | date : "dd/MM/yyyy HH:mm" }} </small>
+          </div>
+          <div class="p-card-content">
+            <p class="small">{{ note.comment }}</p>
+          </div>
         </div>
       </div>
-      <div class="p-card shadow-none border-1 border-gray-300 py-3 px-2">
-        <div class="p-card-header flex flex-column gap-2">
-          <p class="p-tag w-fit p-tag-info">Antonio Cuenca</p>
-          <small>17-01-2024 12:01</small>
-        </div>
-        <div class="p-card-content">
-          <p class="small">
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dicta
-            impedit aliquid earum ullam rem totam alias reprehenderit vitae
-            asperiores natus minus fugiat accusamus voluptatum, laudantium quasi
-            eligendi magnam ipsam amet. Eos quia iusto assumenda quaerat
-            doloribus culpa!
-          </p>
-        </div>
-      </div>
-      <div class="p-card shadow-none border-1 border-gray-300 py-3 px-2">
-        <div class="p-card-header flex flex-column gap-2">
-          <p class="p-tag w-fit p-tag-info">Lucas Boros</p>
-          <small>17-01-2024 15:59</small>
-        </div>
-        <div class="p-card-content">
-          <p class="small">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio,
-            provident autem. Alias ratione debitis quas nisi, id iure fugit vel,
-            tenetur quidem culpa nemo provident beatae et recusandae ea
-            corrupti. Sapiente necessitatibus eaque alias delectus, suscipit
-            laborum aliquam maiores voluptate minima eos eveniet. Dicta aliquid,
-            quae dolores culpa omnis inventore, laudantium soluta delectus
-            necessitatibus rerum tenetur architecto eligendi, porro aspernatur.
-            Nemo repellat necessitatibus doloremque quisquam quod est laboriosam
-            voluptatibus earum, veniam iste autem minus sequi id suscipit quos
-            dolorem. Autem, non earum tempore vel fugiat officia quam corrupti
-            recusandae impedit! Veritatis pariatur incidunt nisi rem voluptate
-            quisquam ullam hic numquam optio quod, laboriosam quidem asperiores
-            et iusto saepe dolores velit architecto dolore eum quaerat tempora
-            voluptatem, ab doloribus ducimus?
-          </p>
-        </div>
-      </div>
+      <ng-template #noNotes>
+        <p-messages class="p-message p-message-info">
+          <ng-template pTemplate>
+            <i class="pi pi-info-circle text-xl p-0"></i>
+            <div class="ml-2">
+              No se encontraron notas relacionadas con este estado.
+            </div>
+          </ng-template>
+        </p-messages>
+      </ng-template>
     </div>
     <form class="grid m-2 w-full" [formGroup]="supportHistoryNoteForm">
       <div class="flex flex-column col-12 lg:col-12 xl:col-12 w-full">
