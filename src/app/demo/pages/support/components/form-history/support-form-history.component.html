@@ -99,30 +99,31 @@
     </form>
   </p-tabPanel>
   <p-tabPanel header="NOTAS">
-    <div class="flex flex-column gap-2">
-      <div *ngIf="notes.length > 0; else noNotes">
+    <div class="grid gap-2">
+      <div
+        *ngIf="notes.length > 0; else noNotes"
+        class="col-12 lg:col-12 xl:col-12"
+      >
         <div
           *ngFor="let note of notes"
-          class="p-card shadow-none border-1 border-gray-300 py-3 px-2 mb-2"
+          class="p-card shadow-none border-1 border-gray-300 py-2 px-2 mb-2"
         >
           <div class="p-card-header flex flex-column gap-2">
             <p class="p-tag w-fit p-tag-info">{{ note.user.fullname }}</p>
             <small>{{ note.dateEntry | date : "dd/MM/yyyy HH:mm" }} </small>
           </div>
-          <div class="p-card-content">
+          <div class="p-card-content py-3">
             <p class="small">{{ note.comment }}</p>
           </div>
         </div>
       </div>
       <ng-template #noNotes>
-        <p-messages class="p-message p-message-info">
-          <ng-template pTemplate>
-            <i class="pi pi-info-circle text-xl p-0"></i>
-            <div class="ml-2">
-              No se encontraron notas relacionadas con este estado.
-            </div>
-          </ng-template>
-        </p-messages>
+        <div class="p-message p-message-warn col-12 flex gap-1 p-4">
+          <i class="pi pi-info-circle text-xl"></i>
+          <p class="ml-2">
+            No se encontraron notas relacionadas con este estado.
+          </p>
+        </div>
       </ng-template>
     </div>
     <form class="grid m-2 w-full" [formGroup]="supportHistoryNoteForm">

@@ -39,6 +39,7 @@ export class SupportFormHistoryComponent {
   public minDate: Date = new Date(this.config.data.dateEntry);
   public maxDate: Date = this.today;
   public showHours: boolean = false;
+  // private lastSupportHistory: ISupportHistory = {} as ISupportHistory;
 
   public ngOnInit(): void {
     this.setDefaultFormData();
@@ -57,15 +58,14 @@ export class SupportFormHistoryComponent {
   }
 
   private loadNotes(): void {
-    this.supportNoteService
-      .findByServiceHistory(
-        this.getLastServiceHistory(this.config.data.serviceHistory)
-      )
-      .subscribe({
+    const supportHistory = this.config.data.serviceHistory[0].id;
+    if (supportHistory) {
+      this.supportNoteService.findByServiceHistory(supportHistory).subscribe({
         next: (notes: ISupportNote[]) => {
           this.notes = notes;
         },
       });
+    }
   }
 
   private loadStates(): void {
@@ -214,11 +214,6 @@ export class SupportFormHistoryComponent {
     }
     return false;
   }
-
-  private getLastServiceHistory(supportHistory: ISupportHistory[]): number {
-    return supportHistory[0].id;
-  }
-
   //!TESTEO FALTA RESOLVER
 
   //!Se requiere que se haga una condición, en la cual primero verifique el ultimo historial
@@ -229,11 +224,7 @@ export class SupportFormHistoryComponent {
   //!en varias oportunidades.
 
   public saveFormNote() {
-    this.supportHistoryNoteForm.patchValue({
-      dateEntry: this.today,
-      user: this.tokenService.getUserId(),
-      state: this.config.data.state,
-    });
+    this.setDataNoteDefault();
     this.confirmationService.confirm({
       message: '¿Está seguro que desea guardar los cambios?',
       header: 'CONFIRMAR',
@@ -245,28 +236,69 @@ export class SupportFormHistoryComponent {
       acceptButtonStyleClass: 'p-button-sm p-button-info',
       rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
-        const { repairedTime, ...dataSend } =
-          this.supportHistoryForm.getRawValue();
-        this.supportHistoryService.create(dataSend).subscribe({
-          next: () => {
-            this.supportHistoryService
-              .findLastHistory(this.config.data.id)
-              .subscribe({
-                next: (supportHistory: ISupportHistory) => {
-                  this.supportHistoryNoteForm.patchValue({
-                    serviceHistory: supportHistory.id,
+        const serviceId = this.config.data.id;
+        const body = this.getDataSupportHistory();
+        this.supportHistoryService.findLastHistory(serviceId).subscribe({
+          next: (supportHistory: ISupportHistory) => {
+            if (supportHistory) {
+              if (
+                supportHistory.stateCurrent.id === this.config.data.state.id
+              ) {
+                this.supportHistoryNoteForm.patchValue({
+                  serviceHistory: supportHistory.id,
+                });
+                this.supportNoteService
+                  .create(this.supportHistoryNoteForm.value)
+                  .subscribe({
+                    complete: () => {
+                      this.loadNotes();
+                      this.supportHistoryNoteForm.reset();
+                    },
                   });
-                  this.supportNoteService
-                    .create({
-                      ...this.supportHistoryNoteForm.value,
-                    })
+              } else {
+                this.supportHistoryService.create(body).subscribe({
+                  next: () => {
+                    this.supportHistoryService
+                      .findLastHistory(serviceId)
+                      .subscribe({
+                        next: (supportHistory: ISupportHistory) => {
+                          this.supportHistoryNoteForm.patchValue({
+                            serviceHistory: supportHistory.id,
+                          });
+                          this.supportNoteService
+                            .create(this.supportHistoryNoteForm.value)
+                            .subscribe({
+                              complete: () => {
+                                this.loadNotes();
+                              },
+                            });
+                        },
+                      });
+                  },
+                });
+              }
+            } else {
+              this.supportHistoryService.create(body).subscribe({
+                next: () => {
+                  this.supportHistoryService
+                    .findLastHistory(serviceId)
                     .subscribe({
-                      next: () => {
-                        this.loadNotes();
+                      next: (supportHistory: ISupportHistory) => {
+                        this.supportHistoryNoteForm.patchValue({
+                          serviceHistory: supportHistory.id,
+                        });
+                        this.supportNoteService
+                          .create(this.supportHistoryNoteForm.value)
+                          .subscribe({
+                            complete: () => {
+                              this.loadNotes();
+                            },
+                          });
                       },
                     });
                 },
               });
+            }
           },
         });
       },
@@ -330,5 +362,19 @@ export class SupportFormHistoryComponent {
         });
       },
     });
+  }
+
+  private setDataNoteDefault() {
+    this.supportHistoryNoteForm.patchValue({
+      dateEntry: this.today,
+      user: this.tokenService.getUserId(),
+      state: this.config.data.state,
+    });
+  }
+
+  private getDataSupportHistory() {
+    const { repairedTime, ...dataSend } = this.supportHistoryForm.getRawValue();
+
+    return dataSend;
   }
 }
