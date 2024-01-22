@@ -163,7 +163,6 @@ export class SupportFormComponent {
   }
 
   private loadSupportHistory(supportHistory: ISupportHistory[]): void {
-    //!MODIFICAR PARA QUE NO TRAIGA LOS QUE NO TENGAN STATENEXT, SI TIENEN STATECURRENT Y STATENEXT SE AGREGA ACA, UNA VEZ QUE SE REGISTRE EL CAMBIO.
     this.supportHistory = supportHistory;
   }
 
@@ -182,7 +181,7 @@ export class SupportFormComponent {
         this.supportService.findAllByProduct(product.id).subscribe({
           next: (supports: ISupport[]) => {
             const supportActive = supports.find(
-              (support) => support.state.id !== 11 && support.state.id !== 12
+              (support) => support.state.id !== 12 && support.state.id !== 13
             );
             if (supportActive) {
               this.messageService.add({

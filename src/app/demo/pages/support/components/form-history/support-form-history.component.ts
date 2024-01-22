@@ -22,12 +22,12 @@ export class SupportFormHistoryComponent {
     private readonly config: DynamicDialogConfig,
     private readonly formBuilder: FormBuilder,
     private readonly supportStateService: SupportStateService,
-    private readonly messageService: MessageService,
     private readonly confirmationService: ConfirmationService,
     private readonly supportHistoryService: SupportHistoryService,
     private readonly supportNoteService: SupportNoteService,
     private readonly supportService: SupportService,
-    private readonly tokenService: TokenService
+    private readonly tokenService: TokenService,
+    private readonly messageService: MessageService
   ) {}
 
   public supportHistoryForm: FormGroup = this.buildForm();
@@ -39,7 +39,7 @@ export class SupportFormHistoryComponent {
   public minDate: Date = new Date(this.config.data.dateEntry);
   public maxDate: Date = this.today;
   public showHours: boolean = false;
-  // private lastSupportHistory: ISupportHistory = {} as ISupportHistory;
+  public testLastHistory: ISupportHistory = {} as ISupportHistory;
 
   public ngOnInit(): void {
     this.setDefaultFormData();
@@ -51,21 +51,38 @@ export class SupportFormHistoryComponent {
 
   private loadForm(data: ISupport): void {
     this.supportHistoryForm.patchValue({
-      stateCurrent: data.state.id, //!EL ESTADO QUE SE OBTIENE ES DEL SERVICIO Y NO DEL CAMBIO DEL HISTORIAL.
-      service: data, //!LA DATA DEL SERVICE SERIA EL ID O REFERENCIA DE ESE MISMO SERVICE.
-      user: Number(this.tokenService.getUserId()), //!LO OBTENEMOS MEDIANTE EL TOKEN, PRACTICAMENTE MEDIANTE EL serviceTOKEN.
+      stateCurrent: data.state.id,
+      service: data,
+      user: Number(this.tokenService.getUserId()),
     });
   }
 
   private loadNotes(): void {
-    const supportHistory = this.config.data.serviceHistory[0].id;
-    if (supportHistory) {
-      this.supportNoteService.findByServiceHistory(supportHistory).subscribe({
-        next: (notes: ISupportNote[]) => {
-          this.notes = notes;
-        },
-      });
-    }
+    const serviceId = this.config.data.id;
+    this.supportHistoryService.findLastHistory(serviceId).subscribe({
+      next: (supportHistory: ISupportHistory) => {
+        if (supportHistory.stateCurrent.id === this.config.data.state.id) {
+          this.supportNoteService
+            .findByServiceHistory(supportHistory.id)
+            .subscribe({
+              next: (notes: ISupportNote[]) => {
+                this.notes = notes;
+              },
+            });
+        }
+      },
+    });
+
+    // const supportHistory = this.config.data.serviceHistory[0];
+    // if (supportHistory.stateCurrent.id === this.config.data.state.id) {
+    //   this.supportNoteService
+    //     .findByServiceHistory(supportHistory.id)
+    //     .subscribe({
+    //       next: (notes: ISupportNote[]) => {
+    //         this.notes = notes;
+    //       },
+    //     });
+    // }
   }
 
   private loadStates(): void {
@@ -214,19 +231,11 @@ export class SupportFormHistoryComponent {
     }
     return false;
   }
-  //!TESTEO FALTA RESOLVER
-
-  //!Se requiere que se haga una condición, en la cual primero verifique el ultimo historial
-  //!Si el estado del ultimo historial es igual al estado actual del servicio entonces NO se deberia registrar, solamente deberia crear la nota.
-  //!Del caso contrario si el ultimo historial es diferente del estado actual del servicio entonces SI se deberia registrar el historial, y luego
-  //!crear el la nota con ese id del historial
-  //!La idea es que el historial quede bien y las notas correspondan a su propio historial, recordar que hay que modificar los gets
-  //!en varias oportunidades.
 
   public saveFormNote() {
     this.setDataNoteDefault();
     this.confirmationService.confirm({
-      message: '¿Está seguro que desea guardar los cambios?',
+      message: '¿Está seguro que desea guardar la nota?',
       header: 'CONFIRMAR',
       icon: 'pi pi-info-circle',
       acceptLabel: 'CONFIRMAR',
@@ -268,8 +277,9 @@ export class SupportFormHistoryComponent {
                           this.supportNoteService
                             .create(this.supportHistoryNoteForm.value)
                             .subscribe({
-                              complete: () => {
+                              next: () => {
                                 this.loadNotes();
+                                this.supportHistoryNoteForm.reset();
                               },
                             });
                         },
@@ -290,8 +300,9 @@ export class SupportFormHistoryComponent {
                         this.supportNoteService
                           .create(this.supportHistoryNoteForm.value)
                           .subscribe({
-                            complete: () => {
+                            next: () => {
                               this.loadNotes();
+                              this.supportHistoryNoteForm.reset();
                             },
                           });
                       },
@@ -306,6 +317,8 @@ export class SupportFormHistoryComponent {
   }
 
   public saveForm(): void {
+    const service = this.config.data;
+    const { repairedTime, ...body } = this.supportHistoryForm.getRawValue();
     this.confirmationService.confirm({
       message: '¿Está seguro que desea guardar los cambios?',
       header: 'CONFIRMAR',
@@ -317,47 +330,83 @@ export class SupportFormHistoryComponent {
       acceptButtonStyleClass: 'p-button-sm p-button-info',
       rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
-        const { repairedTime, ...dataSend } =
-          this.supportHistoryForm.getRawValue();
+        this.supportHistoryService.findLastHistory(service.id).subscribe({
+          next: (supportHistory: ISupportHistory) => {
+            if (
+              supportHistory &&
+              supportHistory.stateCurrent.id === service.state.id
+            ) {
+              this.supportHistoryService
+                .update(supportHistory.id, body)
+                .subscribe({
+                  next: () => {
+                    this.supportService
+                      .updateState(service.id, body.stateNext)
+                      .subscribe({
+                        next: () => {
+                          if (body.stateCurrent === 6) {
+                            const currentRepairedTime =
+                              this.config.data.repairedTime;
+                            const newRepairedTime =
+                              currentRepairedTime === null
+                                ? +repairedTime
+                                : +currentRepairedTime + +repairedTime;
 
-        //!VERIFICAR CON UN IF SI YA EXISTE ESE SUPPORTHISTORY CON ESE STATECURRENT PARA QUE SOLAMENTE ACTUALICE SI ES QUE NO SE AGREGA UN COMENTARIO
-        //!ENTONCES LO CREA Y REGISTRA EL CAMBIO DE ESTADO
-        this.supportHistoryService.create(dataSend).subscribe({
-          next: () => {
-            this.supportService
-              .updateState(
-                this.config.data.id,
-                this.supportHistoryForm.get('stateNext')?.value
-              )
-              .subscribe({
+                            this.supportService
+                              .setRepairedTime(service.id, newRepairedTime)
+                              .subscribe();
+                          } else if (body.stateCurrent === 11) {
+                            this.supportService
+                              .setDateDeparture(service.id, new Date())
+                              .subscribe();
+                          }
+                          this.messageService.add({
+                            severity: 'success',
+                            summary: 'Operación exitosa',
+                            detail: 'El estado se actualizo correctamente',
+                          });
+                          this.ref.close();
+                        },
+                      });
+                  },
+                });
+            } else if (
+              !supportHistory ||
+              supportHistory.stateCurrent.id !== service.state.id
+            ) {
+              this.supportHistoryService.create(body).subscribe({
                 next: () => {
-                  if (
-                    this.supportHistoryForm.get('stateCurrent')?.value === 6
-                  ) {
-                    const currentRepairedTime = this.config.data.repairedTime;
-                    const newRepairedTime =
-                      currentRepairedTime === null
-                        ? +repairedTime
-                        : +currentRepairedTime + +repairedTime;
+                  this.supportService
+                    .updateState(service.id, body.stateNext)
+                    .subscribe({
+                      next: () => {
+                        if (body.stateCurrent === 6) {
+                          const currentRepairedTime =
+                            this.config.data.repairedTime;
+                          const newRepairedTime =
+                            currentRepairedTime === null
+                              ? +repairedTime
+                              : +currentRepairedTime + +repairedTime;
 
-                    this.supportService
-                      .setRepairedTime(this.config.data.id, newRepairedTime)
-                      .subscribe();
-                  } else if (
-                    this.supportHistoryForm.get('stateCurrent')?.value === 11
-                  ) {
-                    this.supportService
-                      .setDateDeparture(this.config.data.id, new Date())
-                      .subscribe();
-                  }
-                  this.messageService.add({
-                    severity: 'success',
-                    summary: 'Operación exitosa',
-                    detail: 'El estado se actualizo correctamente',
-                  });
-                  this.ref.close();
+                          this.supportService
+                            .setRepairedTime(service.id, newRepairedTime)
+                            .subscribe();
+                        } else if (body.stateCurrent === 11) {
+                          this.supportService
+                            .setDateDeparture(service.id, new Date())
+                            .subscribe();
+                        }
+                        this.messageService.add({
+                          severity: 'success',
+                          summary: 'Operación exitosa',
+                          detail: 'El estado se actualizo correctamente',
+                        });
+                        this.ref.close();
+                      },
+                    });
                 },
               });
+            }
           },
         });
       },
