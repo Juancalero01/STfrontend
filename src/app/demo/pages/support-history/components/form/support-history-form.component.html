@@ -139,12 +139,24 @@
       </ng-template>
       <ng-template pTemplate="body" let-supportHistory>
         <tr class="text-sm h-3rem">
-          <td>{{ supportHistory.dateEntry | date : "dd/MM/yyyy HH:mm" }}</td>
-          <td>
-            <p-tag [value]="supportHistory.stateCurrent.name" severity="info" />
+          <td colspan="4">
+            <tr>
+              <td>
+                {{ supportHistory.dateEntry | date : "dd/MM/yyyy HH:mm" }}
+              </td>
+              <td>
+                <p-tag
+                  [value]="supportHistory.stateCurrent.name"
+                  severity="info"
+                />
+              </td>
+              <td>{{ supportHistory.remarks }}</td>
+              <td>{{ supportHistory.user.fullname }}</td>
+            </tr>
+            <tr>
+              <td colspan="4">otro</td>
+            </tr>
           </td>
-          <td>{{ supportHistory.remarks }}</td>
-          <td>{{ supportHistory.user.fullname }}</td>
         </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">
@@ -156,6 +168,73 @@
                 >No existen registros de cambio de estados para el
                 servicio</span
               >
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-tabPanel>
+  <p-tabPanel header="HISTORIAL EN TEST">
+    <p-table
+      #dt
+      [value]="supports.serviceHistory"
+      [scrollable]="true"
+      dataKey="stateCurrent"
+      rowGroupMode="subheader"
+      groupRowsBy="stateCurrent"
+      scrollHeight="640px"
+      styleClass="p-datatable-striped p-datatable-sm"
+    >
+      <!-- <ng-template pTemplate="header">
+      <tr class="text-sm h-3rem">
+        <th>NÚMERO DE RECLAMO</th>
+        <th>FECHA DE INGRESO</th>
+        <th>FECHA DE SALIDA</th>
+        <th>ESTADO</th>
+        <th class="w-1">ACCIONES</th>
+      </tr>
+    </ng-template> -->
+      <ng-template
+        pTemplate="groupheader"
+        let-history
+        let-rowIndex="rowIndex"
+        let-expanded="expanded"
+      >
+        <tr class="text-sm h-3rem">
+          <td>
+            <p-button
+              styleClass="p-button-text p-button-secondary"
+              [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+              [pRowToggler]="history"
+            />
+          </td>
+          <td>{{ history.stateCurrent.name }}</td>
+          <td>{{ history.remarks }}</td>
+          <td>{{ history.user.fullname }}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="rowexpansion" let-history let-rowspan="rowspan">
+        <tr class="text-sm h-3rem">
+          <td colspan="4">Fase de prueba</td>
+          <!-- <td>{{ history.serviceNote }}</td> -->
+          <!-- <td>
+            {{ history.serviceNote.dateEntry | date : "dd/MM/yyyy HH:mm" }}
+          </td>
+          <td>{{ history.serviceNote.comment }}</td> -->
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr class="text-sm w-full">
+          <td colspan="5">
+            <div class="flex gap-2 align-items-center">
+              <i class="pi pi-info-circle"></i>
+              <span class="font-medium"
+                >{{
+                  dt.filteredValue
+                    ? "No se encontraron historial de servicios con los criterios de búsqueda"
+                    : "No hay historial de servicios cargados."
+                }}
+              </span>
             </div>
           </td>
         </tr>
