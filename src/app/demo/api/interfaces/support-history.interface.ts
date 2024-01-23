@@ -1,3 +1,4 @@
+import { ISupportNote } from './support-note.interface';
 import { ISupportState } from './support-state.interface';
 import { ISupport } from './support.interface';
 
@@ -9,4 +10,5 @@ export interface ISupportHistory {
   service: ISupport;
   user: number;
   dateEntry: Date;
+  serviceNote: ISupportNote[];
 }
