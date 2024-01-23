@@ -126,8 +126,8 @@
         </div>
       </ng-template>
     </div>
-    <form class="grid m-2 w-full" [formGroup]="supportHistoryNoteForm">
-      <div class="flex flex-column col-12 lg:col-12 xl:col-12 w-full">
+    <form class="grid" [formGroup]="supportHistoryNoteForm">
+      <div class="flex flex-column col-12 lg:col-12 xl:col-12">
         <div class="w-full flex flex-row gap-2 align-items-center">
           <textarea
             pInputTextarea
@@ -136,12 +136,12 @@
             class="w-full h-full"
             [rows]="5"
             [autoResize]="true"
-            placeholder="Ingrese un comentario nuevo si es necesario"
+            placeholder="Ingrese una nota nueva si es necesario"
             [ngClass]="{ 'ng-invalid ng-dirty': validateFormNote('comment') }"
           ></textarea>
           <p-button
             icon="pi pi-send"
-            styleClass="p-button-secondary p-button-text"
+            styleClass="p-button-info"
             (onClick)="saveFormNote()"
             [disabled]="supportHistoryNoteForm.invalid"
           />
@@ -152,6 +152,4 @@
       </div>
     </form>
   </p-tabPanel>
-  <!-- SE NECESITA DOS COSAS PRIMERO, TRAE SI O SI DEL ESTADO ACTUAL LAS NOTAS CORRESPONDIENTES -->
-  <!-- TENER UN FORMULARIO PARA AGREGAR MAS NOTAS, SIEMPRE ACTUALIZAR LO QUE SERIA EL COMENTARIO -->
 </p-tabView>
