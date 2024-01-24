@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { ISupportHistory } from 'src/app/demo/api/interfaces/support-history.interface';
 import { ISupport } from 'src/app/demo/api/interfaces/support.interface';
 
 @Component({
@@ -9,6 +10,7 @@ import { ISupport } from 'src/app/demo/api/interfaces/support.interface';
 export class SupportHistoryFormComponent {
   constructor(private readonly config: DynamicDialogConfig) {}
   public supports: ISupport = {} as ISupport;
+  public supportHistories: ISupportHistory[] = [];
 
   public ngOnInit(): void {
     if (this.config.data) {
@@ -18,6 +20,7 @@ export class SupportHistoryFormComponent {
 
   private loadTable(): void {
     this.supports = this.config.data;
+    this.supportHistories = this.config.data.serviceHistory;
   }
 
   public getTagSeverity(stateId: number): string {
