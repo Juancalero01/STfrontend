@@ -344,40 +344,100 @@
       [value]="supportHistory"
       sortField="id"
       [sortOrder]="-1"
+      [scrollable]="true"
+      dataKey="id"
+      rowGroupMode="subheader"
+      groupRowsBy="stateCurrent"
       styleClass="p-datatable-striped p-datatable-sm"
     >
       <ng-template pTemplate="header">
         <tr class="text-sm h-3rem">
-          <th colspan="4">CAMBIOS DE ESTADO DEL SERVICIO</th>
+          <th colspan="5">CAMBIOS DE ESTADO DEL SERVICIO</th>
         </tr>
         <tr class="text-sm h-3rem">
-          <th class="w-2">FECHA Y HORA DE REGISTRO</th>
+          <th class="w-1">FECHA</th>
           <th class="w-2">ESTADO</th>
-          <th class="white-space-normal">COMENTARIOS</th>
-          <th class="w-2">USUARIO</th>
+          <th class="w-1">USUARIO</th>
+          <th class="white-space-normal">COMENTARIO</th>
+          <th class="w-1">NOTAS</th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-supportHistory>
+      <ng-template
+        pTemplate="groupheader"
+        let-serviceHistory
+        let-rowIndex="rowIndex"
+        let-expanded="expanded"
+      >
         <tr class="text-sm h-3rem">
-          <td>{{ supportHistory.dateEntry | date : "dd/MM/yyyy HH:mm" }}</td>
+          <td>{{ serviceHistory.dateEntry | date : "dd/MM/yyyy HH:mm" }}</td>
           <td>
-            <p-tag [value]="supportHistory.stateCurrent.name" severity="info" />
+            <div class="flex align-items-center gap-1">
+              <p-tag
+                [value]="serviceHistory.stateCurrent.name"
+                severity="info"
+              />
+              <ng-container *ngIf="!serviceHistory.stateNext">
+                <i
+                  class="pi pi-exclamation-circle text-yellow-500"
+                  pTooltip="Este registro solo muestra información adicional para las notas, no indica un cambio de estado."
+                ></i>
+              </ng-container>
+            </div>
           </td>
           <td>
-            {{ supportHistory.remarks }}
+            {{ serviceHistory.user.fullname }}
           </td>
-          <td>{{ supportHistory.user.fullname }}</td>
+          <td>{{ serviceHistory.remarks | null }}</td>
+          <td>
+            <p-button
+              styleClass="p-button-text p-button-secondary"
+              [icon]="expanded ? 'pi pi-comments' : 'pi pi-comments'"
+              [pRowToggler]="serviceHistory"
+              [disabled]="serviceHistory.serviceNote.length <= 0"
+            />
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template
+        pTemplate="rowexpansion"
+        let-serviceHistory
+        let-rowspan="rowspan"
+      >
+        <tr>
+          <td colspan="5" class="p-0">
+            <p-table
+              [value]="serviceHistory.serviceNote"
+              sortField="id"
+              [sortOrder]="-1"
+              [scrollable]="true"
+              styleClass="p-datatable-striped p-datatable-sm"
+            >
+              <ng-template pTemplate="header">
+                <tr class="text-sm h-3rem">
+                  <th class="w-1">FECHA</th>
+                  <th class="w-1">USUARIO</th>
+                  <th class="white-space-normal">NOTA</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-note>
+                <tr class="text-sm h-3rem">
+                  <td>{{ note.dateEntry | date : "dd/MM/yyyy HH:mm" }}</td>
+                  <td>{{ note.user.fullname }}</td>
+                  <td>{{ note.comment }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </td>
         </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr class="text-sm w-full">
-          <td colspan="4">
+          <td colspan="5">
             <div class="flex gap-2 align-items-center">
               <i class="pi pi-info-circle"></i>
               <span class="font-medium"
-                >No existen registros de cambio de estados para el
-                servicio</span
-              >
+                >No hay historial de servicios cargados.
+              </span>
             </div>
           </td>
         </tr>
