@@ -1,12 +1,8 @@
 <section class="grid">
   <section class="col-12 md:col-12 lg:col-12 xl:col-3" *ngIf="showFilters">
     <form class="flex flex-wrap gap-2" [formGroup]="historyForm">
-      <div class="w-full mb-2 flex justify-content-between align-items-center">
+      <div class="w-full mb-2">
         <span class="font-medium text-xl">FILTROS</span>
-        <i
-          class="pi pi-info-circle text-cyan-500"
-          pTooltip="Se requiere al menos uno de los dos campos"
-        ></i>
       </div>
       <div class="flex flex-column w-full">
         <label>NÚMERO DE RECLAMO</label>
@@ -18,6 +14,7 @@
           minlength="15"
           placeholder="Ingresar número de reclamo"
         />
+        <small class="p-error"> Campo requerido* </small>
       </div>
       <div class="flex flex-column w-full">
         <label>NÚMERO DE SERIE DE PRODUCTO</label>
@@ -26,9 +23,10 @@
           type="text"
           pInputText
           class="w-full"
-          minlength="10"
+          maxlength="10"
           placeholder="Ingresar número de serie de producto"
         />
+        <small class="p-error"> Campo requerido* </small>
       </div>
       <div class="w-full">
         <p-button
@@ -36,6 +34,7 @@
           styleClass="w-full p-button-info"
           icon="pi pi-search"
           (onClick)="searchHistory()"
+          [disabled]="historyForm.invalid || !getChangesToUpdate()"
         />
       </div>
     </form>
@@ -43,15 +42,13 @@
   <section
     class="col-12 lg:col-12 xl:col-9"
     [ngClass]="{ 'xl:col-12': !showFilters, 'px-4': showFilters }"
+    *ngIf="showSearch; else elseBlock"
   >
     <p-table
       [value]="supports"
-      [globalFilterFields]="['product.serial', 'reclaim']"
-      [scrollable]="true"
-      dataKey="product.serial"
-      rowGroupMode="subheader"
-      groupRowsBy="product.serial"
       styleClass="p-datatable-striped p-datatable-sm"
+      sortField="id"
+      [sortOrder]="-1"
     >
       <ng-template pTemplate="header">
         <tr class="text-sm h-3rem">
@@ -59,29 +56,10 @@
           <th>FECHA DE INGRESO</th>
           <th>FECHA DE SALIDA</th>
           <th>ESTADO</th>
-          <th class="w-1">ACCIONES</th>
+          <th class="w-1">DETALLE</th>
         </tr>
       </ng-template>
-      <ng-template
-        pTemplate="groupheader"
-        let-support
-        let-rowIndex="rowIndex"
-        let-expanded="expanded"
-      >
-        <tr class="text-sm h-3rem">
-          <td colspan="5">
-            <div class="flex align-items-center">
-              <p-button
-                styleClass="p-button-text p-button-secondary"
-                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
-                [pRowToggler]="support"
-              />
-              <span class="font-semibold">{{ support.product.serial }}</span>
-            </div>
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="rowexpansion" let-support let-rowspan="rowspan">
+      <ng-template pTemplate="body" let-support>
         <tr class="text-sm h-3rem">
           <td>
             <span class="font-semibold">{{ support.reclaim }}</span>
@@ -98,7 +76,7 @@
           </td>
           <td>
             <p-button
-              icon="pi pi-window-maximize"
+              icon="pi pi-eye"
               styleClass="p-button-text p-button-secondary"
               (onClick)="openSupportHistoryForm(support)"
             />
@@ -119,4 +97,12 @@
       </ng-template>
     </p-table>
   </section>
+  <ng-template #elseBlock>
+    <div>
+      Esperando a que inicie la busqueda de servicio/s. Por favor, haga clic en
+      el botón correspondiente.
+      <i class="pi pi-spin pi-spinner"></i>
+    </div>
+  </ng-template>
 </section>
+<p-toast position="bottom-right" />
