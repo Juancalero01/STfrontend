@@ -137,7 +137,7 @@
           <th colspan="5">CAMBIOS DE ESTADO DEL SERVICIO</th>
         </tr>
         <tr class="text-sm h-3rem">
-          <th class="w-2">FECHA Y HORA DE REGISTRO</th>
+          <th class="w-2">FECHA</th>
           <th class="w-2">ESTADO</th>
           <th class="w-2">USUARIO</th>
           <th class="white-space-normal">COMENTARIO</th>
@@ -153,7 +153,18 @@
         <tr class="text-sm h-3rem">
           <td>{{ serviceHistory.dateEntry | date : "dd/MM/yyyy HH:mm" }}</td>
           <td>
-            <p-tag [value]="serviceHistory.stateCurrent.name" severity="info" />
+            <div class="flex align-items-center gap-1">
+              <p-tag
+                [value]="serviceHistory.stateCurrent.name"
+                severity="info"
+              />
+              <ng-container *ngIf="!serviceHistory.stateNext">
+                <i
+                  class="pi pi-exclamation-circle text-yellow-500"
+                  pTooltip="Este registro solo muestra información adicional para las notas, no indica un cambio de estado."
+                ></i>
+              </ng-container>
+            </div>
           </td>
           <td>
             {{ serviceHistory.user.fullname }}
@@ -185,7 +196,7 @@
             >
               <ng-template pTemplate="header">
                 <tr class="text-sm h-3rem">
-                  <th class="w-2">FECHA Y HORA DE REGISTRO</th>
+                  <th class="w-2">FECHA</th>
                   <th class="w-2">USUARIO</th>
                   <th class="white-space-normal">NOTA</th>
                 </tr>

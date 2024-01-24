@@ -120,68 +120,21 @@ export class SupportTableComponent {
   }
 
   public calculateBackgroundColor(support: ISupport): string {
-    const daysDifference = this.calculateDateDifference(support.dateEntry);
-    const priorityName = support.priority.name.toUpperCase();
-
-    switch (priorityName) {
-      case 'INMEDIATA':
-        if (daysDifference >= 0) {
-          return 'bg-red-100';
-        }
-        break;
-      case 'ALTA':
-        if (daysDifference === 1) {
-          return 'bg-yellow-100';
-        } else if (daysDifference > 1 && daysDifference <= 3) {
-          return 'bg-orange-100';
-        } else if (daysDifference > 3) {
-          return 'bg-red-100';
-        } else {
-          return 'bg-transparent';
-        }
-      case 'MEDIA':
-        if (daysDifference >= 1 && daysDifference <= 3) {
-          return 'bg-green-100';
-        } else if (daysDifference > 3 && daysDifference <= 6) {
-          return 'bg-yellow-100';
-        } else if (daysDifference > 6 && daysDifference <= 8) {
-          return 'bg-orange-100';
-        } else if (daysDifference > 8) {
-          return 'bg-red-100';
-        } else {
-          return 'bg-transparent';
-        }
-      case 'BAJA':
-        if (daysDifference >= 1 && daysDifference <= 5) {
-          return 'bg-green-100';
-        } else if (daysDifference > 5 && daysDifference <= 9) {
-          return 'bg-yellow-100';
-        } else if (daysDifference > 9 && daysDifference <= 12) {
-          return 'bg-orange-100';
-        } else if (daysDifference > 12) {
-          return 'bg-red-100';
-        } else {
-          return 'bg-transparent';
-        }
+    const daysOfPriority: number = support.priority.days;
+    const registrationDate: Date = new Date(support.dateEntry);
+    const daysElapsed: number = Math.floor(
+      (this.today.getTime() - registrationDate.getTime()) /
+        (1000 * 60 * 60 * 24)
+    );
+    const percentage = (daysElapsed * 100) / daysOfPriority;
+    if (percentage <= 25) {
+      return 'bg-green-100';
+    } else if (percentage <= 50) {
+      return 'bg-yellow-100';
+    } else if (percentage <= 75) {
+      return 'bg-orange-100';
+    } else {
+      return 'bg-red-100';
     }
-    return 'bg-transparent';
-  }
-
-  private calculateDateDifference(serviceDate: Date): number {
-    const todayWithoutTime = new Date(
-      this.today.getFullYear(),
-      this.today.getMonth(),
-      this.today.getDate()
-    );
-    const serviceDateWithoutTime = new Date(
-      new Date(serviceDate).getFullYear(),
-      new Date(serviceDate).getMonth(),
-      new Date(serviceDate).getDate()
-    );
-    const timeDifference =
-      todayWithoutTime.getTime() - serviceDateWithoutTime.getTime();
-    const daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
-
-    return daysDifference;
   }
 }
