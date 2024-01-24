@@ -72,17 +72,6 @@ export class SupportFormHistoryComponent {
         }
       },
     });
-
-    // const supportHistory = this.config.data.serviceHistory[0];
-    // if (supportHistory.stateCurrent.id === this.config.data.state.id) {
-    //   this.supportNoteService
-    //     .findByServiceHistory(supportHistory.id)
-    //     .subscribe({
-    //       next: (notes: ISupportNote[]) => {
-    //         this.notes = notes;
-    //       },
-    //     });
-    // }
   }
 
   private loadStates(): void {
@@ -94,7 +83,7 @@ export class SupportFormHistoryComponent {
         let optionsToShow = 1;
         if ([1, 2].includes(stateCurrentValue)) {
           this.nextStates = states.filter((state) =>
-            [stateCurrentValue + 1, 12].includes(state.id)
+            [stateCurrentValue + 1, 13].includes(state.id)
           );
           return;
         } else if (stateCurrentValue === 3) {
