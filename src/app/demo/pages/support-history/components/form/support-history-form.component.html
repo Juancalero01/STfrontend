@@ -139,8 +139,8 @@
         <tr class="text-sm h-3rem">
           <th class="w-2">FECHA Y HORA DE REGISTRO</th>
           <th class="w-2">ESTADO</th>
-          <th class="white-space-normal">COMENTARIO</th>
           <th class="w-2">USUARIO</th>
+          <th class="white-space-normal">COMENTARIO</th>
           <th class="w-1">NOTAS</th>
         </tr>
       </ng-template>
@@ -155,10 +155,10 @@
           <td>
             <p-tag [value]="serviceHistory.stateCurrent.name" severity="info" />
           </td>
-          <td>{{ serviceHistory.remarks | null }}</td>
           <td>
             {{ serviceHistory.user.fullname }}
           </td>
+          <td>{{ serviceHistory.remarks | null }}</td>
           <td>
             <p-button
               styleClass="p-button-text p-button-secondary"
@@ -175,7 +175,7 @@
         let-rowspan="rowspan"
       >
         <tr>
-          <td colspan="5">
+          <td colspan="5" class="p-0">
             <p-table
               [value]="serviceHistory.serviceNote"
               sortField="id"
@@ -200,16 +200,6 @@
             </p-table>
           </td>
         </tr>
-        <!-- <tr
-          class="text-sm h-3rem"
-          *ngFor="let note of serviceHistory.serviceNote"
-        >
-          <td>
-            {{ note.dateEntry | date : "dd/MM/yyyy HH:mm" }}
-          </td>
-          <td>{{ note.user.fullname }}</td>
-          <td colspan="3">{{ note.comment }}</td>
-        </tr> -->
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr class="text-sm w-full">

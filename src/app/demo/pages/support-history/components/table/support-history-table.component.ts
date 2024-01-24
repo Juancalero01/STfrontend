@@ -44,6 +44,7 @@ export class SupportHistoryTableComponent {
       closeOnEscape: false,
       dismissableMask: false,
       showHeader: true,
+      maximizable: true,
       position: 'center',
       data: support,
     });
