@@ -4,6 +4,8 @@ import { Table } from 'primeng/table';
 import { ISupport } from 'src/app/demo/api/interfaces/support.interface';
 import { SupportService } from 'src/app/demo/api/services/support.service';
 import { SupportHistoryFormComponent } from '../form/support-history-form.component';
+import { ActivatedRoute } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-support-history-table',
@@ -12,14 +14,33 @@ import { SupportHistoryFormComponent } from '../form/support-history-form.compon
 export class SupportHistoryTableComponent {
   constructor(
     private readonly supportService: SupportService,
-    private readonly dialogService: DialogService
+    private readonly dialogService: DialogService,
+    private readonly formBuilder: FormBuilder,
+    private route: ActivatedRoute
   ) {}
 
   public supports: ISupport[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
+  public reclaim!: string;
+  public showFilters: boolean = true;
+  public historyForm: FormGroup = this.buildForm();
 
   public ngOnInit(): void {
-    this.loadSupports();
+    this.route.queryParamMap.subscribe((params) => {
+      this.reclaim = params.get('s') || '';
+    });
+
+    if (this.reclaim) {
+      this.showFilters = false;
+      this.searchReclaimService(this.reclaim);
+    }
+  }
+
+  private buildForm(): FormGroup {
+    return this.formBuilder.group({
+      reclaim: [null],
+      serial: [null],
+    });
   }
 
   public loadSupports(): void {
@@ -56,5 +77,31 @@ export class SupportHistoryTableComponent {
     } else {
       return 'warning';
     }
+  }
+
+  public searchHistory() {
+    //Testeo con reclaim
+    // this.searchReclaimService(this.historyForm.get('reclaim')?.value);
+    this.searchSerialProduct(this.historyForm.get('serial')?.value);
+  }
+
+  private getDataForm(): void {
+    return this.historyForm.getRawValue();
+  }
+
+  public searchReclaimService(reclaim: string): void {
+    this.supportService.getServiceByReclaim(reclaim).subscribe({
+      next: (supports: ISupport[]) => {
+        this.supports = supports;
+      },
+    });
+  }
+
+  public searchSerialProduct(serial: string): void {
+    this.supportService.getServicesByProductSerial(serial).subscribe({
+      next: (supports: ISupport[]) => {
+        this.supports = supports;
+      },
+    });
   }
 }

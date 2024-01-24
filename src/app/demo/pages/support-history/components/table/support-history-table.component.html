@@ -1,102 +1,122 @@
-<div class="w-full h-full flex flex-column gap-4">
-  <div class="flex flex-column md:flex-row justify-content-end gap-2">
-    <div class="flex flex-column-reverse md:flex-row gap-2">
-      <p-button
-        label="LIMPIAR FILTROS"
-        icon="pi pi-filter-slash"
-        styleClass="p-button-danger p-button-sm h-full h-3rem w-full"
-        (onClick)="cleanFilters(dt, fi)"
-      />
-      <div class="p-input-icon-right h-3rem">
-        <i class="pi pi-search"></i>
+<section class="grid">
+  <section class="col-12 md:col-12 lg:col-12 xl:col-3" *ngIf="showFilters">
+    <form class="flex flex-wrap gap-2" [formGroup]="historyForm">
+      <div class="w-full mb-2 flex justify-content-between align-items-center">
+        <span class="font-medium text-xl">FILTROS</span>
+        <i
+          class="pi pi-info-circle text-cyan-500"
+          pTooltip="Se requiere al menos uno de los dos campos"
+        ></i>
+      </div>
+      <div class="flex flex-column w-full">
+        <label>NÚMERO DE RECLAMO</label>
         <input
-          #fi
-          pInputText
+          formControlName="reclaim"
           type="text"
-          placeholder="Buscar por N° de serie o reclamo"
-          class="w-full md:w-22rem h-full"
-          (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+          pInputText
+          class="w-full"
+          minlength="15"
+          placeholder="Ingresar número de reclamo"
         />
       </div>
-    </div>
-  </div>
-  <p-table
-    #dt
-    [value]="supports"
-    [globalFilterFields]="['product.serial', 'reclaim']"
-    [scrollable]="true"
-    dataKey="product.serial"
-    rowGroupMode="subheader"
-    groupRowsBy="product.serial"
-    styleClass="p-datatable-striped p-datatable-sm"
+      <div class="flex flex-column w-full">
+        <label>NÚMERO DE SERIE DE PRODUCTO</label>
+        <input
+          formControlName="serial"
+          type="text"
+          pInputText
+          class="w-full"
+          minlength="10"
+          placeholder="Ingresar número de serie de producto"
+        />
+      </div>
+      <div class="w-full">
+        <p-button
+          label="BUSCAR SERVICIO/S"
+          styleClass="w-full p-button-info"
+          icon="pi pi-search"
+          (onClick)="searchHistory()"
+        />
+      </div>
+    </form>
+  </section>
+  <section
+    class="col-12 lg:col-12 xl:col-9"
+    [ngClass]="{ 'xl:col-12': !showFilters, 'px-4': showFilters }"
   >
-    <ng-template pTemplate="header">
-      <tr class="text-sm h-3rem">
-        <th>NÚMERO DE RECLAMO</th>
-        <th>FECHA DE INGRESO</th>
-        <th>FECHA DE SALIDA</th>
-        <th>ESTADO</th>
-        <th class="w-1">ACCIONES</th>
-      </tr>
-    </ng-template>
-    <ng-template
-      pTemplate="groupheader"
-      let-support
-      let-rowIndex="rowIndex"
-      let-expanded="expanded"
+    <p-table
+      [value]="supports"
+      [globalFilterFields]="['product.serial', 'reclaim']"
+      [scrollable]="true"
+      dataKey="product.serial"
+      rowGroupMode="subheader"
+      groupRowsBy="product.serial"
+      styleClass="p-datatable-striped p-datatable-sm"
     >
-      <tr class="text-sm h-3rem">
-        <td colspan="5">
-          <div class="flex align-items-center">
-            <p-button
-              styleClass="p-button-text p-button-secondary"
-              [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
-              [pRowToggler]="support"
+      <ng-template pTemplate="header">
+        <tr class="text-sm h-3rem">
+          <th>NÚMERO DE RECLAMO</th>
+          <th>FECHA DE INGRESO</th>
+          <th>FECHA DE SALIDA</th>
+          <th>ESTADO</th>
+          <th class="w-1">ACCIONES</th>
+        </tr>
+      </ng-template>
+      <ng-template
+        pTemplate="groupheader"
+        let-support
+        let-rowIndex="rowIndex"
+        let-expanded="expanded"
+      >
+        <tr class="text-sm h-3rem">
+          <td colspan="5">
+            <div class="flex align-items-center">
+              <p-button
+                styleClass="p-button-text p-button-secondary"
+                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+                [pRowToggler]="support"
+              />
+              <span class="font-semibold">{{ support.product.serial }}</span>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="rowexpansion" let-support let-rowspan="rowspan">
+        <tr class="text-sm h-3rem">
+          <td>
+            <span class="font-semibold">{{ support.reclaim }}</span>
+          </td>
+          <td>
+            {{ support.dateEntry | date : "dd/MM/yyyy" }}
+          </td>
+          <td>{{ support.dateDeparture | date : "dd/MM/yyyy" | null }}</td>
+          <td>
+            <p-tag
+              [severity]="getTagSeverity(support.state.id)"
+              [value]="support.state.name"
             />
-            <span class="font-semibold">{{ support.product.serial }}</span>
-          </div>
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="rowexpansion" let-support let-rowspan="rowspan">
-      <tr class="text-sm h-3rem">
-        <td>
-          <span class="font-semibold">{{ support.reclaim }}</span>
-        </td>
-        <td>
-          {{ support.dateEntry | date : "dd/MM/yyyy" }}
-        </td>
-        <td>{{ support.dateDeparture | date : "dd/MM/yyyy" | null }}</td>
-        <td>
-          <p-tag
-            [severity]="getTagSeverity(support.state.id)"
-            [value]="support.state.name"
-          />
-        </td>
-        <td>
-          <p-button
-            icon="pi pi-window-maximize"
-            styleClass="p-button-text p-button-secondary"
-            (onClick)="openSupportHistoryForm(support)"
-          />
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr class="text-sm w-full">
-        <td colspan="5">
-          <div class="flex gap-2 align-items-center">
-            <i class="pi pi-info-circle"></i>
-            <span class="font-medium"
-              >{{
-                dt.filteredValue
-                  ? "No se encontraron historial de servicios con los criterios de búsqueda"
-                  : "No hay historial de servicios cargados."
-              }}
-            </span>
-          </div>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
-</div>
+          </td>
+          <td>
+            <p-button
+              icon="pi pi-window-maximize"
+              styleClass="p-button-text p-button-secondary"
+              (onClick)="openSupportHistoryForm(support)"
+            />
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr class="text-sm w-full">
+          <td colspan="5">
+            <div class="flex gap-2 align-items-center">
+              <i class="pi pi-info-circle"></i>
+              <span class="font-medium"
+                >No hay historial de servicios cargados.
+              </span>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </section>
+</section>

@@ -63,4 +63,12 @@ export class SupportService {
   public getServiceIndicators(body: any) {
     return this.httpClient.post<any>(`${this.URL}/i`, body);
   }
+
+  public getServicesByProductSerial(serial: string): Observable<ISupport[]> {
+    return this.httpClient.get<ISupport[]>(`${this.URL}/ss/${serial}`);
+  }
+
+  public getServiceByReclaim(reclaim: string): Observable<ISupport[]> {
+    return this.httpClient.get<ISupport[]>(`${this.URL}/sr/${reclaim}`);
+  }
 }

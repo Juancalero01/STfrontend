@@ -14,6 +14,14 @@ import { roleGuard } from '../../api/guards/role-guard.guard';
           roles: ['ADMINISTRADOR', 'TECNICO'],
         },
       },
+      {
+        path: ':s',
+        canActivate: [roleGuard],
+        component: SupportHistoryComponent,
+        data: {
+          roles: ['ADMINISTRADOR', 'TECNICO'],
+        },
+      },
     ]),
   ],
   exports: [RouterModule],
