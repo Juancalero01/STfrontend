@@ -26,6 +26,8 @@ export class SupportHistoryTableComponent {
   public reclaim!: string;
   public showFilters: boolean = true;
   public showSearch: boolean = false;
+  public showCleanFilters: boolean = false;
+
   public historyForm: FormGroup = this.buildForm();
 
   public ngOnInit(): void {
@@ -131,6 +133,7 @@ export class SupportHistoryTableComponent {
       this.searchSerialProduct(serialValue);
     }
     this.showSearch = true;
+    this.showCleanFilters = true;
   }
 
   public searchReclaimService(reclaim: string): void {
@@ -166,5 +169,16 @@ export class SupportHistoryTableComponent {
 
   public getChangesToUpdate(): boolean {
     return !this.historyForm.pristine;
+  }
+
+  public cleanFormAndSearch() {
+    this.historyForm.reset();
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Operación',
+      detail: 'Filtros reseteados',
+    });
+    this.showSearch = false;
+    this.showCleanFilters = false;
   }
 }

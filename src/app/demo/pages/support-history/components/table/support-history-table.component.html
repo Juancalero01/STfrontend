@@ -37,6 +37,15 @@
           [disabled]="historyForm.invalid || !getChangesToUpdate()"
         />
       </div>
+      <div class="w-full">
+        <p-button
+          label="LIMPIAR FILTROS"
+          styleClass="w-full p-button-danger"
+          icon="pi pi-filter-slash"
+          *ngIf="showCleanFilters"
+          (onClick)="cleanFormAndSearch()"
+        />
+      </div>
     </form>
   </section>
   <section
