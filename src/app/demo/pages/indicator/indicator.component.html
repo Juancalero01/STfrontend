@@ -119,10 +119,40 @@
           <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium">SERVICIOS</span>
           </div>
-          <div>
-            <span class="text-4xl font-medium"
-              >{{ indicatorData.numberOfServices }}
-            </span>
+          <div class="flex gap-4 align-items-center">
+            <div class="flex gap-2 align-items-center">
+              <span class="text-4xl font-medium"
+                >{{ indicatorData.numberOfServices.length }}
+              </span>
+              <p-button
+                icon="pi pi-eye"
+                styleClass="p-button-text p-button-secondary"
+                (onClick)="
+                  openIndicatorServiceForm(indicatorData.numberOfServices)
+                "
+                [disabled]="indicatorData.numberOfServices.length === 0"
+              />
+            </div>
+
+            <div class="flex gap-3">
+              <div class="flex gap-2 text-green-500 font-medium">
+                <i class="pi pi-arrow-circle-up"></i>
+                <p>
+                  {{ indicatorData.numberOfServicesRepair.length }} Reparados
+                </p>
+              </div>
+              <div class="flex gap-2 text-red-500 font-medium">
+                <i class="pi pi-arrow-circle-down"></i>
+                <p>
+                  {{ indicatorData.numberOfServicesNotRepair.length }} No
+                  reparados
+                </p>
+              </div>
+              <div class="flex gap-2 text-orange-500 font-medium">
+                <i class="pi pi-minus-circle"></i>
+                <p>{{ indicatorData.reentryServices.length }} Reingresados</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -131,10 +161,18 @@
           <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium">SERVICIOS REPARADOS</span>
           </div>
-          <div>
+          <div class="flex gap-2 align-items-center">
             <span class="text-4xl font-medium"
-              >{{ indicatorData.numberOfServicesRepair }}
+              >{{ indicatorData.numberOfServicesRepair.length }}
             </span>
+            <p-button
+              icon="pi pi-eye"
+              styleClass="p-button-text p-button-secondary"
+              (onClick)="
+                openIndicatorServiceForm(indicatorData.numberOfServicesRepair)
+              "
+              [disabled]="indicatorData.numberOfServicesRepair.length === 0"
+            />
           </div>
         </div>
       </div>
@@ -145,10 +183,20 @@
               >SERVICIOS NO REPARADOS</span
             >
           </div>
-          <div>
+          <div class="flex gap-2 align-items-center">
             <span class="text-4xl font-medium"
-              >{{ indicatorData.numberOfServicesNotRepair }}
+              >{{ indicatorData.numberOfServicesNotRepair.length }}
             </span>
+            <p-button
+              icon="pi pi-eye"
+              styleClass="p-button-text p-button-secondary"
+              (onClick)="
+                openIndicatorServiceForm(
+                  indicatorData.numberOfServicesNotRepair
+                )
+              "
+              [disabled]="indicatorData.numberOfServicesNotRepair.length === 0"
+            />
           </div>
         </div>
       </div>
@@ -159,10 +207,18 @@
               >SERVICIOS REINGRESADOS</span
             >
           </div>
-          <div>
+          <div class="flex gap-2 align-items-center">
             <span class="text-4xl font-medium"
-              >{{ indicatorData.reentryServices }}
+              >{{ indicatorData.reentryServices.length }}
             </span>
+            <p-button
+              icon="pi pi-eye"
+              styleClass="p-button-text p-button-secondary"
+              (onClick)="
+                openIndicatorServiceForm(indicatorData.reentryServices)
+              "
+              [disabled]="indicatorData.reentryServices.length === 0"
+            />
           </div>
         </div>
       </div>

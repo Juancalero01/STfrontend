@@ -7,6 +7,9 @@ import { MessageService } from 'primeng/api';
 import { ExcelService } from 'src/app/shared/utils/services/excel.service';
 import { IClient } from '../../api/interfaces/client.interface';
 import { ClientService } from '../../api/services/client.service';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ISupport } from '../../api/interfaces/support.interface';
+import { IndicatorFormComponent } from './components/form/indicator-form.component';
 
 @Component({
   selector: 'app-indicator',
@@ -19,7 +22,8 @@ export class IndicatorComponent {
     private readonly formBuilder: FormBuilder,
     private readonly supportService: SupportService,
     private readonly messageService: MessageService,
-    private readonly excelService: ExcelService
+    private readonly excelService: ExcelService,
+    private readonly dialogService: DialogService
   ) {}
   public productTypes: IProductType[] = [];
   public clients: IClient[] = [];
@@ -32,10 +36,10 @@ export class IndicatorComponent {
   public showExcel: boolean = false;
   public showCleanFilters: boolean = false;
   public indicatorData: any = [];
-
   public failureTypesData: any;
   public productTypesData: any;
   public options: any;
+  public ref: DynamicDialogRef = new DynamicDialogRef();
 
   public ngOnInit() {
     this.loadProductTypes();
@@ -71,7 +75,6 @@ export class IndicatorComponent {
       next: (data: any) => {
         if (data !== null) {
           this.indicatorData = data;
-
           this.generateFailures();
           this.generateProducts();
           this.dateFrom = this.indicatorForm.get('dateFrom')?.value;
@@ -208,5 +211,18 @@ export class IndicatorComponent {
       detail: 'Filtros reseteados',
     });
     this.showCleanFilters = false;
+  }
+
+  public openIndicatorServiceForm(supports: ISupport[]): void {
+    this.ref = this.dialogService.open(IndicatorFormComponent, {
+      header: 'SERVICIOS',
+      width: '50%',
+      closable: true,
+      closeOnEscape: false,
+      dismissableMask: false,
+      showHeader: true,
+      position: 'center',
+      data: supports,
+    });
   }
 }

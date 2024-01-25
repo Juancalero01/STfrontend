@@ -1,0 +1,49 @@
+<section>
+  <p-table
+    [value]="supports"
+    styleClass="p-datatable-striped p-datatable-sm"
+    sortField="id"
+    [sortOrder]="-1"
+  >
+    <ng-template pTemplate="header">
+      <tr class="text-sm h-3rem">
+        <th>NÚMERO DE RECLAMO</th>
+        <th>FECHA DE INGRESO</th>
+        <th>FECHA DE SALIDA</th>
+        <th>HISTORIAL</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-support>
+      <tr class="text-sm h-3rem">
+        <td>{{ support.reclaim }}</td>
+        <td>{{ support.dateEntry | date : "dd/MM/yyyy" }}</td>
+        <td>{{ support.dateDeparture | date : "dd/MM/yyyy" | null }}</td>
+        <td>
+          <a
+            [href]="getSupportHistoryUrl(support.reclaim)"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <p-button
+              styleClass="p-button-text p-button-info"
+              icon="pi pi-link"
+              label="Ir al historial"
+            ></p-button>
+          </a>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr class="text-sm w-full">
+        <td>
+          <div class="flex gap-2 align-items-center">
+            <i class="pi pi-info-circle"></i>
+            <span class="font-medium"
+              >No existen registros de fallas para el servicio</span
+            >
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</section>
