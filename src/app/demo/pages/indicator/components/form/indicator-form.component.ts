@@ -27,4 +27,12 @@ export class IndicatorFormComponent {
   getSupportHistoryUrl(reclaim: string): string {
     return `${this.document.baseURI}cnet/support/history?s=${reclaim}`;
   }
+
+  public getTagSeverity(stateId: number): string {
+    if (stateId === 12) {
+      return 'success';
+    } else {
+      return 'warning';
+    }
+  }
 }

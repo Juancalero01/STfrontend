@@ -29,10 +29,13 @@ export class ExcelService {
     sheetData.push(['FECHA HASTA', data.dateUntil]);
     sheetData.push([]);
     sheetData.push([]);
-    sheetData.push(['SERVICIOS', data.numberOfServices]);
-    sheetData.push(['SERVICIOS REPARADOS', data.numberOfServicesRepair]);
-    sheetData.push(['SERVICIOS NO REPARADOS', data.numberOfServicesNotRepair]);
-    sheetData.push(['SERVICIOS REINGRESADOS', data.reentryServices]);
+    sheetData.push(['SERVICIOS', data.numberOfServices.length]);
+    sheetData.push(['SERVICIOS REPARADOS', data.numberOfServicesRepair.length]);
+    sheetData.push([
+      'SERVICIOS NO REPARADOS',
+      data.numberOfServicesNotRepair.length,
+    ]);
+    sheetData.push(['SERVICIOS REINGRESADOS', data.reentryServices.length]);
     sheetData.push([]);
     sheetData.push([]);
     sheetData.push(['SERVICIOS EN GARANTIA', `${data.warranty.inWarranty}%`]);

@@ -213,10 +213,9 @@ export class IndicatorComponent {
     this.showCleanFilters = false;
   }
 
-  public openIndicatorServiceForm(supports: ISupport[]): void {
+  public openIndicatorServiceForm(supports: ISupport[], header: string): void {
     this.ref = this.dialogService.open(IndicatorFormComponent, {
-      header: 'SERVICIOS',
-      width: '50%',
+      header: header,
       closable: true,
       closeOnEscape: false,
       dismissableMask: false,

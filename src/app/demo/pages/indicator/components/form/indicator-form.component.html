@@ -10,6 +10,10 @@
         <th>NÚMERO DE RECLAMO</th>
         <th>FECHA DE INGRESO</th>
         <th>FECHA DE SALIDA</th>
+        <th>TIPO DE PRODUCTO</th>
+        <th>PRODUCTO</th>
+        <th>CLIENTE</th>
+        <th>ESTADO DEL SERVICIO</th>
         <th>HISTORIAL</th>
       </tr>
     </ng-template>
@@ -18,6 +22,15 @@
         <td>{{ support.reclaim }}</td>
         <td>{{ support.dateEntry | date : "dd/MM/yyyy" }}</td>
         <td>{{ support.dateDeparture | date : "dd/MM/yyyy" | null }}</td>
+        <td>{{ support.product.productType.name }}</td>
+        <td>{{ support.product.serial }}</td>
+        <td>{{ support.product.client.taxpayerName }}</td>
+        <td>
+          <p-tag
+            [value]="support.state.name"
+            [severity]="getTagSeverity(support.state.id)"
+          />
+        </td>
         <td>
           <a
             [href]="getSupportHistoryUrl(support.reclaim)"
@@ -25,9 +38,8 @@
             rel="noopener noreferrer"
           >
             <p-button
-              styleClass="p-button-text p-button-info"
-              icon="pi pi-link"
-              label="Ir al historial"
+              styleClass="p-button-text p-button-secondary"
+              icon="pi pi-external-link"
             ></p-button>
           </a>
         </td>
