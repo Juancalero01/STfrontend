@@ -105,7 +105,13 @@ export class SupportFormComponent {
       priority: [null, [Validators.required]],
       warranty: [null, [Validators.required]],
       startReference: [null, [Validators.maxLength(255)]],
-      endReference: [null, [Validators.maxLength(255)]],
+      endReference: [
+        null,
+        [
+          Validators.maxLength(255),
+          Validators.pattern(/^[0-9]{4}-R-[0-9]{8}$/),
+        ],
+      ],
       orderNumber: [null, [Validators.maxLength(255)]],
       quoteNumber: [null, [Validators.maxLength(255)]],
       securityStrap: [null],
