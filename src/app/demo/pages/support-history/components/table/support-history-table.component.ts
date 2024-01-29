@@ -145,6 +145,7 @@ export class SupportHistoryTableComponent {
             summary: 'Operación',
             detail: 'Sin resultados',
           });
+          this.showSearch = false;
         }
         this.supports = supports;
       },

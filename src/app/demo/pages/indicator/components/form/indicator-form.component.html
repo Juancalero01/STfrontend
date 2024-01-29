@@ -2,8 +2,11 @@
   <p-table
     [value]="supports"
     styleClass="p-datatable-striped p-datatable-sm"
-    sortField="id"
-    [sortOrder]="-1"
+    [sortMode]="'multiple'"
+    [multiSortMeta]="[
+      { field: 'product.serial', order: 1 },
+      { field: 'id', order: -1 }
+    ]"
   >
     <ng-template pTemplate="header">
       <tr class="text-sm h-3rem">
