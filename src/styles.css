@@ -39,3 +39,15 @@ body {
 .p-tabview .p-tabview-nav li .p-tabview-nav-link:not(.p-disabled):focus {
   box-shadow: none !important;
 }
+
+@media print {
+  nav,
+  button,
+  .noprint {
+    display: none !important;
+  }
+
+  .print {
+    height: 100vh !important;
+  }
+}

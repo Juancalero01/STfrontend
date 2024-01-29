@@ -67,6 +67,14 @@ export class ExcelService {
         `${productTypeService.percentage}%`,
       ]);
     });
+    sheetData.push([]);
+    sheetData.push(['CLIENTE', '%']);
+    data.clientServices.forEach((clientService: any) => {
+      sheetData.push([
+        clientService.taxpayerName,
+        `${clientService.percentage}%`,
+      ]);
+    });
 
     return XLSX.utils.aoa_to_sheet(sheetData);
   }

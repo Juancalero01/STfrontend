@@ -33,11 +33,12 @@ export class IndicatorComponent {
   public productType: string = '';
   public client: string = '';
   public showIndicator: boolean = false;
-  public showExcel: boolean = false;
+  public showButton: boolean = false;
   public showCleanFilters: boolean = false;
   public indicatorData: any = [];
   public failureTypesData: any;
   public productTypesData: any;
+  public clientsData: any;
   public options: any;
   public ref: DynamicDialogRef = new DynamicDialogRef();
 
@@ -77,6 +78,7 @@ export class IndicatorComponent {
           this.indicatorData = data;
           this.generateFailures();
           this.generateProducts();
+          this.generateClients();
           this.dateFrom = this.indicatorForm.get('dateFrom')?.value;
           this.dateUntil = this.indicatorForm.get('dateUntil')?.value;
           const productTypeId = this.indicatorForm.get('productType')?.value;
@@ -95,7 +97,7 @@ export class IndicatorComponent {
             : (this.client = 'N/A');
 
           this.showIndicator = true;
-          this.showExcel = true;
+          this.showButton = true;
           this.showCleanFilters = true;
         } else {
           this.messageService.add({
@@ -153,6 +155,22 @@ export class IndicatorComponent {
     };
   }
 
+  private generateClients() {
+    const sortedData = this.indicatorData.clientServices.sort(
+      (a: any, b: any) => b.percentage - a.percentage
+    );
+
+    const labels = sortedData.map(
+      (item: any) => `${item.taxpayerName} ${item.percentage}%`
+    );
+    const percentages = sortedData.map((item: any) => item.percentage);
+
+    this.clientsData = {
+      labels: labels,
+      datasets: [{ data: percentages }],
+    };
+  }
+
   private getConfigGlobalChart() {
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
@@ -168,6 +186,9 @@ export class IndicatorComponent {
           position: 'right',
           labels: {
             color: textColor,
+            usePointStyle: true,
+            pointStyle: 'circle',
+            padding: 6,
           },
           font: {
             size: 20,
@@ -203,7 +224,7 @@ export class IndicatorComponent {
 
   public cleanFormAndIndicators() {
     this.indicatorForm.reset();
-    this.showExcel = false;
+    this.showButton = false;
     this.showIndicator = false;
     this.messageService.add({
       severity: 'info',
@@ -223,5 +244,9 @@ export class IndicatorComponent {
       position: 'center',
       data: supports,
     });
+  }
+
+  public exportToPage(): void {
+    window.print();
   }
 }
