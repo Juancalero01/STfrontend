@@ -237,8 +237,9 @@ export class IndicatorComponent {
   public openIndicatorServiceForm(supports: ISupport[], header: string): void {
     this.ref = this.dialogService.open(IndicatorFormComponent, {
       header: header,
+      width: '80%',
       closable: true,
-      closeOnEscape: false,
+      closeOnEscape: true,
       dismissableMask: false,
       showHeader: true,
       position: 'center',
