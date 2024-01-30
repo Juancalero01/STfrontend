@@ -107,22 +107,22 @@
     class="col-12 lg:col-12 xl:col-9 px-4"
     *ngIf="showIndicator; else elseBlock"
   >
-    <div class="flex flex-column gap-3 w-full mb-2">
-      <img src="../../../../assets/logo.svg" alt="logo" width="260" />
-      <div class="flex flex-column gap-2">
-        <span class="block font-medium text-gray-600">
-          Estadísticas de Servicio Técnico desde el
-          {{ dateFrom | date : "dd/MM/yyyy" }} al
-          {{ dateUntil | date : "dd/MM/yyyy" }}
-        </span>
-        <span class="font-medium text-gray-500">Cliente: {{ client }} </span>
-        <span class="font-medium text-gray-500"
-          >Tipo de producto: {{ productType }}
-        </span>
+    <div class="grid column-gap-0 print">
+      <div class="flex flex-column gap-3 w-full mb-2">
+        <img src="../../../../assets/logo.svg" alt="logo" width="260" />
+        <div class="flex flex-column gap-2">
+          <span class="block font-medium text-gray-600">
+            Estadísticas de Servicio Técnico desde el
+            {{ dateFrom | date : "dd/MM/yyyy" }} al
+            {{ dateUntil | date : "dd/MM/yyyy" }}
+          </span>
+          <span class="font-medium text-gray-500">Cliente: {{ client }} </span>
+          <span class="font-medium text-gray-500"
+            >Tipo de producto: {{ productType }}
+          </span>
+        </div>
       </div>
-    </div>
-    <div class="grid column-gap-0">
-      <div class="col-12 lg:col-12 xl:col-12">
+      <div class="col-12 lg:col-12 xl:col-12 h-fit">
         <div class="p-card shadow-none p-3 border-1 border-gray-200">
           <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium">SERVICIOS</span>
@@ -167,7 +167,7 @@
           </div>
         </div>
       </div>
-      <div class="col-12 lg:col-4 xl:col-4">
+      <div class="col-12 lg:col-4 xl:col-4 h-fit">
         <div class="p-card shadow-none p-3 border-1 border-gray-200">
           <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium">SERVICIOS REPARADOS</span>
@@ -190,7 +190,7 @@
           </div>
         </div>
       </div>
-      <div class="col-6 lg:col-4 xl:col-4">
+      <div class="col-6 lg:col-4 xl:col-4 h-fit">
         <div class="p-card shadow-none p-3 border-1 border-gray-200">
           <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium"
@@ -215,7 +215,7 @@
           </div>
         </div>
       </div>
-      <div class="col-6 lg:col-4 xl:col-4">
+      <div class="col-6 lg:col-4 xl:col-4 h-fit">
         <div class="p-card shadow-none p-3 border-1 border-gray-200">
           <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium"
@@ -240,7 +240,7 @@
           </div>
         </div>
       </div>
-      <div class="col-12 lg:col-6 xl:col-6">
+      <div class="col-12 lg:col-6 xl:col-6 h-fit">
         <div class="p-card shadow-none p-3 border-1 border-gray-200">
           <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium"
@@ -254,7 +254,7 @@
           </div>
         </div>
       </div>
-      <div class="col-12 lg:col-6 xl:col-6">
+      <div class="col-12 lg:col-6 xl:col-6 h-fit">
         <div class="p-card shadow-none p-3 border-1 border-gray-200">
           <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium"
@@ -268,7 +268,7 @@
           </div>
         </div>
       </div>
-      <div class="col-12 lg:col-6 xl:col-6">
+      <div class="col-12 lg:col-6 xl:col-6 h-fit">
         <div class="p-card shadow-none p-3 border-1 border-gray-200">
           <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium"
@@ -285,7 +285,7 @@
           </div>
         </div>
       </div>
-      <div class="col-12 lg:col-6 xl:col-6">
+      <div class="col-12 lg:col-6 xl:col-6 h-fit">
         <div class="p-card shadow-none p-3 border-1 border-gray-200">
           <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium"
@@ -302,6 +302,8 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="grid column-gap-0">
       <div class="col-12 lg:col-12 xl:col-12 print">
         <div class="p-card shadow-none px-3 border-1 border-gray-200 py-2">
           <span class="block text-500 font-medium mb-3"
@@ -313,7 +315,7 @@
             [options]="options"
             width="500px"
             height="600px"
-            class="flex align-items-center"
+            class="flex align-items-center h-fit"
           />
         </div>
       </div>
@@ -326,7 +328,7 @@
             [options]="options"
             width="500px"
             height="500px"
-            class="flex align-items-center"
+            class="flex align-items-center h-fit"
           ></p-chart>
         </div>
       </div>
@@ -339,7 +341,7 @@
             [options]="options"
             width="500px"
             height="500px"
-            class="flex align-items-center"
+            class="flex align-items-center h-fit"
           ></p-chart>
         </div>
       </div>
