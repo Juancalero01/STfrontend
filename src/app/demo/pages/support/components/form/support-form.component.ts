@@ -107,10 +107,7 @@ export class SupportFormComponent {
       startReference: [null, [Validators.maxLength(255)]],
       endReference: [
         null,
-        [
-          Validators.maxLength(255),
-          Validators.pattern(/^[0-9]{4}-R-[0-9]{8}$/),
-        ],
+        [Validators.maxLength(15), Validators.pattern(/^[0-9]{4}-R-[0-9]{8}$/)],
       ],
       orderNumber: [null, [Validators.maxLength(255)]],
       quoteNumber: [null, [Validators.maxLength(255)]],
@@ -284,16 +281,33 @@ export class SupportFormComponent {
   }
 
   public openHistoryForm(): void {
-    this.refHistory = this.dialogService.open(SupportFormHistoryComponent, {
-      header: 'FORMULARIO DE ACTUALIZACIÓN DE ESTADO DEL SERVICIO',
-      width: '50%',
-      closable: false,
-      closeOnEscape: false,
-      dismissableMask: false,
-      showHeader: true,
-      position: 'center',
-      data: this.config.data,
-    });
+    if (
+      this.config.data.state.id === 9 &&
+      this.getLastUser(this.config.data).id ===
+        Number(this.tokenService.getUserId())
+    ) {
+      this.confirmationService.confirm({
+        message:
+          'No puedes actualizar el estado con el mismo usuario.<br> Otro usuario debe hacerlo.',
+        header: 'INFORMACIÓN',
+        icon: 'pi pi-info-circle',
+        rejectVisible: false,
+        acceptVisible: false,
+        closeOnEscape: true,
+      });
+    } else {
+      this.refHistory = this.dialogService.open(SupportFormHistoryComponent, {
+        header: 'FORMULARIO DE ACTUALIZACIÓN DE ESTADO DEL SERVICIO',
+        width: '50%',
+        closable: false,
+        closeOnEscape: false,
+        dismissableMask: false,
+        showHeader: true,
+        position: 'center',
+        data: this.config.data,
+      });
+    }
+
     this.refHistory.onClose.subscribe({
       next: () => {
         this.ref.close();
@@ -443,15 +457,13 @@ export class SupportFormComponent {
         this.disableButtonHistory =
           this.supportForm.get('failureTypes')?.invalid || false;
         break;
-      case 9:
-        if (
-          this.getLastUser(this.config.data).id ===
-          Number(this.tokenService.getUserId())
-        ) {
-          this.disableButtonHistory = true;
-        } else {
-          this.disableButtonHistory = false;
-        }
+      case 10:
+        this.supportForm
+          .get('endReference')
+          ?.addValidators(Validators.required);
+        this.supportForm.get('endReference')?.updateValueAndValidity();
+        this.disableButtonHistory =
+          this.supportForm.get('endReference')?.invalid || false;
         break;
       case 11:
         this.supportForm.get('failure')?.addValidators(Validators.required);
@@ -473,6 +485,7 @@ export class SupportFormComponent {
           .get('endReference')
           ?.addValidators(Validators.required);
         this.supportForm.get('endReference')?.updateValueAndValidity();
+
         this.disableButtonHistory =
           this.supportForm.get('failure')?.invalid ||
           this.supportForm.get('securityStrap')?.invalid ||
@@ -491,6 +504,6 @@ export class SupportFormComponent {
 
   private getLastUser(support: ISupport): any {
     const supportHistory = support.serviceHistory;
-    return supportHistory[supportHistory.length - 1].user;
+    return supportHistory[0].user;
   }
 }

@@ -1,6 +1,7 @@
 import { ISupportNote } from './support-note.interface';
 import { ISupportState } from './support-state.interface';
 import { ISupport } from './support.interface';
+import { IUser } from './user.interface';
 
 export interface ISupportHistory {
   id: number;
