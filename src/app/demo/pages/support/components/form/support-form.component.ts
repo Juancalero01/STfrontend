@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import {
@@ -62,6 +62,7 @@ export class SupportFormComponent {
   public maxDate: Date = this.today;
 
   public ngOnInit() {
+    this.requiredFieldsByState();
     this.fieldsWIthoutAdmin();
     this.setDefaultFormData();
     this.loadStates();
@@ -74,6 +75,7 @@ export class SupportFormComponent {
       this.showSearch = false;
       this.loadSupportHistory(this.config.data.serviceHistory);
       this.requiredFieldsByState(this.config.data.state.id);
+      this.fieldsWIthoutAdmin();
       this.showButtonHistory = true;
     } else {
       this.getLastReclaimNumber();
@@ -111,7 +113,7 @@ export class SupportFormComponent {
       ],
       orderNumber: [null, [Validators.maxLength(255)]],
       quoteNumber: [null, [Validators.maxLength(255)]],
-      securityStrap: [null],
+      securityStrap: [null, [Validators.required]],
       bitrixUrl: [
         null,
         [
@@ -288,7 +290,17 @@ export class SupportFormComponent {
     ) {
       this.confirmationService.confirm({
         message:
-          'No puedes actualizar el estado con el mismo usuario.<br> Otro usuario debe hacerlo.',
+          'No es posible actualizar el estado con el mismo usuario.<br> Otro usuario debe hacerlo.',
+        header: 'INFORMACIÓN',
+        icon: 'pi pi-info-circle',
+        rejectVisible: false,
+        acceptVisible: false,
+        closeOnEscape: true,
+      });
+    } else if (this.supportForm.invalid) {
+      this.confirmationService.confirm({
+        message:
+          'No es posible actualizar el estado.<br> Aún hay campos obligatorios que deben completarse.',
         header: 'INFORMACIÓN',
         icon: 'pi pi-info-circle',
         rejectVisible: false,
@@ -410,10 +422,8 @@ export class SupportFormComponent {
   }
 
   public validateForm(controlName: string): boolean | undefined {
-    return (
-      this.supportForm.get(controlName)?.invalid &&
-      this.supportForm.get(controlName)?.touched
-    );
+    const control = this.supportForm.get(controlName);
+    return control?.invalid && (control?.touched || control?.pristine);
   }
 
   private fieldsWIthoutAdmin(): void {
@@ -423,49 +433,85 @@ export class SupportFormComponent {
     }
   }
 
-  private requiredFieldsByState(state: number): void {
+  private requiredFieldsByState(state?: number): void {
     switch (state) {
       case 2:
+        this.supportForm.disable();
+        this.supportForm.get('failure')?.enable();
+        this.supportForm.get('remarks')?.enable();
         this.supportForm.get('failure')?.addValidators(Validators.required);
         this.supportForm.get('failure')?.updateValueAndValidity();
-        this.disableButtonHistory =
-          this.supportForm.get('failure')?.invalid || false;
         break;
       case 3:
-        this.supportForm
-          .get('securityStrap')
-          ?.addValidators(Validators.required);
-        this.supportForm.get('securityStrap')?.updateValueAndValidity();
-        this.disableButtonHistory =
-          this.supportForm.get('securityStrap')?.invalid || false;
-        break;
-      case 5:
-        this.supportForm.get('quoteNumber')?.addValidators(Validators.required);
-        this.supportForm.get('quoteNumber')?.updateValueAndValidity();
-        this.supportForm.get('orderNumber')?.addValidators(Validators.required);
-        this.supportForm.get('orderNumber')?.updateValueAndValidity();
-        this.disableButtonHistory =
-          this.supportForm.get('quoteNumber')?.invalid ||
-          this.supportForm.get('orderNumber')?.invalid ||
-          false;
-        break;
-      case 8:
+        this.supportForm.disable();
+        this.supportForm.get('failureTypes')?.enable();
+        this.supportForm.get('remarks')?.enable();
         this.supportForm
           .get('failureTypes')
           ?.addValidators(Validators.required);
         this.supportForm.get('failureTypes')?.updateValueAndValidity();
-        this.disableButtonHistory =
-          this.supportForm.get('failureTypes')?.invalid || false;
+        break;
+      case 4:
+        this.supportForm.disable();
+        this.supportForm.get('remarks')?.enable();
+        break;
+      case 5:
+        this.supportForm.disable();
+        this.supportForm.get('quoteNumber')?.enable();
+        this.supportForm.get('orderNumber')?.enable();
+        this.supportForm.get('remarks')?.enable();
+        this.supportForm.get('quoteNumber')?.addValidators(Validators.required);
+        this.supportForm.get('quoteNumber')?.updateValueAndValidity();
+        this.supportForm.get('orderNumber')?.addValidators(Validators.required);
+        this.supportForm.get('orderNumber')?.updateValueAndValidity();
+        break;
+      case 6:
+        this.supportForm.disable();
+        this.supportForm.get('failureTypes')?.enable();
+        this.supportForm.get('remarks')?.enable();
+        this.supportForm
+          .get('failureTypes')
+          ?.addValidators(Validators.required);
+        this.supportForm.get('failureTypes')?.updateValueAndValidity();
+        break;
+      case 7:
+        this.supportForm.disable();
+        this.supportForm.get('remarks')?.enable();
+        break;
+      case 8:
+        this.supportForm.disable();
+        this.supportForm.get('failureTypes')?.enable();
+        this.supportForm.get('remarks')?.enable();
+        this.supportForm
+          .get('failureTypes')
+          ?.addValidators(Validators.required);
+        this.supportForm.get('failureTypes')?.updateValueAndValidity();
+        break;
+      case 9:
+        this.supportForm.disable();
+        this.supportForm.get('remarks')?.enable();
         break;
       case 10:
+        this.supportForm.disable();
+        this.supportForm.get('endReference')?.enable();
+        this.supportForm.get('remarks')?.enable();
         this.supportForm
           .get('endReference')
           ?.addValidators(Validators.required);
         this.supportForm.get('endReference')?.updateValueAndValidity();
-        this.disableButtonHistory =
-          this.supportForm.get('endReference')?.invalid || false;
         break;
       case 11:
+        this.supportForm.disable();
+        this.supportForm.get('failure')?.enable();
+        this.supportForm.get('failureTypes')?.enable();
+        this.supportForm.get('quoteNumber')?.enable();
+        this.supportForm.get('orderNumber')?.enable();
+        this.supportForm.get('securityStrap')?.enable();
+        this.supportForm.get('endReference')?.enable();
+        this.supportForm.get('startReference')?.enable();
+        this.supportForm.get('remarks')?.enable();
+        this.supportForm.get('bitrixUrl')?.enable();
+
         this.supportForm.get('failure')?.addValidators(Validators.required);
         this.supportForm.get('failure')?.updateValueAndValidity();
         this.supportForm
@@ -480,20 +526,19 @@ export class SupportFormComponent {
           .get('failureTypes')
           ?.addValidators(Validators.required);
         this.supportForm.get('failureTypes')?.updateValueAndValidity();
-
         this.supportForm
           .get('endReference')
           ?.addValidators(Validators.required);
         this.supportForm.get('endReference')?.updateValueAndValidity();
-
-        this.disableButtonHistory =
-          this.supportForm.get('failure')?.invalid ||
-          this.supportForm.get('securityStrap')?.invalid ||
-          this.supportForm.get('quoteNumber')?.invalid ||
-          this.supportForm.get('orderNumber')?.invalid ||
-          this.supportForm.get('failureTypes')?.invalid ||
-          this.supportForm.get('endReference')?.invalid ||
-          false;
+        break;
+      default:
+        this.supportForm.disable();
+        this.supportForm.get('search')?.enable();
+        this.supportForm.get('bitrixUrl')?.enable();
+        this.supportForm.get('warranty')?.enable();
+        this.supportForm.get('priority')?.enable();
+        this.supportForm.get('securityStrap')?.enable();
+        this.supportForm.get('startReference')?.enable();
         break;
     }
   }
