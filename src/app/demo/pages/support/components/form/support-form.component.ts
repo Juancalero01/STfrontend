@@ -121,7 +121,7 @@ export class SupportFormComponent {
           Validators.pattern(/^https:\/\/controlnet\.bitrix24\.es\/.*$/),
         ],
       ],
-      failure: [null, [Validators.maxLength(255)]],
+      failure: [null, [Validators.required, Validators.maxLength(255)]],
       failureTypes: [null],
       remarks: [null, [Validators.maxLength(500)]],
       product: [null, [Validators.required]],
@@ -435,66 +435,48 @@ export class SupportFormComponent {
 
   private requiredFieldsByState(state?: number): void {
     switch (state) {
+      case 1:
       case 2:
+      case 4:
+      case 9:
         this.supportForm.disable();
-        this.supportForm.get('failure')?.enable();
-        this.supportForm.get('remarks')?.enable();
-        this.supportForm.get('failure')?.addValidators(Validators.required);
-        this.supportForm.get('failure')?.updateValueAndValidity();
+        this.fieldsActive();
         break;
       case 3:
+      case 6:
+      case 8:
         this.supportForm.disable();
         this.supportForm.get('failureTypes')?.enable();
-        this.supportForm.get('remarks')?.enable();
+        this.fieldsActive();
         this.supportForm
           .get('failureTypes')
           ?.addValidators(Validators.required);
         this.supportForm.get('failureTypes')?.updateValueAndValidity();
-        break;
-      case 4:
-        this.supportForm.disable();
-        this.supportForm.get('remarks')?.enable();
         break;
       case 5:
         this.supportForm.disable();
         this.supportForm.get('quoteNumber')?.enable();
         this.supportForm.get('orderNumber')?.enable();
-        this.supportForm.get('remarks')?.enable();
+        this.fieldsActive();
         this.supportForm.get('quoteNumber')?.addValidators(Validators.required);
         this.supportForm.get('quoteNumber')?.updateValueAndValidity();
         this.supportForm.get('orderNumber')?.addValidators(Validators.required);
         this.supportForm.get('orderNumber')?.updateValueAndValidity();
         break;
-      case 6:
-        this.supportForm.disable();
-        this.supportForm.get('failureTypes')?.enable();
-        this.supportForm.get('remarks')?.enable();
-        this.supportForm
-          .get('failureTypes')
-          ?.addValidators(Validators.required);
-        this.supportForm.get('failureTypes')?.updateValueAndValidity();
-        break;
       case 7:
         this.supportForm.disable();
-        this.supportForm.get('remarks')?.enable();
-        break;
-      case 8:
-        this.supportForm.disable();
-        this.supportForm.get('failureTypes')?.enable();
-        this.supportForm.get('remarks')?.enable();
-        this.supportForm
-          .get('failureTypes')
-          ?.addValidators(Validators.required);
-        this.supportForm.get('failureTypes')?.updateValueAndValidity();
-        break;
-      case 9:
-        this.supportForm.disable();
-        this.supportForm.get('remarks')?.enable();
+        this.supportForm.get('quoteNumber')?.enable();
+        this.supportForm.get('orderNumber')?.enable();
+        this.fieldsActive();
+        this.supportForm.get('quoteNumber')?.addValidators(Validators.required);
+        this.supportForm.get('quoteNumber')?.updateValueAndValidity();
+        this.supportForm.get('orderNumber')?.addValidators(Validators.required);
+        this.supportForm.get('orderNumber')?.updateValueAndValidity();
         break;
       case 10:
         this.supportForm.disable();
         this.supportForm.get('endReference')?.enable();
-        this.supportForm.get('remarks')?.enable();
+        this.fieldsActive();
         this.supportForm
           .get('endReference')
           ?.addValidators(Validators.required);
@@ -502,22 +484,11 @@ export class SupportFormComponent {
         break;
       case 11:
         this.supportForm.disable();
-        this.supportForm.get('failure')?.enable();
         this.supportForm.get('failureTypes')?.enable();
         this.supportForm.get('quoteNumber')?.enable();
         this.supportForm.get('orderNumber')?.enable();
-        this.supportForm.get('securityStrap')?.enable();
         this.supportForm.get('endReference')?.enable();
-        this.supportForm.get('startReference')?.enable();
-        this.supportForm.get('remarks')?.enable();
-        this.supportForm.get('bitrixUrl')?.enable();
-
-        this.supportForm.get('failure')?.addValidators(Validators.required);
-        this.supportForm.get('failure')?.updateValueAndValidity();
-        this.supportForm
-          .get('securityStrap')
-          ?.addValidators(Validators.required);
-        this.supportForm.get('securityStrap')?.updateValueAndValidity();
+        this.fieldsActive();
         this.supportForm.get('quoteNumber')?.addValidators(Validators.required);
         this.supportForm.get('quoteNumber')?.updateValueAndValidity();
         this.supportForm.get('orderNumber')?.addValidators(Validators.required);
@@ -534,12 +505,9 @@ export class SupportFormComponent {
       default:
         this.supportForm.disable();
         this.supportForm.get('search')?.enable();
-        this.supportForm.get('bitrixUrl')?.enable();
-        this.supportForm.get('warranty')?.enable();
-        this.supportForm.get('priority')?.enable();
-        this.supportForm.get('securityStrap')?.enable();
-        this.supportForm.get('startReference')?.enable();
         this.supportForm.get('dateEntry')?.enable();
+        this.supportForm.get('securityStrap')?.enable();
+        this.fieldsActive();
         break;
     }
   }
@@ -551,5 +519,14 @@ export class SupportFormComponent {
   private getLastUser(support: ISupport): any {
     const supportHistory = support.serviceHistory;
     return supportHistory[0].user;
+  }
+
+  public fieldsActive() {
+    this.supportForm.get('bitrixUrl')?.enable();
+    this.supportForm.get('startReference')?.enable();
+    this.supportForm.get('failure')?.enable();
+    this.supportForm.get('remarks')?.enable();
+    this.supportForm.get('warranty')?.enable();
+    this.supportForm.get('priority')?.enable();
   }
 }
