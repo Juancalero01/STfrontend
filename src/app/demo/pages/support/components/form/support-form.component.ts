@@ -539,6 +539,7 @@ export class SupportFormComponent {
         this.supportForm.get('priority')?.enable();
         this.supportForm.get('securityStrap')?.enable();
         this.supportForm.get('startReference')?.enable();
+        this.supportForm.get('dateEntry')?.enable();
         break;
     }
   }

@@ -130,67 +130,63 @@
           <div class="flex gap-4 align-items-center">
             <div class="flex gap-2 align-items-center">
               <span class="text-4xl font-medium"
-                >{{ indicatorData.numberOfServices.length }}
+                >{{ indicatorData.services.length }}
               </span>
               <p-button
                 icon="pi pi-eye"
                 styleClass="p-button-text p-button-secondary"
                 (onClick)="
-                  openIndicatorServiceForm(
-                    indicatorData.numberOfServices,
-                    'SERVICIOS'
-                  )
+                  openIndicatorServiceForm(indicatorData.services, 'SERVICIOS')
                 "
-                [disabled]="indicatorData.numberOfServices.length === 0"
+                [disabled]="indicatorData.services.length === 0"
               />
             </div>
 
             <div class="flex gap-3">
               <div class="flex gap-2 text-green-500 font-medium">
                 <i class="pi pi-arrow-circle-up"></i>
-                <p>
-                  {{ indicatorData.numberOfServicesRepair.length }} Reparados
-                </p>
+                <p>{{ indicatorData.servicesRepair.length }} Reparados</p>
               </div>
               <div class="flex gap-2 text-red-500 font-medium">
                 <i class="pi pi-arrow-circle-down"></i>
-                <p>
-                  {{ indicatorData.numberOfServicesNotRepair.length }} No
-                  reparados
-                </p>
+                <p>{{ indicatorData.servicesNotRepair.length }} No reparados</p>
               </div>
               <div class="flex gap-2 text-orange-500 font-medium">
                 <i class="pi pi-minus-circle"></i>
-                <p>{{ indicatorData.reentryServices.length }} Reingresados</p>
+                <p>{{ indicatorData.services.length }} Reingresados</p>
+              </div>
+              <div class="flex gap-2 text-blue-500 font-medium">
+                <i class="pi pi-wrench"></i>
+                <p>{{ indicatorData.servicesActive.length }} Activos</p>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="col-12 lg:col-4 xl:col-4 h-fit">
+      <div class="col-6 lg:col-3 xl:col-3 h-fit">
         <div class="p-card shadow-none p-3 border-1 border-gray-200">
           <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium">SERVICIOS REPARADOS</span>
           </div>
           <div class="flex gap-2 align-items-center">
             <span class="text-4xl font-medium"
-              >{{ indicatorData.numberOfServicesRepair.length }}
+              >{{ indicatorData.servicesRepair.length }}
             </span>
             <p-button
               icon="pi pi-eye"
               styleClass="p-button-text p-button-secondary"
               (onClick)="
                 openIndicatorServiceForm(
-                  indicatorData.numberOfServicesRepair,
+                  indicatorData.servicesRepair,
                   'SERVICIOS REPARADOS'
                 )
               "
-              [disabled]="indicatorData.numberOfServicesRepair.length === 0"
+              [disabled]="indicatorData.servicesRepair.length === 0"
             />
           </div>
         </div>
       </div>
-      <div class="col-6 lg:col-4 xl:col-4 h-fit">
+      <div class="col-6 lg:col-3 xl:col-3 h-fit">
         <div class="p-card shadow-none p-3 border-1 border-gray-200">
           <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium"
@@ -199,23 +195,23 @@
           </div>
           <div class="flex gap-2 align-items-center">
             <span class="text-4xl font-medium"
-              >{{ indicatorData.numberOfServicesNotRepair.length }}
+              >{{ indicatorData.servicesNotRepair.length }}
             </span>
             <p-button
               icon="pi pi-eye"
               styleClass="p-button-text p-button-secondary"
               (onClick)="
                 openIndicatorServiceForm(
-                  indicatorData.numberOfServicesNotRepair,
+                  indicatorData.servicesNotRepair,
                   'SERVICIOS NO REPARADOS'
                 )
               "
-              [disabled]="indicatorData.numberOfServicesNotRepair.length === 0"
+              [disabled]="indicatorData.servicesNotRepair.length === 0"
             />
           </div>
         </div>
       </div>
-      <div class="col-6 lg:col-4 xl:col-4 h-fit">
+      <div class="col-6 lg:col-3 xl:col-3 h-fit">
         <div class="p-card shadow-none p-3 border-1 border-gray-200">
           <div class="flex justify-content-between mb-3">
             <span class="block text-500 font-medium"
@@ -236,6 +232,29 @@
                 )
               "
               [disabled]="indicatorData.reentryServices.length === 0"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="col-6 lg:col-3 xl:col-3 h-fit">
+        <div class="p-card shadow-none p-3 border-1 border-gray-200">
+          <div class="flex justify-content-between mb-3">
+            <span class="block text-500 font-medium">SERVICIOS ACTIVOS</span>
+          </div>
+          <div class="flex gap-2 align-items-center">
+            <span class="text-4xl font-medium"
+              >{{ indicatorData.servicesActive.length }}
+            </span>
+            <p-button
+              icon="pi pi-eye"
+              styleClass="p-button-text p-button-secondary"
+              (onClick)="
+                openIndicatorServiceForm(
+                  indicatorData.servicesActive,
+                  'SERVICIOS REINGRESADOS'
+                )
+              "
+              [disabled]="indicatorData.servicesActive.length === 0"
             />
           </div>
         </div>
