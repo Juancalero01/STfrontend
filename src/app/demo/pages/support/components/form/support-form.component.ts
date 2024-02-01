@@ -63,7 +63,7 @@ export class SupportFormComponent {
 
   public ngOnInit() {
     this.requiredFieldsByState();
-    this.fieldsWIthoutAdmin();
+    this.fieldsWithoutAdmin();
     this.setDefaultFormData();
     this.loadStates();
     this.loadPriorities();
@@ -75,7 +75,7 @@ export class SupportFormComponent {
       this.showSearch = false;
       this.loadSupportHistory(this.config.data.serviceHistory);
       this.requiredFieldsByState(this.config.data.state.id);
-      this.fieldsWIthoutAdmin();
+      this.fieldsWithoutAdmin();
       this.showButtonHistory = true;
     } else {
       this.getLastReclaimNumber();
@@ -290,7 +290,20 @@ export class SupportFormComponent {
     ) {
       this.confirmationService.confirm({
         message:
-          'No es posible actualizar el estado con el mismo usuario.<br> Otro usuario debe hacerlo.',
+          'La actualización del estado no es posible con el mismo usuario.<br> Por favor, realice la acción con otro usuario.',
+        header: 'INFORMACIÓN',
+        icon: 'pi pi-info-circle',
+        rejectVisible: false,
+        acceptVisible: false,
+        closeOnEscape: true,
+      });
+    } else if (
+      this.config.data.state.id === 11 &&
+      !this.tokenService.isAdmin()
+    ) {
+      this.confirmationService.confirm({
+        message:
+          'La actualización del estado no es posible.<br> Solo los administradores tienen permiso para cerrar el caso.',
         header: 'INFORMACIÓN',
         icon: 'pi pi-info-circle',
         rejectVisible: false,
@@ -300,7 +313,7 @@ export class SupportFormComponent {
     } else if (this.supportForm.invalid) {
       this.confirmationService.confirm({
         message:
-          'No es posible actualizar el estado.<br> Aún hay campos obligatorios que deben completarse.',
+          'No se puede actualizar el estado.<br> Complete los campos obligatorios pendientes.',
         header: 'INFORMACIÓN',
         icon: 'pi pi-info-circle',
         rejectVisible: false,
@@ -426,10 +439,17 @@ export class SupportFormComponent {
     return control?.invalid && (control?.touched || control?.pristine);
   }
 
-  private fieldsWIthoutAdmin(): void {
-    if (!this.tokenService.isAdmin()) {
-      this.supportForm.get('priority')?.disable();
-      this.supportForm.get('warranty')?.disable();
+  private fieldsWithoutAdmin(): void {
+    const isAdmin = this.tokenService.isAdmin();
+    const isCase11 = this.config.data?.state.id === 11;
+
+    if (!isAdmin) {
+      if (!this.config.data || !isCase11) {
+        this.supportForm.get('priority')?.disable();
+        this.supportForm.get('warranty')?.disable();
+      } else {
+        this.supportForm.disable();
+      }
     }
   }
 
@@ -483,11 +503,16 @@ export class SupportFormComponent {
         this.supportForm.get('endReference')?.updateValueAndValidity();
         break;
       case 11:
+        // if (!this.tokenService.isAdmin()) {
+        //   this.supportForm.disable();
+        //   return;
+        // }
         this.supportForm.disable();
         this.supportForm.get('failureTypes')?.enable();
         this.supportForm.get('quoteNumber')?.enable();
         this.supportForm.get('orderNumber')?.enable();
         this.supportForm.get('endReference')?.enable();
+        this.supportForm.get('securityStrap')?.enable();
         this.fieldsActive();
         this.supportForm.get('quoteNumber')?.addValidators(Validators.required);
         this.supportForm.get('quoteNumber')?.updateValueAndValidity();
