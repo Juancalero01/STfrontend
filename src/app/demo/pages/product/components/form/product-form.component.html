@@ -60,7 +60,7 @@
       formControlName="reference"
       placeholder="Ingresar número de remito del producto"
       class="w-full"
-      [minlength]="15"
+      [maxLength]="15"
       [ngClass]="{ 'ng-invalid ng-dirty': validateForm('reference') }"
     />
     <small *ngIf="validateForm('reference')" class="p-error">

@@ -109,7 +109,7 @@ export class SupportFormComponent {
       startReference: [null, [Validators.maxLength(255)]],
       endReference: [
         null,
-        [Validators.maxLength(15), Validators.pattern(/^[0-9]{4}-R-[0-9]{8}$/)],
+        [Validators.minLength(15), Validators.pattern(/^[0-9]{4}-R-[0-9]{8}$/)],
       ],
       orderNumber: [null, [Validators.maxLength(255)]],
       quoteNumber: [null, [Validators.maxLength(255)]],
