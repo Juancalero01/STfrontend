@@ -52,7 +52,7 @@ export class ProductFormComponent {
         null,
         [
           Validators.required,
-          Validators.pattern(/^\d{4}-[A-Z]-\d{8}$/),
+          Validators.pattern(/^[0-9]{4}-R-[0-9]{8}$/),
           Validators.minLength(15),
         ],
       ],
