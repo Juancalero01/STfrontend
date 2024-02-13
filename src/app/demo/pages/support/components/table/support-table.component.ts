@@ -43,11 +43,11 @@ export class SupportTableComponent {
   };
 
   public ngOnInit(): void {
-    this.loadSupports();
     this.loadClients();
     this.loadProductTypes();
     this.loadPriorities();
     this.loadStates();
+    this.loadSupports();
   }
 
   public loadSupports(): void {
