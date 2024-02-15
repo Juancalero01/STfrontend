@@ -1,0 +1,71 @@
+<div class="h-full flex flex-column gap-4">
+  <div class="flex flex-column gap-1 align-items-center">
+    <h2 class="font-semibold">MI PERFIL</h2>
+    <p class="text-gray-600 font-medium">
+      Panel para administrar tu información
+    </p>
+  </div>
+  <div class="flex justify-content-center">
+    <form class="w-30rem" [formGroup]="profileForm">
+      <div class="grid">
+        <div class="flex flex-column col-12">
+          <label>NOMBRE Y APELLIDO</label>
+          <input
+            formControlName="fullname"
+            pInputText
+            maxlength="255"
+            placeholder="Ingrese el nombre de usuario"
+            class="w-full"
+          />
+          <small class="p-error"> Campo requerido* </small>
+        </div>
+        <div class="flex flex-column col-12 w-full">
+          <label>CONTRASEÑA ACTUAL</label>
+          <p-password
+            formControlName="password"
+            [feedback]="false"
+            [toggleMask]="true"
+            placeholder="Ingrese su contraseña actual"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            [autocomplete]="'off'"
+          />
+          <small class="p-error">Campo obligatorio*</small>
+        </div>
+        <div class="flex flex-column col-12 w-full">
+          <label>CONTRASEÑA NUEVA</label>
+          <p-password
+            formControlName="newPassword"
+            [feedback]="true"
+            [toggleMask]="true"
+            placeholder="Ingrese su contraseña nueva"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            [autocomplete]="'off'"
+          >
+            <ng-template pTemplate="header">
+              <h6>Analizando tu contraseña</h6>
+            </ng-template>
+            <ng-template pTemplate="footer">
+              <p-divider></p-divider>
+              <p class="mt-2">Sugerencia</p>
+              <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+                <li>Debe contener al menos una minuscula</li>
+                <li>Debe contener al menos una mayuscula</li>
+                <li>Debe contener al menos un número</li>
+                <li>Minimo de 8 caracteres</li>
+              </ul>
+            </ng-template>
+          </p-password>
+          <small class="p-error">Campo obligatorio*</small>
+        </div>
+      </div>
+      <p-button
+        label="MODIFICAR PERFIL"
+        styleClass="w-full p-button-info"
+        (onClick)="updateProfile()"
+        [disabled]="profileForm.invalid"
+      />
+    </form>
+  </div>
+</div>
