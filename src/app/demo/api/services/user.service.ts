@@ -35,4 +35,15 @@ export class UserService {
   public changeState(id: number): Observable<IUser> {
     return this.http.put<IUser>(`${this.URL}/s/${id}`, {});
   }
+
+  public updateProfile(
+    id: number,
+    body: { fullname: string; password: string; newPassword: string }
+  ) {
+    return this.http.put<{
+      fullname: string;
+      password: string;
+      newPassword: string;
+    }>(`${this.URL}/pu/${id}`, body);
+  }
 }
