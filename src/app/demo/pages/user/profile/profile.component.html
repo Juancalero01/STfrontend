@@ -64,7 +64,10 @@
         label="MODIFICAR PERFIL"
         styleClass="w-full p-button-info"
         (onClick)="updateProfile()"
+        [disabled]="profileForm.invalid"
       />
     </form>
   </div>
 </div>
+<p-confirmDialog />
+<p-toast position="top-center" />

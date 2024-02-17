@@ -15,7 +15,6 @@ import { ProfileComponent } from './profile/profile.component';
           roles: ['ADMINISTRADOR'],
         },
       },
-      //TODO: Perfil para modificar el usuario logeado, debe estar logeado si o si, si no no deja luego debe logout cuando cambie la contraseña, solamente la contraseña.
       {
         path: 'profile',
         canActivate: [roleGuard],
