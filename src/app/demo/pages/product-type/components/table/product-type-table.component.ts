@@ -18,10 +18,12 @@ export class ProductTypeTableComponent {
   public productTypes: IProductType[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
 
-  public ngOnInit(): void {
+  //Inicializador de funciones.
+  ngOnInit(): void {
     this.loadProductTypes();
   }
 
+  //Carga todos los tipos de productos para la tabla correspondiente.
   private loadProductTypes(): void {
     this.productTypeService.findAll().subscribe({
       next: (productTypes: IProductType[]) => {
@@ -30,6 +32,7 @@ export class ProductTypeTableComponent {
     });
   }
 
+  //Abre el formulario para registrar o actualizar el tipo de producto
   public openProductTypeForm(productType?: IProductType) {
     const header = productType
       ? 'FORMULARIO DE ACTUALIZACIÓN DE TIPO DE PRODUCTO'
@@ -51,6 +54,7 @@ export class ProductTypeTableComponent {
     });
   }
 
+  //Elimina los filtros (Tabla(Paginación, Filtros de columna) Buscador)
   public cleanFilters(table: Table, filter: any) {
     table.clear();
     filter.value = '';

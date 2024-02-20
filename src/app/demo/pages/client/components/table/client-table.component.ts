@@ -18,10 +18,12 @@ export class ClientTableComponent {
   public clients: IClient[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
 
-  public ngOnInit(): void {
+  //Inicializador de funciones.
+  ngOnInit(): void {
     this.loadClients();
   }
 
+  //Carga de clientes para la tabla.
   private loadClients(): void {
     this.clientService.findAll().subscribe({
       next: (clients: IClient[]) => {
@@ -30,6 +32,7 @@ export class ClientTableComponent {
     });
   }
 
+  //Abre el formulario para guardar o actualizar el cliente.
   public openClientForm(client?: IClient) {
     const header = client
       ? 'FORMULARIO DE ACTUALIZACIÓN DE CLIENTE'
@@ -51,6 +54,7 @@ export class ClientTableComponent {
     });
   }
 
+  //Elimina los filtros de busqueda o paginación.
   public cleanFilters(table: Table, filter: any) {
     table.clear();
     filter.value = '';

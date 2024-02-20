@@ -22,13 +22,15 @@ export class FailureTypeFormComponent {
   public failureTypeForm: FormGroup = this.buildForm();
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
 
-  public ngOnInit(): void {
+  //Inicializador de funciones.
+  ngOnInit(): void {
     if (this.config.data) {
       this.loadForm(this.config.data);
       this.buttonLabel = 'ACTUALIZAR FORMULARIO';
     }
   }
 
+  //Construcción de los campos y validaciones del formulario principal de tipo de falals.
   private buildForm(): FormGroup {
     return this.formBuilder.group({
       name: [null, [Validators.required, Validators.maxLength(60)]],
@@ -36,10 +38,12 @@ export class FailureTypeFormComponent {
     });
   }
 
+  //Carga el formulario de tipo de fallas.
   private loadForm(failureType: IFailureType): void {
     this.failureTypeForm.patchValue(failureType);
   }
 
+  //Validaciones del formulario de tipo de fallas.
   public validateForm(controlName: string): boolean | undefined {
     return (
       this.failureTypeForm.get(controlName)?.invalid &&
@@ -47,6 +51,7 @@ export class FailureTypeFormComponent {
     );
   }
 
+  //Guarda o actualiza la información del tipo de fallas.
   public submitForm(): void {
     if (!this.config.data) {
       this.createFailureType();
@@ -55,6 +60,7 @@ export class FailureTypeFormComponent {
     }
   }
 
+  //Cancela el formulario del tipo de fallas.
   public cancelForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea cancelar la operación?',
@@ -70,6 +76,7 @@ export class FailureTypeFormComponent {
     });
   }
 
+  //Guarda la información para una nueva falla.
   public createFailureType(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea crear el registro?',
@@ -96,6 +103,7 @@ export class FailureTypeFormComponent {
     });
   }
 
+  //Actualiza la información para la falla.
   public updateFailureType(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea actualizar el registro?',
@@ -124,6 +132,7 @@ export class FailureTypeFormComponent {
     });
   }
 
+  //Obtiene si realmente el usuario modifico el formulario de tipo de fallas.
   public getChangesToUpdate(): boolean {
     return !this.failureTypeForm.pristine;
   }

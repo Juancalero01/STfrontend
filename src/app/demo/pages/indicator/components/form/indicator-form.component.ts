@@ -14,20 +14,24 @@ export class IndicatorFormComponent {
   ) {}
   public supports: ISupport[] = [];
 
-  public ngOnInit(): void {
+  //Inicializador de funciones.
+  ngOnInit(): void {
     if (this.config.data) {
       this.loadTable(this.config.data);
     }
   }
 
+  //Carga de soportes en la tabla.
   private loadTable(supports: ISupport[]): void {
     this.supports = supports;
   }
 
+  //Crea un vinculo para ir a verificar ese número de reclamo.
   getSupportHistoryUrl(reclaim: string): string {
     return `${this.document.baseURI}cnet/support/history?s=${reclaim}`;
   }
 
+  //Añade un tag segun el estado del servicio.
   public getTagSeverity(stateId: number): string {
     if (stateId === 12) {
       return 'success';

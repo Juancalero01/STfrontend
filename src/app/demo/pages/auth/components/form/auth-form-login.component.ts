@@ -21,8 +21,7 @@ export class AuthFormLoginComponent {
 
   public loginForm: FormGroup = this.buildForm();
 
-  public ngOnInit(): void {}
-
+  //Construcción de los campos y validaciones del formulario de login.
   private buildForm(): FormGroup {
     return this.formBuilder.group({
       username: [
@@ -33,6 +32,7 @@ export class AuthFormLoginComponent {
     });
   }
 
+  //Comprobación de credenciales del usuario.
   public login(): void {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).subscribe({

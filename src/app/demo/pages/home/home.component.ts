@@ -15,11 +15,13 @@ export class HomeComponent {
   public servicesWithOutRepair: number = 0;
   public supports: ISupport[] = [];
 
-  public ngOnInit() {
+  //Inicializador de funciones
+  ngOnInit() {
     this.countAllServices();
     this.loadSupportsMain();
   }
 
+  //Cuenta todos los servicios (En total, Activos, Reparados y No reparados), este es por año actual.
   private countAllServices() {
     this.supportService.getServiceMain().subscribe({
       next: (supports: any) => {
@@ -31,6 +33,7 @@ export class HomeComponent {
     });
   }
 
+  //Carga de servicios activos.
   private loadSupportsMain() {
     this.supportService.findAllActiveServices().subscribe({
       next: (supports: ISupport[]) => {

@@ -30,7 +30,8 @@ export class ClientFormComponent {
   public taxConditions: ITaxCondition[] = [];
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
 
-  public ngOnInit(): void {
+  //Inicializador de funciones.
+  ngOnInit(): void {
     this.getProvinces();
     this.getTaxConditions();
     if (this.config.data) {
@@ -39,6 +40,7 @@ export class ClientFormComponent {
     }
   }
 
+  //Construcción de los campos y validaciones del formulario de clientes.
   private buildForm(): FormGroup {
     return this.formBuilder.group({
       taxpayerName: [
@@ -93,6 +95,7 @@ export class ClientFormComponent {
     });
   }
 
+  //Carga de datos para el formulario de clientes
   private loadForm(client: IClient): void {
     this.clientForm.patchValue({
       ...client,
@@ -101,12 +104,14 @@ export class ClientFormComponent {
     });
   }
 
+  //Obtiene las provincias para el dropdown correspondiente
   private getProvinces(): void {
     this.provinceService.findAll().subscribe({
       next: (provinces: IProvince[]) => (this.provinces = provinces),
     });
   }
 
+  //Obtiene las condiciones del cliente para el dropdown correspondiente
   private getTaxConditions(): void {
     this.taxConditionService.findAll().subscribe({
       next: (taxConditions: ITaxCondition[]) =>
@@ -114,6 +119,7 @@ export class ClientFormComponent {
     });
   }
 
+  //Validaciones del formulario de clientes.
   public validateForm(controlName: string): boolean | undefined {
     return (
       this.clientForm.get(controlName)?.invalid &&
@@ -121,6 +127,7 @@ export class ClientFormComponent {
     );
   }
 
+  //Guarda o actualiza la información del cliente
   public submitForm(): void {
     if (!this.config.data) {
       this.createClient();
@@ -129,6 +136,7 @@ export class ClientFormComponent {
     }
   }
 
+  //Cierra el formulario de clientes
   public closeForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea cancelar la operación?',
@@ -144,6 +152,7 @@ export class ClientFormComponent {
     });
   }
 
+  //Guarda la información del formulario de clientes.
   public createClient(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea crear el registro?',
@@ -170,6 +179,7 @@ export class ClientFormComponent {
     });
   }
 
+  //Actualiza la información del formulario de clientes.
   public updateClient(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea actualizar el registro?',
@@ -199,6 +209,7 @@ export class ClientFormComponent {
     });
   }
 
+  //Obtiene si realmente el usuario modifico el formulario de clientes.
   public getChangesToUpdate(): boolean {
     return !this.clientForm.pristine;
   }

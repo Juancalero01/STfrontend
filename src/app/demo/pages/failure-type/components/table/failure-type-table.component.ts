@@ -18,10 +18,12 @@ export class FailureTypeTableComponent {
   public failureTypes: IFailureType[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
 
-  public ngOnInit() {
+  //Inicializador de funciones.
+  ngOnInit() {
     this.loadFailureTypes();
   }
 
+  //Cargar tipos de fallas
   private loadFailureTypes(): void {
     this.failureTypeService.findAll().subscribe({
       next: (failureTypes: IFailureType[]) => {
@@ -30,6 +32,7 @@ export class FailureTypeTableComponent {
     });
   }
 
+  //Abre el formulario de tipo de fallas.
   public openFailureTypeForm(failureType?: IFailureType): void {
     const header = failureType
       ? 'FORMULARIO DE ACTUALIZACIÓN DE TIPO DE FALLA'
@@ -52,6 +55,7 @@ export class FailureTypeTableComponent {
     });
   }
 
+  //Elimina los filtros (Tabla(Paginación, Filtros de columna) Buscador)
   public cleanFilters(table: Table, filter: any): void {
     table.clear();
     filter.value = '';

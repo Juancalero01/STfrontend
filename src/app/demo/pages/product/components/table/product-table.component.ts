@@ -26,18 +26,21 @@ export class ProductTableComponent {
   public productTypes: IProductType[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
 
-  public ngOnInit(): void {
+  //Inicializador de funciones.
+  ngOnInit(): void {
     this.loadClients();
     this.loadProductTypes();
     this.loadProducts();
   }
 
+  //Carga de clientes
   private loadClients(): void {
     this.clientService.findAll().subscribe({
       next: (clients: IClient[]) => (this.clients = clients),
     });
   }
 
+  //Carga de tipos de producto
   private loadProductTypes(): void {
     this.productTypeService.findAll().subscribe({
       next: (productTypes: IProductType[]) =>
@@ -45,12 +48,14 @@ export class ProductTableComponent {
     });
   }
 
+  //Carga de productos
   private loadProducts(): void {
     this.productService.findAll().subscribe({
       next: (products: IProduct[]) => (this.products = products),
     });
   }
 
+  //Abre el formulario para registrar o actualizar el producto
   public openProductForm(product?: IProduct) {
     const header = product
       ? 'FORMULARIO DE ACTUALIZACIÓN DE PRODUCTO'
@@ -70,6 +75,7 @@ export class ProductTableComponent {
     this.ref.onClose.subscribe(() => this.loadProducts());
   }
 
+  //Elimina los filtros (Tabla(Paginación, Filtros de columna) Buscador)
   public cleanFilters(table: Table, filter: any) {
     table.clear();
     filter.value = '';

@@ -22,13 +22,15 @@ export class ProductTypeFormComponent {
   public productTypeForm: FormGroup = this.buildForm();
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
 
-  public ngOnInit(): void {
+  //Inicializador de funciones.
+  ngOnInit(): void {
     if (this.config.data) {
       this.loadForm(this.config.data);
       this.buttonLabel = 'ACTUALIZAR FORMULARIO';
     }
   }
 
+  //Construcción de los campos y validaciones del formulario de tipos de producto.
   private buildForm(): FormGroup {
     return this.formBuilder.group({
       prefix: [null, [Validators.required, Validators.maxLength(4)]],
@@ -44,6 +46,7 @@ export class ProductTypeFormComponent {
     });
   }
 
+  //Carga de datos para el formulario de tipos de producto.
   private loadForm(productType: IProductType): void {
     this.productTypeForm.patchValue(productType);
     if (this.productTypeForm.get('prefix')?.value === null) {
@@ -52,6 +55,7 @@ export class ProductTypeFormComponent {
     }
   }
 
+  //Validaciones del formulario de tipos de producto
   public validateForm(controlName: string): boolean | undefined {
     return (
       this.productTypeForm.get(controlName)?.invalid &&
@@ -59,6 +63,7 @@ export class ProductTypeFormComponent {
     );
   }
 
+  //Guarda o actualiza la información del tipo de producto.
   public submitForm(): void {
     if (!this.config.data) {
       this.createProductType();
@@ -67,6 +72,7 @@ export class ProductTypeFormComponent {
     }
   }
 
+  //Cancela la operación del formulario.
   public cancelForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea cancelar la operación?',
@@ -82,6 +88,7 @@ export class ProductTypeFormComponent {
     });
   }
 
+  //Guarda la información cargada en el tipo de producto. (nuevo)
   public createProductType(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea crear el registro?',
@@ -110,6 +117,7 @@ export class ProductTypeFormComponent {
     });
   }
 
+  //Actualiza la información nueva en el tipo de producto.
   public updateProductType(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea actualizar el registro?',
@@ -138,6 +146,7 @@ export class ProductTypeFormComponent {
     });
   }
 
+  //Obtiene si realmente el usuario modifico el formulario de tipos de producto.
   public getChangesToUpdate(): boolean {
     return !this.productTypeForm.pristine;
   }

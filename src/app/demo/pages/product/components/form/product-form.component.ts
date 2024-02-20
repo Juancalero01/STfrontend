@@ -30,7 +30,8 @@ export class ProductFormComponent {
   public clients: IClient[] = [];
   public productTypes: IProductType[] = [];
 
-  public ngOnInit(): void {
+  //Inicializador de funciones.
+  ngOnInit(): void {
     this.getClients();
     this.getProductTypes();
 
@@ -40,6 +41,7 @@ export class ProductFormComponent {
     }
   }
 
+  //Construcción de los campos y validaciones del formulario de productos.
   public buildForm(): FormGroup {
     return this.formBuilder.group({
       client: [null, [Validators.required]],
@@ -60,6 +62,7 @@ export class ProductFormComponent {
     });
   }
 
+  //Carga de datos para el formulario de productos.
   private loadForm(product: IProduct): void {
     this.productForm.patchValue({
       ...product,
@@ -69,12 +72,14 @@ export class ProductFormComponent {
     });
   }
 
+  //Obtiene los clientes.
   private getClients(): void {
     this.clientService.findAll().subscribe({
       next: (clients: IClient[]) => (this.clients = clients),
     });
   }
 
+  //Obtiene los tipos de producto.
   private getProductTypes(): void {
     this.productTypeService.findAll().subscribe({
       next: (productTypes: IProductType[]) =>
@@ -82,6 +87,7 @@ export class ProductFormComponent {
     });
   }
 
+  //Validaciones del formulario de productos
   public validateForm(controlName: string): boolean | undefined {
     return (
       this.productForm.get(controlName)?.invalid &&
@@ -89,6 +95,7 @@ export class ProductFormComponent {
     );
   }
 
+  //Guarda o actualiza la información del producto.
   public submitForm(): void {
     if (!this.config.data) {
       this.createProduct();
@@ -97,6 +104,7 @@ export class ProductFormComponent {
     }
   }
 
+  //Cierra el formulario
   public closeForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea cancelar la operación?',
@@ -112,6 +120,7 @@ export class ProductFormComponent {
     });
   }
 
+  //Crea el producto
   public createProduct(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea crear el registro?',
@@ -138,6 +147,7 @@ export class ProductFormComponent {
     });
   }
 
+  //Actualiza el producto
   public updateProduct(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea actualizar el registro?',
@@ -166,6 +176,7 @@ export class ProductFormComponent {
     });
   }
 
+  //Cambia el tipo de producto según el encabezado del número de serie.
   public onProductTypeChange(): void {
     const productTypeId = this.productForm.get('productType')?.value;
     const productType = this.productTypes.find(
@@ -186,6 +197,7 @@ export class ProductFormComponent {
     }
   }
 
+  //Obtiene si realmente el usuario modifico el formulario de productos.
   public getChangesToUpdate(): boolean {
     return !this.productForm.pristine;
   }
