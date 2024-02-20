@@ -20,10 +20,12 @@ export class TableUserComponent {
   public users: IUser[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
 
-  public ngOnInit() {
+  //Inicializador de funciones.
+  ngOnInit() {
     this.getUsers();
   }
 
+  //Obtiene todos lo usuarios para visualizarlo en la tabla.
   private getUsers(): void {
     this.userService.findAll().subscribe({
       next: (users: IUser[]) => {
@@ -32,6 +34,7 @@ export class TableUserComponent {
     });
   }
 
+  //Abre el formulario para registrar o actualizar el usuario
   public openUserForm(user?: IUser): void {
     const header = user
       ? 'FORMULARIO DE ACTUALIZACIÓN DE USUARIO'
@@ -52,11 +55,13 @@ export class TableUserComponent {
     });
   }
 
+  //Elimina los filtros (Tabla(Paginación, Filtros de columna) Buscador)
   public cleanFilters(table: Table, filter: any) {
     table.clear();
     filter.value = '';
   }
 
+  //Verifica para que solamente el superadmin pueda actualizar todo, y en otros roles pueden actualizar a oto rol.
   public isDisabledButton(user: IUser): boolean {
     const currentUserId = this.tokenService.getUserId();
     const currentUsername = this.tokenService.getUserFullname();

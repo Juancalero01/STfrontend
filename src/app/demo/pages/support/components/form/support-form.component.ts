@@ -61,7 +61,8 @@ export class SupportFormComponent {
   );
   public maxDate: Date = this.today;
 
-  public ngOnInit() {
+  //Inicializador de funciones.
+  ngOnInit() {
     this.requiredFieldsByState();
     this.fieldsWithoutAdmin();
     this.setDefaultFormData();
@@ -82,12 +83,14 @@ export class SupportFormComponent {
     }
   }
 
+  //Obtiene los datos importantes para añadirlos al formulario de servicios, esto se hace de forma oculta (El usuario no lo debe cargar)
   private setDefaultFormData(): void {
     this.supportForm.get('state')?.setValue(1);
     this.supportForm.get('dateEntry')?.setValue(this.today);
     this.supportForm.get('priority')?.setValue(4);
   }
 
+  //Construcción de los campos y validaciones del formulario de servicios.
   private buildForm(): FormGroup {
     return this.formBuilder.group({
       search: [
@@ -128,6 +131,7 @@ export class SupportFormComponent {
     });
   }
 
+  //Carga de datos para el formulario de servicios.
   private loadForm(support: ISupport) {
     this.supportForm.patchValue({
       ...support,
@@ -146,12 +150,14 @@ export class SupportFormComponent {
     this.mainButtonLabel = 'ACTUALIZAR FORMULARIO';
   }
 
+  //Obtiene todos los estados, esto es para que cargue en que estado se encuentra el servicio.
   private loadStates(): void {
     this.supportStateService.findAll().subscribe({
       next: (states: ISupportState[]) => (this.states = states),
     });
   }
 
+  //Obtiene todas las prioridades, esto es para que cargue en que prioridad se encuentra el servicio.
   private loadPriorities(): void {
     this.supportPriorityService.findAll().subscribe({
       next: (priorities: ISupportPriority[]) => {
@@ -160,6 +166,7 @@ export class SupportFormComponent {
     });
   }
 
+  //Obtiene todos los tipos de fallas para mostrar y realizar el seleccionado correspondiente.
   private loadFailureTypes(): void {
     this.failureTypeService.findAll().subscribe({
       next: (failureTypes: IFailureType[]) =>
@@ -167,10 +174,12 @@ export class SupportFormComponent {
     });
   }
 
+  //Carga el historial de cambios de estado, en la otra pestaña del formulario.
   private loadSupportHistory(supportHistory: ISupportHistory[]): void {
     this.supportHistory = supportHistory;
   }
 
+  //Busca el producto por su identificador unico (Número de serie).
   public searchProduct() {
     const serial = this.supportForm.get('search')?.value;
     this.productService.findOneSerial(serial).subscribe({
@@ -210,10 +219,12 @@ export class SupportFormComponent {
     });
   }
 
+  //Guarda o actualiza la información del servicio.
   public submitForm(): void {
     !this.config.data ? this.createSupport() : this.updateSupport();
   }
 
+  //Guarda la información cargada en el servicio. (nuevo)
   public createSupport(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea crear el registro?',
@@ -239,6 +250,7 @@ export class SupportFormComponent {
     });
   }
 
+  //Actualiza la información nueva en el servicio.
   public updateSupport(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea actualizar el registro?',
@@ -267,6 +279,7 @@ export class SupportFormComponent {
     });
   }
 
+  //Cierra el formulario.
   public exitForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea salir del formulario?',
@@ -282,6 +295,7 @@ export class SupportFormComponent {
     });
   }
 
+  //Abre el formulario del historial de cambios de estado / notas
   public openHistoryForm(): void {
     if (
       this.config.data.state.id === 9 &&
@@ -340,6 +354,7 @@ export class SupportFormComponent {
     });
   }
 
+  //Limpia el formulario de servicios, esto se aplica cuando esta creando un nuevo caso.
   public cleanForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea limpiar el formulario?',
@@ -367,6 +382,7 @@ export class SupportFormComponent {
     });
   }
 
+  //Calcula la garantia del producto.
   private calculateWarranty(
     deliveryDate: Date,
     isUpdate: boolean = false
@@ -408,6 +424,7 @@ export class SupportFormComponent {
     }
   }
 
+  //Obtiene el ultimo número de reclamo para agregarle +1 para un nuevo servicio.
   private getLastReclaimNumber(): void {
     const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
     this.supportService.findLastReclaim().subscribe({
@@ -422,6 +439,7 @@ export class SupportFormComponent {
     });
   }
 
+  //Obtiene datos del soportes que son importantes para el guardado o actualizado del servicio.
   private getSupportData(): ISupport {
     const {
       search,
@@ -434,11 +452,13 @@ export class SupportFormComponent {
     return support;
   }
 
+  //Validaciones del formulario del servicio.
   public validateForm(controlName: string): boolean | undefined {
     const control = this.supportForm.get(controlName);
     return control?.invalid && (control?.touched || control?.pristine);
   }
 
+  //Comprueba si no es administrador, entonces modifica el evento de deshabilitado o habilitado
   private fieldsWithoutAdmin(): void {
     const isAdmin = this.tokenService.isAdmin();
     const isCase11 = this.config.data?.state.id === 11;
@@ -453,6 +473,7 @@ export class SupportFormComponent {
     }
   }
 
+  //Comprueba que se requiere campos según el campo en el que se encuentre el servicio.
   private requiredFieldsByState(state?: number): void {
     switch (state) {
       case 1:
@@ -537,15 +558,18 @@ export class SupportFormComponent {
     }
   }
 
+  //Obtiene si realmente el usuario modifico el formulario de servicios.
   public getChangesToUpdate(): boolean {
     return !this.supportForm.pristine;
   }
 
+  //Obtiene el ultimo usuario del ultimo cambio de estado de servicios.
   private getLastUser(support: ISupport): any {
     const supportHistory = support.serviceHistory;
     return supportHistory[0].user;
   }
 
+  //Campos activos.
   public fieldsActive() {
     this.supportForm.get('bitrixUrl')?.enable();
     this.supportForm.get('startReference')?.enable();

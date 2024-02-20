@@ -1,0 +1,15 @@
+#app {
+  display: grid;
+  grid-template-areas:
+    "topbar"
+    "content";
+  grid-template-rows: 63px 1fr;
+  height: 100vh;
+}
+
+#app nav {
+  grid-area: topbar;
+}
+#app main {
+  grid-area: content;
+}

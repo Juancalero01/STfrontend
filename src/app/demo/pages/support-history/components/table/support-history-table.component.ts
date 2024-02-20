@@ -30,17 +30,16 @@ export class SupportHistoryTableComponent {
 
   public historyForm: FormGroup = this.buildForm();
 
-  public ngOnInit(): void {
+  //Incializador de funcionalidades
+  ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {
       this.reclaim = params.get('s') || '';
     });
-
     if (this.reclaim) {
       this.searchReclaimService(this.reclaim);
       this.showFilters = false;
       this.showSearch = true;
     }
-
     this.historyForm.valueChanges.subscribe({
       next: ({ reclaim, serial }) => {
         const reclaimControl = this.historyForm.get('reclaim');
@@ -74,7 +73,7 @@ export class SupportHistoryTableComponent {
       },
     });
   }
-
+  //Construcción de los campos y validaciones del formulario de busqueda del historial del servicio.
   private buildForm(): FormGroup {
     return this.formBuilder.group({
       reclaim: [
@@ -88,19 +87,7 @@ export class SupportHistoryTableComponent {
     });
   }
 
-  public loadSupports(): void {
-    this.supportService.findAll().subscribe({
-      next: (supports: ISupport[]) => {
-        this.supports = supports;
-      },
-    });
-  }
-
-  public cleanFilters(table: Table, filter: any): void {
-    table.clear();
-    filter.value = '';
-  }
-
+  //Abre el formulario del historial de cambios de estado / notas / fallas / servicio en general
   public openSupportHistoryForm(support?: ISupport): void {
     this.ref = this.dialogService.open(SupportHistoryFormComponent, {
       header: `INFORMACIÓN DEL SERVICIO`,
@@ -116,6 +103,7 @@ export class SupportHistoryTableComponent {
     });
   }
 
+  //Añade un tag segun el estado del servicio.
   public getTagSeverity(stateId: number): string {
     if (stateId === 12) {
       return 'success';
@@ -124,6 +112,7 @@ export class SupportHistoryTableComponent {
     }
   }
 
+  //Buscador del servicio o servicios según número de reclamo o número de serie del producto.
   public searchHistory() {
     const reclaimValue = this.historyForm.get('reclaim')?.value;
     const serialValue = this.historyForm.get('serial')?.value;
@@ -136,6 +125,7 @@ export class SupportHistoryTableComponent {
     this.showCleanFilters = true;
   }
 
+  //Busca por reclamo del servicio
   public searchReclaimService(reclaim: string): void {
     this.supportService.getServiceByReclaim(reclaim).subscribe({
       next: (supports: ISupport[]) => {
@@ -152,6 +142,7 @@ export class SupportHistoryTableComponent {
     });
   }
 
+  //Busca por el número de serie de producto.
   public searchSerialProduct(serial: string): void {
     this.supportService.getServicesByProductSerial(serial).subscribe({
       next: (supports: ISupport[]) => {
@@ -168,10 +159,12 @@ export class SupportHistoryTableComponent {
     });
   }
 
+  //Obtiene si realmente el usuario modifico el formulario de historial del servicio.
   public getChangesToUpdate(): boolean {
     return !this.historyForm.pristine;
   }
 
+  //Elimina filtros del formulario de busqueda del historial del servicio.
   public cleanFormAndSearch() {
     this.historyForm.reset();
     this.messageService.add({

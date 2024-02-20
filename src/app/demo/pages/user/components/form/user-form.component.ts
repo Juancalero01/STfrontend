@@ -28,7 +28,8 @@ export class UserFormComponent {
   public showButtons: boolean = false;
   public roles: IRole[] = [];
 
-  public ngOnInit(): void {
+  //Inicializa las funciones.
+  ngOnInit(): void {
     this.getRoles();
     if (this.config.data) {
       this.loadForm(this.config.data);
@@ -37,6 +38,7 @@ export class UserFormComponent {
     }
   }
 
+  //Obtiene los roles para visualizarlo mediante el seleccionable del formulario.
   private getRoles(): void {
     this.roleService.findAll().subscribe({
       next: (roles: IRole[]) => {
@@ -45,6 +47,7 @@ export class UserFormComponent {
     });
   }
 
+  //Guarda o actualiza la información del usuario.
   public submitForm(): void {
     if (!this.config.data) {
       this.createUser();
@@ -53,6 +56,7 @@ export class UserFormComponent {
     }
   }
 
+  //Construcción de los campos y validaciones del formulario de usuario.
   public buildForm(): FormGroup {
     return this.formBuilder.group({
       username: [
@@ -77,6 +81,7 @@ export class UserFormComponent {
     });
   }
 
+  //Carga el formulario del usuario.
   private loadForm(user: IUser): void {
     this.userForm.patchValue({
       ...user,
@@ -87,6 +92,7 @@ export class UserFormComponent {
       : 'HABILITAR USUARIO';
   }
 
+  //Cierra el formulario.
   public closeForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea cancelar la operación?',
@@ -104,6 +110,7 @@ export class UserFormComponent {
     });
   }
 
+  //Guarda la información del usuario (Modo administrador solamente)
   public createUser(): void {
     this.userForm.patchValue({
       password: this.userForm.get('username')?.value,
@@ -133,6 +140,7 @@ export class UserFormComponent {
     });
   }
 
+  //Actualiza la información del usuario (Modo administrador solamente).
   public updateUser(): void {
     this.userForm.valueChanges;
     this.confirmationService.confirm({
@@ -162,6 +170,7 @@ export class UserFormComponent {
     });
   }
 
+  //Resetea la contraseña del usuario (Modo administrador solamente).
   public resetPassword(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea restaurar la contraseña?',
@@ -191,6 +200,7 @@ export class UserFormComponent {
     });
   }
 
+  //Modifica el estado del usuario (Activo | Inactivo)
   public changeState(): void {
     this.confirmationService.confirm({
       message: `¿Está seguro que desea ${this.buttonStatusLabel
@@ -219,10 +229,12 @@ export class UserFormComponent {
     });
   }
 
+  //Obtiene si realmente el usuario modifico el formulario de usuarios.
   public getChangesToUpdate(): boolean {
     return !this.userForm.pristine;
   }
 
+  //Validaciones del formulario del usuario.
   public validateForm(controlName: string): boolean | undefined {
     return (
       this.userForm.get(controlName)?.invalid &&

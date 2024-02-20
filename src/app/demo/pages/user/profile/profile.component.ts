@@ -22,8 +22,7 @@ export class ProfileComponent {
 
   public profileForm: FormGroup = this.buildForm();
 
-  public ngOnInit(): void {}
-
+  //Construcción de los campos y validaciones del formulario del perfil del usuario.
   private buildForm(): FormGroup {
     return this.formBuilder.group({
       fullname: [
@@ -41,6 +40,7 @@ export class ProfileComponent {
     });
   }
 
+  //Actualiza los campos que debe actualizar definido por requerimiento.
   public updateProfile(): void {
     if (this.profileForm.valid) {
       const { password, newPassword } = this.profileForm.value;

@@ -34,7 +34,6 @@ export class SupportTableComponent {
   public states: ISupportState[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
   public today: Date = new Date();
-
   public priorityColors: any = {
     1: 'bg-red-500 ',
     2: 'bg-orange-500 ',
@@ -42,7 +41,8 @@ export class SupportTableComponent {
     4: 'bg-blue-500 ',
   };
 
-  public ngOnInit(): void {
+  //Inicializador de funciones.
+  ngOnInit(): void {
     this.loadClients();
     this.loadProductTypes();
     this.loadPriorities();
@@ -50,6 +50,7 @@ export class SupportTableComponent {
     this.loadSupports();
   }
 
+  //Carga de servicios para visualizar en la tabla
   public loadSupports(): void {
     this.supportService.findAllActiveServices().subscribe({
       next: (supports: ISupport[]) => {
@@ -58,12 +59,14 @@ export class SupportTableComponent {
     });
   }
 
+  //Carga de clientes para filtros de columna (Clientes) GET
   private loadClients(): void {
     this.clientService.findAll().subscribe({
       next: (clients: IClient[]) => (this.clients = clients),
     });
   }
 
+  //Carga de tipos de producto para filtros de columna (Tipos de producto) GET
   private loadProductTypes(): void {
     this.productTypeService.findAll().subscribe({
       next: (productTypes: IProductType[]) =>
@@ -71,18 +74,25 @@ export class SupportTableComponent {
     });
   }
 
+  //Carga de prioridades para filtros de columna (Prioridades) GET
   private loadPriorities(): void {
     this.priorityService.findAll().subscribe({
       next: (priorities: ISupportPriority[]) => (this.priorities = priorities),
     });
   }
 
+  //Carga de estados para filtros de columna (Estados) GET
   private loadStates(): void {
     this.stateService.findAll().subscribe({
-      next: (states: ISupportState[]) => (this.states = states),
+      next: (states: ISupportState[]) => {
+        this.states = states.filter(
+          (state) => state.id !== 12 && state.id !== 13
+        );
+      },
     });
   }
 
+  //Abre el formulario para registrar o actualizar el servicio
   public openSupportForm(support?: ISupport) {
     this.ref = this.dialogService.open(SupportFormComponent, {
       header: support
@@ -105,11 +115,13 @@ export class SupportTableComponent {
     });
   }
 
+  //Elimina los filtros (Tabla(Paginación, Filtros de columna) Buscador)
   public cleanFilters(table: Table, filter: any) {
     table.clear();
     filter.value = '';
   }
 
+  //Añade un tag "NUEVO" para identificar los servicios recientes (Demora 1 dia en desaparecer)
   public getEntryNewTag(dateEntry: Date): boolean {
     const todayWithoutTime = new Date();
     todayWithoutTime.setHours(0, 0, 0, 0);
@@ -119,6 +131,7 @@ export class SupportTableComponent {
     );
   }
 
+  //Añade color segun el porcentaje de los dias de las prioridades.
   public calculateBackgroundColor(support: ISupport): string {
     const daysOfPriority: number = support.priority.days;
     const registrationDate: Date = new Date(support.dateEntry);

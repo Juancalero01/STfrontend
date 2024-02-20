@@ -41,7 +41,8 @@ export class SupportFormHistoryComponent {
   public showHours: boolean = false;
   public testLastHistory: ISupportHistory = {} as ISupportHistory;
 
-  public ngOnInit(): void {
+  //Inicializador de funciones.
+  ngOnInit(): void {
     this.setDefaultFormData();
     this.findLastDateEntry();
     this.loadStates();
@@ -49,6 +50,7 @@ export class SupportFormHistoryComponent {
     this.loadNotes();
   }
 
+  //Carga de datos para el formulario principal de cambios de estado
   private loadForm(data: ISupport): void {
     this.supportHistoryForm.patchValue({
       stateCurrent: data.state.id,
@@ -57,6 +59,7 @@ export class SupportFormHistoryComponent {
     });
   }
 
+  //Carga de notas para visualizar en el formulario de notas
   private loadNotes(): void {
     const serviceId = this.config.data.id;
     this.supportHistoryService.findLastHistory(serviceId).subscribe({
@@ -74,6 +77,7 @@ export class SupportFormHistoryComponent {
     });
   }
 
+  //Configuración segun en que estado se encuentre el formulario mostrara o no las selecciones siguientes.
   private loadStates(): void {
     this.supportStateService.findAll().subscribe({
       next: (states: ISupportState[]) => {
@@ -141,10 +145,12 @@ export class SupportFormHistoryComponent {
     });
   }
 
+  //Obtiene los datos importantes para añadirlos al formulario principal de cambios de estado, esto se hace de forma oculta (El usuario no lo debe cargar)
   private setDefaultFormData(): void {
     this.supportHistoryForm.get('dateEntry')?.setValue(this.today);
   }
 
+  //Construcción de los campos y validaciones del formulario principal de cambios de estado.
   private buildForm(): FormGroup {
     return this.formBuilder.group({
       dateEntry: [null, [Validators.required]],
@@ -157,6 +163,7 @@ export class SupportFormHistoryComponent {
     });
   }
 
+  //Construcción de los campos y validaciones del formulario de notas.
   private buildFormNote(): FormGroup {
     return this.formBuilder.group({
       dateEntry: [null],
@@ -167,6 +174,7 @@ export class SupportFormHistoryComponent {
     });
   }
 
+  //Cierra el formulario.
   public exitForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea salir del formulario?',
@@ -182,6 +190,7 @@ export class SupportFormHistoryComponent {
     });
   }
 
+  //Validaciones del formulario principal de cambio de estado.
   public validateForm(controlName: string): boolean | undefined {
     return (
       this.supportHistoryForm.get(controlName)?.invalid &&
@@ -189,6 +198,7 @@ export class SupportFormHistoryComponent {
     );
   }
 
+  //Validaciones del formulario de las notas.
   public validateFormNote(controlName: string): boolean | undefined {
     return (
       this.supportHistoryNoteForm.get(controlName)?.invalid &&
@@ -196,6 +206,7 @@ export class SupportFormHistoryComponent {
     );
   }
 
+  //Obtiene la fecha de entrada del servicio y va comparando, para no ir para atras en el tiempo. (Funciona en el calendario)
   private findLastDateEntry(): void {
     if (
       this.config.data.state.id !== 1 &&
@@ -212,6 +223,7 @@ export class SupportFormHistoryComponent {
     }
   }
 
+  //Chequea el historial de los cambios de estado.
   private getCheckHistoryState(stateIdToCheck: number): boolean {
     if (this.config.data.serviceHistory) {
       return this.config.data.serviceHistory.some(
@@ -221,6 +233,7 @@ export class SupportFormHistoryComponent {
     return false;
   }
 
+  //Guarda la información de las notas segun el estado que este.
   public saveFormNote() {
     this.setDataNoteDefault();
     this.confirmationService.confirm({
@@ -305,6 +318,9 @@ export class SupportFormHistoryComponent {
     });
   }
 
+  //Guarda la información del cambio de estado.
+  //Actualiza el estado del servicio.
+  //Actualiza algunos campos del servicio.
   public saveForm(): void {
     const service = this.config.data;
     const { repairedTime, ...body } = this.supportHistoryForm.getRawValue();
@@ -402,6 +418,7 @@ export class SupportFormHistoryComponent {
     });
   }
 
+  //Obtiene los datos importantes para añadir una nota, esto se hace de forma oculta (El usuario no lo debe cargar)
   private setDataNoteDefault() {
     this.supportHistoryNoteForm.patchValue({
       dateEntry: this.today,
@@ -410,9 +427,9 @@ export class SupportFormHistoryComponent {
     });
   }
 
+  //Obtiene la información del formulario, excluye el tiempo de reparación ya que en la mayoria de los estados no lo requiere (1 solo estado lo requeire).
   private getDataSupportHistory() {
     const { repairedTime, ...dataSend } = this.supportHistoryForm.getRawValue();
-
     return dataSend;
   }
 }

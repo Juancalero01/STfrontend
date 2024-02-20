@@ -12,17 +12,20 @@ export class SupportHistoryFormComponent {
   public supports: ISupport = {} as ISupport;
   public supportHistories: ISupportHistory[] = [];
 
-  public ngOnInit(): void {
+  //Inicializador de funciones.
+  ngOnInit(): void {
     if (this.config.data) {
       this.loadTable();
     }
   }
 
+  //Carga la tabla con sus respectivos datos.
   private loadTable(): void {
     this.supports = this.config.data;
     this.supportHistories = this.config.data.serviceHistory;
   }
 
+  //Añade un tag segun el estado del servicio.
   public getTagSeverity(stateId: number): string {
     if (stateId === 12) {
       return 'success';

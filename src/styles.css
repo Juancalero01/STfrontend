@@ -15,7 +15,7 @@ body {
   border: none;
 }
 
-.p-datatable.p-datatable-sm .p-datatable-header {
+.p-datatable .p-datatable-sm .p-datatable-header {
   padding: 2rem 0;
 }
 
