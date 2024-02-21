@@ -51,7 +51,7 @@ export class AuthFormLoginComponent {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Usuario no activo',
+              detail: 'Cuenta de usuario deshabilitada',
             });
           } else if (e.status === 401) {
             this.messageService.add({
