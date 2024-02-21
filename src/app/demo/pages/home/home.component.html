@@ -1,6 +1,6 @@
 <section class="grid">
   <div class="col-12 lg:col-6 xl:col-3">
-    <div class="p-card mb-0 p-4">
+    <div class="p-card mb-0 p-4 transition-duration-400 hover:bg-blue-50">
       <div class="flex justify-content-between mb-3">
         <div>
           <span class="block text-500 font-medium mb-3"
@@ -18,7 +18,7 @@
     </div>
   </div>
   <div class="col-12 lg:col-6 xl:col-3">
-    <div class="p-card mb-0 p-4">
+    <div class="p-card mb-0 p-4 transition-duration-400 hover:bg-yellow-50">
       <div class="flex justify-content-between mb-3">
         <div>
           <span class="block text-500 font-medium mb-3">SERVICIOS ACTIVOS</span>
@@ -34,7 +34,7 @@
     </div>
   </div>
   <div class="col-12 lg:col-6 xl:col-3">
-    <div class="p-card mb-0 p-4">
+    <div class="p-card mb-0 p-4 transition-duration-400 hover:bg-green-50">
       <div class="flex justify-content-between mb-3">
         <div>
           <span class="block text-500 font-medium mb-3"
@@ -52,7 +52,7 @@
     </div>
   </div>
   <div class="col-12 lg:col-6 xl:col-3">
-    <div class="p-card mb-0 p-4">
+    <div class="p-card mb-0 p-4 transition-duration-400 hover:bg-red-50">
       <div class="flex justify-content-between mb-3">
         <div>
           <span class="block text-500 font-medium mb-3"
@@ -76,7 +76,10 @@
       <div>
         <span class="block text-500 font-medium mb-3">SERVICIOS ACTIVOS</span>
       </div>
-      <p-table [value]="supports" styleClass="p-datatable-sm">
+      <p-table
+        [value]="supports"
+        styleClass="p-datatable-striped p-datatable-sm"
+      >
         <ng-template pTemplate="header">
           <tr class="text-sm h-3rem">
             <th>NÚMERO DE RECLAMO</th>

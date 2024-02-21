@@ -141,13 +141,13 @@ export class SupportTableComponent {
     );
     const percentage = (daysElapsed * 100) / daysOfPriority;
     if (percentage <= 25) {
-      return 'bg-green-100';
+      return 'bg-green-100 hover:bg-green-200';
     } else if (percentage <= 50) {
-      return 'bg-yellow-100';
+      return 'bg-yellow-100 hover:bg-yellow-200';
     } else if (percentage <= 75) {
-      return 'bg-orange-100';
+      return 'bg-orange-100 hover:bg-orange-200';
     } else {
-      return 'bg-red-100';
+      return 'bg-red-100 hover:bg-red-200';
     }
   }
 }
