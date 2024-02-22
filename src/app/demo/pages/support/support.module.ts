@@ -7,6 +7,7 @@ import { SupportTableComponent } from './components/table/support-table.componen
 import { SharedModule } from 'src/app/shared/shared.module';
 import { SupportFormComponent } from './components/form/support-form.component';
 import { SupportFormHistoryComponent } from './components/form-history/support-form-history.component';
+import { SupportManyComponent } from './support-many/support-many.component';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { SupportFormHistoryComponent } from './components/form-history/support-f
     SupportTableComponent,
     SupportFormComponent,
     SupportFormHistoryComponent,
+    SupportManyComponent,
   ],
   imports: [CommonModule, SupportRoutingModule, SharedModule],
 })

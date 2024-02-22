@@ -1,0 +1,101 @@
+<section class="grid">
+  <section class="col-12 md:col-12 lg:col-12 xl:col-3">
+    <form class="flex flex-wrap gap-2" [formGroup]="supportManyForm">
+      <div class="w-full mb-2">
+        <span class="font-medium text-2xl"> NUEVOS INGRESOS </span>
+      </div>
+      <div class="flex flex-column w-full">
+        <label>BUSCADOR</label>
+        <div class="w-full flex md:flex-row flex-column gap-2">
+          <input
+            formControlName="search"
+            type="text"
+            pInputText
+            class="w-full"
+            maxlength="10"
+            minlength="1"
+            placeholder="Ingresar número de serie"
+          />
+          <p-button label="BUSCAR" styleClass=" p-button-info w-full" />
+        </div>
+        <small class="p-error"> Campo requerido* </small>
+      </div>
+      <div class="flex flex-column w-full">
+        <label>FECHA DE REGISTRO</label>
+        <p-calendar
+          formControlName="dateEntry"
+          dateFormat="dd-mm-yy"
+          styleClass="w-full"
+          appendTo="body"
+          [showButtonBar]="true"
+          [showClear]="true"
+          placeholder="Seleccionar fecha de registro del servicio"
+        />
+        <small class="p-error"> Campo requerido* </small>
+      </div>
+      <div class="flex flex-column w-full">
+        <label>PRIORIDAD</label>
+        <p-dropdown
+          [options]="priorities"
+          formControlName="priority"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="Seleccionar prioridad del servicio"
+          styleClass="w-full"
+          [showClear]="true"
+        />
+        <small class="p-error"> Campo requerido* </small>
+      </div>
+      <div class="flex flex-column w-full">
+        <label>REMITO ENTRANTE</label>
+        <input
+          formControlName="startReference"
+          type="text"
+          pInputText
+          class="w-full"
+          placeholder="Ingresar número de remito de producto entrante"
+          [maxLength]="255"
+        />
+        <small class="p-error"> Campo requerido* </small>
+      </div>
+      <div class="flex flex-column w-full">
+        <label>FAJA DE SEGURIDAD</label>
+        <p-dropdown
+          [options]="booleanDropdown"
+          formControlName="securityStrap"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full"
+          placeholder="Seleccionar aprobación de faja de seguridad"
+          [showClear]="true"
+        />
+        <small class="p-error"> Campo requerido* </small>
+      </div>
+      <div class="w-full">
+        <p-button
+          label="GUARDAR INGRESO"
+          styleClass="w-full p-button-success"
+          icon="pi pi-save"
+          (onClick)="checkData()"
+        />
+      </div>
+    </form>
+  </section>
+  <section class="col-12 lg:col-12 xl:col-9 px-4">
+    <div class="p-message p-message-info col-12 flex gap-1 p-4">
+      <i class="pi pi-info-circle text-xl"></i>
+      <p class="ml-2">
+        Por favor, evita agregar soportes individualmente antes de agregarlos en
+        lotes para un proceso más eficiente y correcto.
+      </p>
+    </div>
+    <div class="p-message p-message-info col-12 flex gap-1 p-4">
+      <i class="pi pi-info-circle text-xl"></i>
+      <p class="ml-2">
+        Por favor, para un proceso más eficiente y preciso, intenta agrupar los
+        remitos de llegada del mismo cliente en lotes en lugar de agregarlos
+        individualmente.
+      </p>
+    </div>
+  </section>
+</section>

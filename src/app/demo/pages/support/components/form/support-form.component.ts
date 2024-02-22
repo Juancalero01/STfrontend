@@ -1,4 +1,4 @@
-import { Component, OnChanges } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import {
@@ -477,6 +477,8 @@ export class SupportFormComponent {
   private requiredFieldsByState(state?: number): void {
     switch (state) {
       case 1:
+        this.supportForm.get('securityStrap')?.enable();
+        break;
       case 2:
       case 4:
       case 9:
@@ -524,10 +526,6 @@ export class SupportFormComponent {
         this.supportForm.get('endReference')?.updateValueAndValidity();
         break;
       case 11:
-        // if (!this.tokenService.isAdmin()) {
-        //   this.supportForm.disable();
-        //   return;
-        // }
         this.supportForm.disable();
         this.supportForm.get('failureTypes')?.enable();
         this.supportForm.get('quoteNumber')?.enable();
