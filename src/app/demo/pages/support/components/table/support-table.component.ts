@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ISupport } from 'src/app/demo/api/interfaces/support.interface';
 import { SupportFormComponent } from '../form/support-form.component';
@@ -12,6 +12,7 @@ import { ClientService } from 'src/app/demo/api/services/client.service';
 import { ProductTypeService } from 'src/app/demo/api/services/product-type.service';
 import { SupportPriorityService } from 'src/app/demo/api/services/support-priority.service';
 import { SupportStateService } from 'src/app/demo/api/services/support-state.service';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-support-table',
@@ -24,7 +25,8 @@ export class SupportTableComponent {
     private readonly productTypeService: ProductTypeService,
     private readonly priorityService: SupportPriorityService,
     private readonly stateService: SupportStateService,
-    private readonly dialogService: DialogService
+    private readonly dialogService: DialogService,
+    @Inject(DOCUMENT) private document: Document
   ) {}
 
   public supports: ISupport[] = [];
@@ -149,5 +151,10 @@ export class SupportTableComponent {
     } else {
       return 'bg-red-100 hover:bg-red-200';
     }
+  }
+
+  //Crea un vinculo para ir a verificar ese número de reclamo.
+  getSupportManyUrl(): string {
+    return `${this.document.baseURI}cnet/support/many`;
   }
 }
