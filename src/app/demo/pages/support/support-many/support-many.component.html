@@ -2,7 +2,7 @@
   <section class="col-12 md:col-12 lg:col-12 xl:col-3">
     <form class="flex flex-wrap gap-2" [formGroup]="supportManyForm">
       <div class="w-full mb-2">
-        <span class="font-medium text-2xl"> NUEVOS INGRESOS </span>
+        <span class="font-medium text-2xl"> INGRESOS </span>
       </div>
       <div class="flex flex-column w-full">
         <label>BUSCADOR</label>
@@ -16,7 +16,12 @@
             minlength="1"
             placeholder="Ingresar número de serie"
           />
-          <p-button label="BUSCAR" styleClass=" p-button-info w-full" />
+          <p-button
+            label="BUSCAR"
+            styleClass=" p-button-info w-full"
+            (onClick)="searchProduct()"
+            [disabled]="supportManyForm.get('search')?.invalid"
+          />
         </div>
         <small class="p-error"> Campo requerido* </small>
       </div>
@@ -77,25 +82,41 @@
           styleClass="w-full p-button-success"
           icon="pi pi-save"
           (onClick)="checkData()"
+          [disabled]="supportManyForm.invalid"
         />
       </div>
     </form>
   </section>
   <section class="col-12 lg:col-12 xl:col-9 px-4">
-    <div class="p-message p-message-info col-12 flex gap-1 p-4">
-      <i class="pi pi-info-circle text-xl"></i>
-      <p class="ml-2">
-        Por favor, evita agregar soportes individualmente antes de agregarlos en
-        lotes para un proceso más eficiente y correcto.
-      </p>
-    </div>
-    <div class="p-message p-message-info col-12 flex gap-1 p-4">
-      <i class="pi pi-info-circle text-xl"></i>
-      <p class="ml-2">
-        Por favor, para un proceso más eficiente y preciso, intenta agrupar los
-        remitos de llegada del mismo cliente en lotes en lugar de agregarlos
-        individualmente.
-      </p>
-    </div>
+    <p-table [value]="supports" styleClass="p-datatable-striped p-datatable-sm">
+      <ng-template pTemplate="header">
+        <tr class="text-sm h-3rem">
+          <th>NÚMERO DE RECLAMO</th>
+          <th>NÚMERO DE SERIE</th>
+          <th>TIPO DE PRODUCTO</th>
+          <th>CLIENTE</th>
+          <th class="w-1">ACCIONES</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-support>
+        <tr class="text-sm">
+          <td>
+            <span class="font-semibold">{{ support.reclaim }}</span>
+          </td>
+          <td>{{ support.product.serial }}</td>
+          <td>{{ support.product.productType.name }}</td>
+          <td>{{ support.product.client.taxpayerName }}</td>
+          <td>
+            <p-button
+              icon="pi pi-trash"
+              styleClass="p-button-text p-button-secondary"
+              (click)="deleteItem(support)"
+            />
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
   </section>
 </section>
+<p-confirmDialog />
+<p-toast position="bottom-right" />
