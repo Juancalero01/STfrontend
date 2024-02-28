@@ -1,29 +1,11 @@
 <section class="grid">
   <section class="col-12 md:col-12 lg:col-12 xl:col-3">
-    <form class="flex flex-wrap gap-2" [formGroup]="supportManyForm">
-      <div class="w-full mb-2">
-        <span class="font-medium text-2xl"> INGRESOS </span>
-      </div>
-      <div class="flex flex-column w-full">
-        <label>BUSCADOR</label>
-        <div class="w-full flex md:flex-row flex-column gap-2">
-          <input
-            formControlName="search"
-            type="text"
-            pInputText
-            class="w-full"
-            maxlength="10"
-            minlength="1"
-            placeholder="Ingresar número de serie"
-          />
-          <p-button
-            label="BUSCAR"
-            styleClass=" p-button-info w-full"
-            (onClick)="searchProduct()"
-            [disabled]="supportManyForm.get('search')?.invalid"
-          />
-        </div>
-        <small class="p-error"> Campo requerido* </small>
+    <form class="flex flex-wrap gap-3" [formGroup]="supportManyForm">
+      <div class="flex flex-column gap-1">
+        <h2 class="font-semibold">INGRESOS MASIVOS</h2>
+        <p class="text-gray-600 font-medium">
+          Panel para administrar lotes nuevos de ingresos a servicio técnico
+        </p>
       </div>
       <div class="flex flex-column w-full">
         <label>FECHA DE REGISTRO</label>
@@ -32,9 +14,23 @@
           dateFormat="dd-mm-yy"
           styleClass="w-full"
           appendTo="body"
+          [minDate]="minDate"
+          [maxDate]="maxDate"
           [showButtonBar]="true"
           [showClear]="true"
-          placeholder="Seleccionar fecha de registro del servicio"
+          placeholder="Seleccionar fecha de registro"
+        />
+        <small class="p-error"> Campo requerido* </small>
+      </div>
+      <div class="flex flex-column w-full">
+        <label>REMITO DE ENTRADA</label>
+        <input
+          formControlName="startReference"
+          type="text"
+          pInputText
+          class="w-full"
+          placeholder="Ingresar número de remito"
+          [maxLength]="255"
         />
         <small class="p-error"> Campo requerido* </small>
       </div>
@@ -52,15 +48,27 @@
         <small class="p-error"> Campo requerido* </small>
       </div>
       <div class="flex flex-column w-full">
-        <label>REMITO ENTRANTE</label>
+        <label>NÚMERO DE SERIE</label>
         <input
-          formControlName="startReference"
+          formControlName="search"
           type="text"
           pInputText
           class="w-full"
-          placeholder="Ingresar número de remito de producto entrante"
-          [maxLength]="255"
+          maxlength="10"
+          minlength="1"
+          placeholder="Ingresar número de serie"
+          (keyup.enter)="onKeyPress($event)"
         />
+
+        <!-- <div class="w-full flex md:flex-row flex-column gap-2">
+
+          <p-button
+            label="BUSCAR"      
+            styleClass=" p-button-info w-full"
+            (onClick)="searchProduct()"
+            [disabled]="supportManyForm.get('search')?.invalid"
+          />
+        </div> -->
         <small class="p-error"> Campo requerido* </small>
       </div>
       <div class="flex flex-column w-full">
@@ -92,6 +100,7 @@
       <ng-template pTemplate="header">
         <tr class="text-sm h-3rem">
           <th>NÚMERO DE RECLAMO</th>
+          <th>FAJA DE SEGURIDAD</th>
           <th>NÚMERO DE SERIE</th>
           <th>TIPO DE PRODUCTO</th>
           <th>CLIENTE</th>
@@ -103,6 +112,7 @@
           <td>
             <span class="font-semibold">{{ support.reclaim }}</span>
           </td>
+          <td>{{ support.securityStrap | bool }}</td>
           <td>{{ support.product.serial }}</td>
           <td>{{ support.product.productType.name }}</td>
           <td>{{ support.product.client.taxpayerName }}</td>
@@ -112,6 +122,44 @@
               styleClass="p-button-text p-button-secondary"
               (click)="deleteItem(support)"
             />
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="caption">
+        <div class="flex justify-content-between text-sm">
+          <div class="flex flex-column gap-2">
+            <span>
+              FECHA DE ENTRADA:
+              {{
+                supportManyForm.get("dateEntry")?.value
+                  | date : "dd/MM/yyyy"
+                  | null
+              }}
+            </span>
+            <span>
+              REMITO DE ENTRADA:
+              {{ supportManyForm.get("startReference")?.value | null }}
+            </span>
+          </div>
+          <p-button
+            label="REGISTRAR SERVICIOS"
+            styleClass=" p-button-success full"
+            [disabled]="this.supports.length <= 0"
+          />
+        </div>
+      </ng-template>
+      <ng-template pTemplate="summary">
+        <div class="flex justify-content-end align-items-center text-sm h-3rem">
+          <span>SERVICIOS CARGADOS: {{ supports ? supports.length : 0 }}</span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr class="text-sm w-full">
+          <td>
+            <div class="flex gap-2 align-items-center">
+              <i class="pi pi-info-circle"></i>
+              <span class="font-medium">No existen registros de servicios</span>
+            </div>
           </td>
         </tr>
       </ng-template>

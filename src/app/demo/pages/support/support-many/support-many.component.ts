@@ -33,21 +33,24 @@ export class SupportManyComponent {
   ];
   public supportManyForm: FormGroup = this.buildForm();
   public supports: {
+    reclaim: string;
+    product: IProduct;
     dateEntry: Date;
     startReference: string;
     securityStrap: boolean;
-    reclaim: string;
-    state: ISupportState;
     priority: ISupportPriority;
-    product: IProduct;
+    state: ISupportState;
   }[] = [];
-  private lastReclaimNumber: string = '';
+  public today: Date = new Date();
+  public minDate: Date = new Date(
+    new Date().setMonth(new Date().getMonth() - 1)
+  );
+  public maxDate: Date = this.today;
 
   ngOnInit(): void {
     this.loadStates();
     this.loadPriorities();
-    this.disableFields();
-    this.getLastReclaimNumber();
+    this.supportManyForm.get('dateEntry')?.setValue(this.today);
   }
 
   private buildForm(): FormGroup {
@@ -57,45 +60,36 @@ export class SupportManyComponent {
         [Validators.required, Validators.pattern(/^\d{1,4}(-\d{4,5})?$/)],
       ],
       dateEntry: [null, [Validators.required]],
-      startReference: [null, [Validators.maxLength(255)]],
+      startReference: [null, [Validators.required]],
       securityStrap: [null, [Validators.required]],
-      reclaim: [null, [Validators.required]],
+      reclaim: [null],
       state: [null, [Validators.required]],
       priority: [null, [Validators.required]],
       product: [null, [Validators.required]],
     });
   }
 
-  private loadStates(): void {
-    this.supportStateService.findAll().subscribe({
-      next: (states: ISupportState[]) => {
-        this.supportManyForm.patchValue({
-          state: states[0],
-        });
-      },
-    });
-  }
-
-  private loadPriorities(): void {
-    this.supportPriorityService.findAll().subscribe({
-      next: (priorities: ISupportPriority[]) => {
-        this.priorities = priorities;
-      },
-    });
-  }
-
+  //TODO: Antes de subirlo se requiere cambiar el nombre de la función ya que no expecifica realmente para que sirve, No es un chequeo de data es para guardar la data en el array.
   public checkData(): void {
-    const { search, ...data } = this.supportManyForm.value;
-    this.supports.push(data);
+    const support = this.getSupportData();
+    if (this.supports.length > 0) {
+      const lastReclaimNumber = this.getLastReclaimSupport();
+      support.reclaim = `CNET-${support.dateEntry
+        .toISOString()
+        .split('T')[0]
+        .replace(/-/g, '')}-${lastReclaimNumber + 1}`;
+    }
+    this.supports.push(support);
+    this.resetFields();
+    if (this.supports.length > 0) {
+      this.disableFields();
+    }
+  }
 
-    console.log(this.supports);
-    this.supportManyForm.reset({
-      dateEntry: this.supportManyForm.get('dateEntry')?.value,
-      state: this.supportManyForm.get('state')?.value,
-      priority: this.supportManyForm.get('priority')?.value,
-      startReference: this.supportManyForm.get('startReference')?.value,
-    });
-    this.someFields();
+  private getLastReclaimSupport(): number {
+    const lastSupport = this.supports[this.supports.length - 1];
+    const lastReclaimNumber = Number(lastSupport.reclaim.split('-').pop());
+    return lastReclaimNumber;
   }
 
   public searchProduct() {
@@ -123,7 +117,6 @@ export class SupportManyComponent {
               });
               return;
             }
-
             const productExists = this.supports.some(
               (support) => support.product.id === product.id
             );
@@ -139,7 +132,7 @@ export class SupportManyComponent {
               product: product,
             });
             if (this.supports.length === 0) {
-              this.enableFields();
+              this.getLastReclaimNumber();
             }
           },
         });
@@ -147,6 +140,7 @@ export class SupportManyComponent {
     });
   }
 
+  //Elimina el elemento, hay que ver si realmente es necesario.
   public deleteItem(support: {
     dateEntry: Date;
     startReference: string;
@@ -170,16 +164,30 @@ export class SupportManyComponent {
       accept: () => {
         if (index !== -1) {
           this.supports.splice(index, 1);
+          for (let i = index; i < this.supports.length; i++) {
+            const currentItem = this.supports[i];
+            const parts = currentItem.reclaim.split('-');
+            const lastPart = parts.pop();
+            if (lastPart) {
+              const newLastPart = parseInt(lastPart) - 1;
+              parts.push(newLastPart.toString());
+              currentItem.reclaim = parts.join('-');
+            }
+          }
           this.messageService.add({
             severity: 'success',
             summary: 'Operación exitosa',
-            detail: 'El registro se elimino correctamente',
+            detail: 'El registro se eliminó correctamente',
           });
+          if (this.supports.length === 0) {
+            this.enableFields();
+          }
         }
       },
     });
   }
 
+  //Obtiene el ultimo numero de reclamo y lo asigna al formulario por defecto, seria el primer elemento en el que se asigna
   private getLastReclaimNumber(): void {
     const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
     this.supportService.findLastReclaim().subscribe({
@@ -190,43 +198,74 @@ export class SupportManyComponent {
         this.supportManyForm
           .get('reclaim')
           ?.setValue(`CNET-${today}-${lastReclaimNumber}`);
-
-        this.lastReclaimNumber = `CNET-${today}-${lastReclaimNumber}`;
       },
     });
+  }
+
+  //Carga los estados y establece por defecto el primer elemento del array
+  private loadStates(): void {
+    this.supportStateService.findAll().subscribe({
+      next: (states: ISupportState[]) => {
+        this.supportManyForm.patchValue({
+          state: states[0],
+        });
+      },
+    });
+  }
+  //Carga las prioridades para el dropdown
+  private loadPriorities(): void {
+    this.supportPriorityService.findAll().subscribe({
+      next: (priorities: ISupportPriority[]) => {
+        this.priorities = priorities;
+      },
+    });
+  }
+  private resetFields(): void {
+    this.supportManyForm.reset({
+      dateEntry: this.supportManyForm.get('dateEntry')?.value,
+      state: this.supportManyForm.get('state')?.value,
+      priority: this.supportManyForm.get('priority')?.value,
+      startReference: this.supportManyForm.get('startReference')?.value,
+      securityStrap: this.supportManyForm.get('securityStrap')?.value,
+    });
+  }
+
+  private getSupportData(): {
+    reclaim: string;
+    product: IProduct;
+    dateEntry: Date;
+    startReference: string;
+    securityStrap: boolean;
+    priority: ISupportPriority;
+    state: ISupportState;
+  } {
+    const { search, ...support } = this.supportManyForm.getRawValue();
+    return support;
+  }
+
+  private disableFields() {
+    this.supportManyForm.get('dateEntry')?.disable();
+    this.supportManyForm.get('priority')?.disable();
+    this.supportManyForm.get('startReference')?.disable();
   }
 
   private enableFields() {
     this.supportManyForm.get('dateEntry')?.enable();
     this.supportManyForm.get('priority')?.enable();
     this.supportManyForm.get('startReference')?.enable();
-    this.supportManyForm.get('securityStrap')?.enable();
   }
 
-  private disableFields() {
-    this.supportManyForm.get('search')?.enable();
-    this.supportManyForm.get('dateEntry')?.disable();
-    this.supportManyForm.get('priority')?.disable();
-    this.supportManyForm.get('startReference')?.disable();
-    this.supportManyForm.get('securityStrap')?.disable();
-  }
-
-  private someFields() {
-    this.supportManyForm.get('dateEntry')?.clearValidators();
-    this.supportManyForm.get('dateEntry')?.updateValueAndValidity();
-    this.supportManyForm.get('startReference')?.clearValidators();
-    this.supportManyForm.get('startReference')?.updateValueAndValidity();
-
-    this.supportManyForm.get('dateEntry')?.disable();
-    this.supportManyForm.get('startReference')?.disable();
-    this.supportManyForm.get('search')?.enable();
-    this.supportManyForm.get('priority')?.enable();
-    this.supportManyForm.get('securityStrap')?.enable();
+  onKeyPress(event: Event) {
+    const allowedCharacters = /^\d{0,4}(-\d{0,5})?$/;
+    const inputValue = (event.target as HTMLInputElement).value;
+    if (allowedCharacters.test(inputValue)) {
+      this.searchProduct();
+    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Info',
+        detail: 'Número de serie invalido',
+      });
+    }
   }
 }
-
-//TODO: REAJUSTE DE PATANTALLA COMO MOSTRAR LOS DATOS POSIBLEMENTE SE MUESTRE CONE ESTADO Y PRIORIDAD AMBOS, VERIFICAR SI AGREGAR O NO EL BOTON DE ELIMINAR EL REGISTRO POR SI SE EQUIVOCA.
-//TODO: REAJUSTAR EL CICLO DEL FORMULARIO EN EL PRIMER PASO SE DEBERIA HACER UNAS FUNCIONALIDADES Y EN OTROS PASOS NO, TAMBIEN TRATAR DE VER SI CUANDO SE ELIMINA QUE PASA CON EL NÚMERO DE RECLAMO
-//TODO: POSIBLEMENTE SE REGENERE TODO EL RECLAMO A UNA ETAPA PRINCIPAL SIEMPRE ASI LLEVANDO UN ORDEN O DEJARLO COMO ESTA, AUTOINCREMENTABLE Y SI SE ELIMINA ESE NÚMERO DE RECLAMO YA NO EXISTIRA.
-//TODO: LA POSIBLE SOLUCIÓN ES QUE SE REGENERE TODO DESDE EL ULTIMO Y AÑADIRLE +1 A CADA UNO Y ASI HASTA QUE NO HAYA SERVICIOS PARA GUARDAR
-//TODO: IMPLEMENTAR EL BOTON PARA GUARDAR DIRECTAMENTE A LA APP EN UN ARRAY, VERIFICAR SI LA API LE LLEGA LOS OBJETOS QUE SE ENVIAN POR AQUI, PROBAR CON MAS DE 5 SERVICIOS.
