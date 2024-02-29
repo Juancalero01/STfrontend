@@ -245,7 +245,7 @@ export class SupportManyComponent {
     this.supportManyForm.get('startReference')?.enable();
   }
 
-  //Función para cargar el lector de codigo de barras de los productos, genera un enter automaticamente y envia la peticiíon.
+  //Función para cargar el lector de codigo de barras de los productos, genera un enter automaticamente y envia la peticiíon
   public onKeyPressEnter(event: Event) {
     const allowedCharacters = /^\d{0,4}(-\d{0,5})?$/;
     const inputValue = (event.target as HTMLInputElement).value;
@@ -260,6 +260,7 @@ export class SupportManyComponent {
     }
   }
 
+  //Limpiar los valores del inputtext del número de serie
   public clearValue() {
     const inputElement = this.search.nativeElement as HTMLInputElement;
     if (inputElement.value) {
@@ -269,7 +270,10 @@ export class SupportManyComponent {
   }
 
   //Guarda la información cargada en todos los servicios. (nuevos)
+  //TODO: Falta esta funcionalidad probarla.
   public createSupports(): void {
+    console.log('En fase de prueba');
+    return;
     if (this.supportManyForm.valid) {
       this.confirmationService.confirm({
         message: '¿Está seguro que desea crear los registros?',
