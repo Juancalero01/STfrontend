@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { Observable } from 'rxjs';
-import { ISupport } from '../interfaces/support.interface';
-import { ISupportState } from '../interfaces/support-state.interface';
-
+import { ISupport, ISupportMany } from '../interfaces/support.interface';
 @Injectable({
   providedIn: 'root',
 })
@@ -70,5 +68,9 @@ export class SupportService {
 
   public getServiceByReclaim(reclaim: string): Observable<ISupport[]> {
     return this.httpClient.get<ISupport[]>(`${this.URL}/sr/${reclaim}`);
+  }
+
+  public createMany(supports: ISupportMany[]): Observable<ISupportMany[]> {
+    return this.httpClient.post<ISupportMany[]>(this.URL, supports);
   }
 }

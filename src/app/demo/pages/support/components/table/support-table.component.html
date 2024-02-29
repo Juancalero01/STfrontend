@@ -11,7 +11,7 @@
         <p-button
           label="NUEVOS INGRESOS"
           icon="pi pi-plus"
-          styleClass="p-button-warning p-button-sm h-3rem w-full"
+          styleClass="p-button-primary p-button-sm h-3rem w-full"
         />
       </a>
     </div>
@@ -203,7 +203,15 @@
       <tr class="text-sm" [ngClass]="calculateBackgroundColor(support)">
         <td>
           <div class="flex align-items-center justify-content-between">
-            <span class="font-semibold">{{ support.reclaim }}</span>
+            <span class="font-semibold flex gap-2">
+              {{ support.reclaim }}
+              <ng-container *ngIf="support.warranty === null">
+                <i
+                  class="pi pi-exclamation-circle text-red-500"
+                  pTooltip="Registro incompleto durante carga masiva."
+                ></i>
+              </ng-container>
+            </span>
             <p-tag
               *ngIf="getEntryNewTag(support.dateEntry)"
               severity="success"

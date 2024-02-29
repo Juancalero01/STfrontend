@@ -48,30 +48,6 @@
         <small class="p-error"> Campo requerido* </small>
       </div>
       <div class="flex flex-column w-full">
-        <label>NÚMERO DE SERIE</label>
-        <input
-          formControlName="search"
-          type="text"
-          pInputText
-          class="w-full"
-          maxlength="10"
-          minlength="1"
-          placeholder="Ingresar número de serie"
-          (keyup.enter)="onKeyPress($event)"
-        />
-
-        <!-- <div class="w-full flex md:flex-row flex-column gap-2">
-
-          <p-button
-            label="BUSCAR"      
-            styleClass=" p-button-info w-full"
-            (onClick)="searchProduct()"
-            [disabled]="supportManyForm.get('search')?.invalid"
-          />
-        </div> -->
-        <small class="p-error"> Campo requerido* </small>
-      </div>
-      <div class="flex flex-column w-full">
         <label>FAJA DE SEGURIDAD</label>
         <p-dropdown
           [options]="booleanDropdown"
@@ -84,12 +60,31 @@
         />
         <small class="p-error"> Campo requerido* </small>
       </div>
+      <div class="flex flex-column w-full">
+        <label>NÚMERO DE SERIE</label>
+        <div class="p-input-icon-right">
+          <i class="pi pi-times cursor-pointer" (click)="clearValue()"></i>
+          <input
+            #search
+            formControlName="search"
+            type="text"
+            pInputText
+            class="w-full"
+            maxlength="10"
+            minlength="1"
+            placeholder="Ingresar número de serie"
+            (keydown.enter)="onKeyPressEnter($event)"
+          />
+        </div>
+
+        <small class="p-error"> Campo requerido* </small>
+      </div>
       <div class="w-full">
         <p-button
-          label="GUARDAR INGRESO"
-          styleClass="w-full p-button-success"
+          label="GUARDAR SERVICIO"
+          styleClass="w-full p-button-info"
           icon="pi pi-save"
-          (onClick)="checkData()"
+          (onClick)="saveData()"
           [disabled]="supportManyForm.invalid"
         />
       </div>
@@ -144,6 +139,7 @@
           <p-button
             label="REGISTRAR SERVICIOS"
             styleClass=" p-button-success full"
+            (onClick)="createSupports()"
             [disabled]="this.supports.length <= 0"
           />
         </div>

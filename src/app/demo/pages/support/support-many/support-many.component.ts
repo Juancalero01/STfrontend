@@ -1,10 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { IProduct } from 'src/app/demo/api/interfaces/product.interface';
 import { ISupportPriority } from 'src/app/demo/api/interfaces/support-priority.interface';
 import { ISupportState } from 'src/app/demo/api/interfaces/support-state.interface';
-import { ISupport } from 'src/app/demo/api/interfaces/support.interface';
+import {
+  ISupport,
+  ISupportMany,
+} from 'src/app/demo/api/interfaces/support.interface';
 import { ProductService } from 'src/app/demo/api/services/product.service';
 import { SupportPriorityService } from 'src/app/demo/api/services/support-priority.service';
 import { SupportStateService } from 'src/app/demo/api/services/support-state.service';
@@ -15,6 +18,7 @@ import { SupportService } from 'src/app/demo/api/services/support.service';
   templateUrl: './support-many.component.html',
 })
 export class SupportManyComponent {
+  @ViewChild('search', { static: false }) search!: ElementRef;
   constructor(
     private readonly supportStateService: SupportStateService,
     private readonly supportPriorityService: SupportPriorityService,
@@ -24,7 +28,6 @@ export class SupportManyComponent {
     private readonly confirmationService: ConfirmationService,
     private readonly messageService: MessageService
   ) {}
-
   public states: ISupportState[] = [];
   public priorities: ISupportPriority[] = [];
   public booleanDropdown: any[] = [
@@ -32,27 +35,21 @@ export class SupportManyComponent {
     { value: false, label: 'NO' },
   ];
   public supportManyForm: FormGroup = this.buildForm();
-  public supports: {
-    reclaim: string;
-    product: IProduct;
-    dateEntry: Date;
-    startReference: string;
-    securityStrap: boolean;
-    priority: ISupportPriority;
-    state: ISupportState;
-  }[] = [];
+  public supports: ISupportMany[] = [];
   public today: Date = new Date();
   public minDate: Date = new Date(
     new Date().setMonth(new Date().getMonth() - 1)
   );
   public maxDate: Date = this.today;
 
+  //Inicializador de funciones.
   ngOnInit(): void {
     this.loadStates();
     this.loadPriorities();
     this.supportManyForm.get('dateEntry')?.setValue(this.today);
   }
 
+  //Construye el formulario principal
   private buildForm(): FormGroup {
     return this.formBuilder.group({
       search: [
@@ -69,8 +66,8 @@ export class SupportManyComponent {
     });
   }
 
-  //TODO: Antes de subirlo se requiere cambiar el nombre de la función ya que no expecifica realmente para que sirve, No es un chequeo de data es para guardar la data en el array.
-  public checkData(): void {
+  //Guarda cada servicio nuevo
+  public saveData(): void {
     const support = this.getSupportData();
     if (this.supports.length > 0) {
       const lastReclaimNumber = this.getLastReclaimSupport();
@@ -84,6 +81,9 @@ export class SupportManyComponent {
     if (this.supports.length > 0) {
       this.disableFields();
     }
+    if (this.search) {
+      this.search.nativeElement.focus();
+    }
   }
 
   private getLastReclaimSupport(): number {
@@ -92,6 +92,7 @@ export class SupportManyComponent {
     return lastReclaimNumber;
   }
 
+  //Busca el producto
   public searchProduct() {
     const serial = this.supportManyForm.get('search')?.value;
     this.productService.findOneSerial(serial).subscribe({
@@ -141,15 +142,7 @@ export class SupportManyComponent {
   }
 
   //Elimina el elemento, hay que ver si realmente es necesario.
-  public deleteItem(support: {
-    dateEntry: Date;
-    startReference: string;
-    securityStrap: boolean;
-    reclaim: string;
-    state: ISupportState;
-    priority: ISupportPriority;
-    product: IProduct;
-  }) {
+  public deleteItem(support: ISupportMany) {
     const index = this.supports.indexOf(support);
     this.confirmationService.confirm({
       message: '¿Está seguro que desea eliminar el registro?',
@@ -220,6 +213,8 @@ export class SupportManyComponent {
       },
     });
   }
+
+  //Resetea los campos una vez que se haya cargado
   private resetFields(): void {
     this.supportManyForm.reset({
       dateEntry: this.supportManyForm.get('dateEntry')?.value,
@@ -230,32 +225,28 @@ export class SupportManyComponent {
     });
   }
 
-  private getSupportData(): {
-    reclaim: string;
-    product: IProduct;
-    dateEntry: Date;
-    startReference: string;
-    securityStrap: boolean;
-    priority: ISupportPriority;
-    state: ISupportState;
-  } {
+  //Obtiene la información necesaria para enviarlo via endpoint
+  private getSupportData(): ISupportMany {
     const { search, ...support } = this.supportManyForm.getRawValue();
     return support;
   }
 
+  //Deshabilita los campos
   private disableFields() {
     this.supportManyForm.get('dateEntry')?.disable();
     this.supportManyForm.get('priority')?.disable();
     this.supportManyForm.get('startReference')?.disable();
   }
 
+  //Habilita los campos
   private enableFields() {
     this.supportManyForm.get('dateEntry')?.enable();
     this.supportManyForm.get('priority')?.enable();
     this.supportManyForm.get('startReference')?.enable();
   }
 
-  onKeyPress(event: Event) {
+  //Función para cargar el lector de codigo de barras de los productos, genera un enter automaticamente y envia la peticiíon.
+  public onKeyPressEnter(event: Event) {
     const allowedCharacters = /^\d{0,4}(-\d{0,5})?$/;
     const inputValue = (event.target as HTMLInputElement).value;
     if (allowedCharacters.test(inputValue)) {
@@ -267,5 +258,50 @@ export class SupportManyComponent {
         detail: 'Número de serie invalido',
       });
     }
+  }
+
+  public clearValue() {
+    const inputElement = this.search.nativeElement as HTMLInputElement;
+    if (inputElement.value) {
+      inputElement.value = '';
+      return;
+    }
+  }
+
+  //Guarda la información cargada en todos los servicios. (nuevos)
+  public createSupports(): void {
+    if (this.supportManyForm.valid) {
+      this.confirmationService.confirm({
+        message: '¿Está seguro que desea crear los registros?',
+        header: 'CONFIRMAR',
+        icon: 'pi pi-info-circle',
+        acceptLabel: 'CONFIRMAR',
+        rejectLabel: 'CANCELAR',
+        acceptIcon: 'none',
+        rejectIcon: 'none',
+        acceptButtonStyleClass: 'p-button-sm p-button-info',
+        rejectButtonStyleClass: 'p-button-sm p-button-secondary',
+        accept: () =>
+          this.supportService.createMany(this.supports).subscribe({
+            next: () =>
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Operación exitosa',
+                detail: 'El registro se creó correctamente',
+              }),
+            error: () => {},
+            complete: () => {
+              this.clearSupports();
+              this.resetFields();
+              this.enableFields();
+            },
+          }),
+      });
+    }
+  }
+
+  //Limpia los soportes que se fueron creando
+  public clearSupports(): void {
+    this.supports = [];
   }
 }

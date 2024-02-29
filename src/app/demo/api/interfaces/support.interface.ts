@@ -28,3 +28,13 @@ export interface ISupport {
   failureTypes: IFailureType[];
   serviceHistory: ISupportHistory[];
 }
+
+export interface ISupportMany {
+  reclaim: string;
+  product: IProduct;
+  dateEntry: Date;
+  startReference: string;
+  securityStrap: boolean;
+  priority: ISupportPriority;
+  state: ISupportState;
+}
