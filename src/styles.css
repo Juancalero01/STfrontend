@@ -41,13 +41,22 @@ body {
 }
 
 @media print {
-  nav,
-  button,
+  #app {
+    display: flex !important;
+    flex-direction: column;
+    height: 100% !important;
+  }
+
+  #app nav {
+    display: none;
+  }
+
+  #app button,
   .noprint {
     display: none !important;
   }
 
   .print {
-    height: 100vh !important;
+    height: 100vh;
   }
 }
