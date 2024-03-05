@@ -37,4 +37,5 @@ export interface ISupportMany {
   securityStrap: boolean;
   priority: ISupportPriority;
   state: ISupportState;
+  warrany: boolean;
 }

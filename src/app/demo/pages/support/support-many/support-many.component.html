@@ -99,6 +99,7 @@
           <th>NÚMERO DE SERIE</th>
           <th>TIPO DE PRODUCTO</th>
           <th>CLIENTE</th>
+          <th>GARANTÍA</th>
           <th class="w-1">ACCIONES</th>
         </tr>
       </ng-template>
@@ -111,6 +112,7 @@
           <td>{{ support.product.serial }}</td>
           <td>{{ support.product.productType.name }}</td>
           <td>{{ support.product.client.taxpayerName }}</td>
+          <td>{{ support.warranty | bool }}</td>
           <td>
             <p-button
               icon="pi pi-trash"

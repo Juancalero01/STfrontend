@@ -205,7 +205,7 @@
           <div class="flex align-items-center justify-content-between">
             <span class="font-semibold flex gap-2">
               {{ support.reclaim }}
-              <ng-container *ngIf="support.warranty === null">
+              <ng-container *ngIf="support.failure === null">
                 <i
                   class="pi pi-exclamation-circle text-red-500"
                   pTooltip="Registro incompleto durante carga masiva."

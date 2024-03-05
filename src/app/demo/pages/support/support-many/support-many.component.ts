@@ -63,6 +63,7 @@ export class SupportManyComponent {
       state: [null, [Validators.required]],
       priority: [null, [Validators.required]],
       product: [null, [Validators.required]],
+      warranty: [null, [Validators.required]],
     });
   }
 
@@ -129,6 +130,7 @@ export class SupportManyComponent {
               });
               return;
             }
+            this.calculateWarranty(product.deliveryDate);
             this.supportManyForm.patchValue({
               product: product,
             });
@@ -225,6 +227,13 @@ export class SupportManyComponent {
     });
   }
 
+  private resetFieldsOnSave(): void {
+    this.supportManyForm.reset({
+      dateEntry: this.supportManyForm.get('dateEntry')?.value,
+      state: this.supportManyForm.get('state')?.value,
+    });
+  }
+
   //Obtiene la información necesaria para enviarlo via endpoint
   private getSupportData(): ISupportMany {
     const { search, ...support } = this.supportManyForm.getRawValue();
@@ -270,42 +279,56 @@ export class SupportManyComponent {
   }
 
   //Guarda la información cargada en todos los servicios. (nuevos)
-  //TODO: Falta esta funcionalidad probarla.
   public createSupports(): void {
-    console.log('En fase de prueba');
-    return;
-    if (this.supportManyForm.valid) {
-      this.confirmationService.confirm({
-        message: '¿Está seguro que desea crear los registros?',
-        header: 'CONFIRMAR',
-        icon: 'pi pi-info-circle',
-        acceptLabel: 'CONFIRMAR',
-        rejectLabel: 'CANCELAR',
-        acceptIcon: 'none',
-        rejectIcon: 'none',
-        acceptButtonStyleClass: 'p-button-sm p-button-info',
-        rejectButtonStyleClass: 'p-button-sm p-button-secondary',
-        accept: () =>
-          this.supportService.createMany(this.supports).subscribe({
-            next: () =>
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Operación exitosa',
-                detail: 'El registro se creó correctamente',
-              }),
-            error: () => {},
-            complete: () => {
-              this.clearSupports();
-              this.resetFields();
-              this.enableFields();
-            },
-          }),
-      });
-    }
+    this.confirmationService.confirm({
+      message: '¿Está seguro que desea crear los registros?',
+      header: 'CONFIRMAR',
+      icon: 'pi pi-info-circle',
+      acceptLabel: 'CONFIRMAR',
+      rejectLabel: 'CANCELAR',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
+      accept: () =>
+        this.supportService.createMany(this.supports).subscribe({
+          next: () =>
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Operación exitosa',
+              detail: 'El registro se creó correctamente',
+            }),
+          error: () => {},
+          complete: () => {
+            this.clearSupports();
+            this.resetFieldsOnSave();
+            this.enableFields();
+          },
+        }),
+    });
   }
 
   //Limpia los soportes que se fueron creando
   public clearSupports(): void {
     this.supports = [];
+  }
+
+  private calculateWarranty(deliveryDate: Date): void {
+    const oneYearLater = new Date(deliveryDate);
+    oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
+    const sixMonthsLater = new Date(oneYearLater);
+    sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
+    let warranty: boolean;
+
+    if (this.today <= oneYearLater) {
+      warranty = true;
+    } else if (this.today <= sixMonthsLater) {
+      warranty = true;
+    } else {
+      warranty = false;
+    }
+    this.supportManyForm.patchValue({
+      warranty: warranty,
+    });
   }
 }

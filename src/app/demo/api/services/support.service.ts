@@ -71,6 +71,6 @@ export class SupportService {
   }
 
   public createMany(supports: ISupportMany[]): Observable<ISupportMany[]> {
-    return this.httpClient.post<ISupportMany[]>(this.URL, supports);
+    return this.httpClient.post<ISupportMany[]>(`${this.URL}/many`, supports);
   }
 }
