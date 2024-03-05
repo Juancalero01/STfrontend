@@ -43,6 +43,8 @@ export class SupportTableComponent {
     4: 'bg-blue-500 ',
   };
 
+  public selectedSupports: ISupport[] = [];
+
   //Inicializador de funciones.
   ngOnInit(): void {
     this.loadClients();
@@ -156,5 +158,9 @@ export class SupportTableComponent {
   //Crea un vinculo para ir a verificar ese número de reclamo.
   getSupportManyUrl(): string {
     return `${this.document.baseURI}cnet/support/many`;
+  }
+
+  test(): void {
+    console.log(this.selectedSupports);
   }
 }

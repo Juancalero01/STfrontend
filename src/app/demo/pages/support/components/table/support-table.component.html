@@ -46,6 +46,8 @@
     [value]="supports"
     [globalFilterFields]="['reclaim']"
     styleClass="p-datatable-striped p-datatable-sm"
+    [(selection)]="selectedSupports"
+    dataKey="id"
   >
     <ng-template pTemplate="header">
       <tr class="text-sm h-3rem">
@@ -203,7 +205,8 @@
       <tr class="text-sm" [ngClass]="calculateBackgroundColor(support)">
         <td>
           <div class="flex align-items-center justify-content-between">
-            <span class="font-semibold">
+            <span class="font-semibold flex gap-2">
+              <p-tableCheckbox [value]="support"></p-tableCheckbox>
               {{ support.reclaim }}
             </span>
             <p-tag
@@ -255,5 +258,10 @@
     </ng-template>
   </p-table>
 </div>
+<p-button
+  (onClick)="test()"
+  styleClass="p-button-rounded"
+  icon="pi pi-desktop"
+></p-button>
 <p-confirmDialog />
 <p-toast position="bottom-right" />
