@@ -40,6 +40,11 @@ body {
   box-shadow: none !important;
 }
 
+.p-checkbox .p-checkbox-box.p-highlight {
+  border-color: var(--blue-500) !important;
+  background: var(--blue-500) !important;
+}
+
 @media print {
   #app {
     display: flex !important;

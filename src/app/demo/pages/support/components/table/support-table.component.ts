@@ -163,4 +163,10 @@ export class SupportTableComponent {
   test(): void {
     console.log(this.selectedSupports);
   }
+
+  isAnySupportWithState11(): boolean {
+    return (
+      this.supports && this.supports.some((support) => support.state.id === 11)
+    );
+  }
 }
