@@ -27,7 +27,9 @@ export class SupportTableComponent {
     private readonly stateService: SupportStateService,
     private readonly dialogService: DialogService,
     @Inject(DOCUMENT) private document: Document
-  ) {}
+  ) {
+    this.isRowSelectable = this.isRowSelectable.bind(this);
+  }
 
   public supports: ISupport[] = [];
   public clients: IClient[] = [];
@@ -164,9 +166,26 @@ export class SupportTableComponent {
     console.log(this.selectedSupports);
   }
 
-  isAnySupportWithState11(): boolean {
-    return (
-      this.supports && this.supports.some((support) => support.state.id === 11)
+  isOutOfState(support: ISupport) {
+    return support.state.id !== 11;
+  }
+
+  isRowSelectable(event: any) {
+    return !this.isOutOfState(event.data);
+  }
+
+  getPriorityStatus(dateEntry: string, priorityDays: number): string {
+    const today = new Date();
+    const entryDate = new Date(dateEntry);
+    const daysElapsed = Math.floor(
+      (today.getTime() - entryDate.getTime()) / (1000 * 60 * 60 * 24)
     );
+    if (daysElapsed <= priorityDays) {
+      return priorityDays - daysElapsed === 0
+        ? 'Último día'
+        : 'Quedan ' + (priorityDays - daysElapsed) + ' día(s)';
+    } else {
+      return 'Expirado';
+    }
   }
 }

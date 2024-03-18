@@ -46,14 +46,16 @@
     [value]="supports"
     [globalFilterFields]="['reclaim']"
     styleClass="p-datatable-striped p-datatable-sm"
+    selectionMode="multiple"
     [(selection)]="selectedSupports"
     dataKey="id"
+    [rowSelectable]="isRowSelectable"
   >
     <ng-template pTemplate="header">
       <tr class="text-sm h-3rem">
         <th>
           <span class="flex gap-2">
-            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            <p-tableHeaderCheckbox />
             NÚMERO DE RECLAMO
           </span>
         </th>
@@ -213,7 +215,7 @@
             <span class="font-semibold flex gap-2">
               <p-tableCheckbox
                 [value]="support"
-                *ngIf="support.state.id === 11"
+                [disabled]="isOutOfState(support)"
               ></p-tableCheckbox>
               {{ support.reclaim }}
             </span>
@@ -232,12 +234,18 @@
           <p-tag [value]="support.state.name" severity="info" />
         </td>
         <td>
-          <p-tag
-            [styleClass]="priorityColors[support.priority.id]"
-            [value]="
-              support.priority.name + ' - ' + support.priority.days + ' días'
-            "
-          />
+          <div class="flex gap-1">
+            <p-tag
+              [styleClass]="priorityColors[support.priority.id]"
+              [value]="support.priority.name"
+            />
+            <p-tag
+              [styleClass]="priorityColors[support.priority.id]"
+              [value]="
+                getPriorityStatus(support.dateEntry, support.priority.days)
+              "
+            />
+          </div>
         </td>
         <td>
           <p-button
@@ -266,11 +274,5 @@
     </ng-template>
   </p-table>
 </div>
-<p-button
-  (onClick)="test()"
-  label="Test check"
-  styleClass="p-button-rounded"
-  icon="pi pi-plus"
-></p-button>
 <p-confirmDialog />
 <p-toast position="bottom-right" />
