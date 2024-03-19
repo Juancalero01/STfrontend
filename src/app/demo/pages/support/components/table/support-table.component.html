@@ -239,12 +239,20 @@
               [styleClass]="priorityColors[support.priority.id]"
               [value]="support.priority.name"
             />
-            <p-tag
-              [styleClass]="priorityColors[support.priority.id]"
-              [value]="
-                getPriorityStatus(support.dateEntry, support.priority.days)
+            <ng-container
+              *ngIf="
+                getPriorityStatus(
+                  support.dateEntry,
+                  support.priority.days
+                ) as priorityStatus
               "
-            />
+            >
+              <p-tag
+                [styleClass]="priorityStatus.colorClass"
+                [value]="priorityStatus.message"
+                [icon]="priorityStatus.iconClass"
+              ></p-tag>
+            </ng-container>
           </div>
         </td>
         <td>

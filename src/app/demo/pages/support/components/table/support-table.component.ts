@@ -46,6 +46,11 @@ export class SupportTableComponent {
   };
 
   public selectedSupports: ISupport[] = [];
+  public priorityStatus: {
+    iconClass: string;
+    message: string;
+    colorClass: string;
+  } | null = null;
 
   //Inicializador de funciones.
   ngOnInit(): void {
@@ -158,7 +163,7 @@ export class SupportTableComponent {
   }
 
   //Crea un vinculo para ir a verificar ese número de reclamo.
-  getSupportManyUrl(): string {
+  public getSupportManyUrl(): string {
     return `${this.document.baseURI}cnet/support/many`;
   }
 
@@ -166,26 +171,46 @@ export class SupportTableComponent {
     console.log(this.selectedSupports);
   }
 
-  isOutOfState(support: ISupport) {
+  //Indica si esta fuera del rango de estado que se puede seleccionar
+  public isOutOfState(support: ISupport) {
     return support.state.id !== 11;
   }
 
-  isRowSelectable(event: any) {
+  //Selección de filas
+  public isRowSelectable(event: any) {
     return !this.isOutOfState(event.data);
   }
 
-  getPriorityStatus(dateEntry: string, priorityDays: number): string {
+  //Informa el tiempo transcurrido de la prioridad.
+  public getPriorityStatus(
+    dateEntry: string,
+    priorityDays: number
+  ): { iconClass: string; message: string; colorClass: string } {
     const today = new Date();
     const entryDate = new Date(dateEntry);
     const daysElapsed = Math.floor(
       (today.getTime() - entryDate.getTime()) / (1000 * 60 * 60 * 24)
     );
     if (daysElapsed <= priorityDays) {
-      return priorityDays - daysElapsed === 0
-        ? 'Último día'
-        : 'Quedan ' + (priorityDays - daysElapsed) + ' día(s)';
+      if (priorityDays - daysElapsed === 0) {
+        return {
+          iconClass: 'pi pi-exclamation-circle',
+          message: 'Último día',
+          colorClass: 'bg-orange-500',
+        };
+      } else {
+        return {
+          iconClass: 'pi pi-info-circle',
+          message: `Quedan ${priorityDays - daysElapsed} día(s)`,
+          colorClass: 'bg-green-500',
+        };
+      }
     } else {
-      return 'Expirado';
+      return {
+        iconClass: 'pi pi-exclamation-triangle',
+        message: `Expirado ${daysElapsed - priorityDays} día(s)`,
+        colorClass: 'bg-red-500',
+      };
     }
   }
 }
