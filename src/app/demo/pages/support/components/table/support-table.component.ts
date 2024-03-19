@@ -13,6 +13,9 @@ import { ProductTypeService } from 'src/app/demo/api/services/product-type.servi
 import { SupportPriorityService } from 'src/app/demo/api/services/support-priority.service';
 import { SupportStateService } from 'src/app/demo/api/services/support-state.service';
 import { DOCUMENT } from '@angular/common';
+import { TokenService } from 'src/app/demo/api/services/token.service';
+import { ConfirmationService } from 'primeng/api';
+import { SupportMassiveFormComponent } from '../form-massive/support-massive-form.component';
 
 @Component({
   selector: 'app-support-table',
@@ -26,7 +29,9 @@ export class SupportTableComponent {
     private readonly priorityService: SupportPriorityService,
     private readonly stateService: SupportStateService,
     private readonly dialogService: DialogService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private readonly tokenService: TokenService,
+    private readonly confirmationService: ConfirmationService
   ) {
     this.isRowSelectable = this.isRowSelectable.bind(this);
   }
@@ -39,10 +44,10 @@ export class SupportTableComponent {
   public ref: DynamicDialogRef = new DynamicDialogRef();
   public today: Date = new Date();
   public priorityColors: any = {
-    1: 'bg-red-500 ',
-    2: 'bg-orange-500 ',
-    3: 'bg-yellow-500 ',
-    4: 'bg-blue-500 ',
+    1: 'bg-red-500',
+    2: 'bg-orange-500',
+    3: 'bg-yellow-500',
+    4: 'bg-blue-500',
   };
 
   public selectedSupports: ISupport[] = [];
@@ -211,6 +216,36 @@ export class SupportTableComponent {
         message: `Expirado ${daysElapsed - priorityDays} día(s)`,
         colorClass: 'bg-red-500',
       };
+    }
+  }
+
+  public openHistoryForm() {
+    if (!this.tokenService.isAdmin()) {
+      this.confirmationService.confirm({
+        message:
+          'No se puede actualizar el estado de los casos.<br>Esta acción solo está permitida para administradores.',
+        header: 'INFORMACIÓN',
+        icon: 'pi pi-info-circle',
+        rejectVisible: false,
+        acceptVisible: false,
+        closeOnEscape: true,
+      });
+    } else {
+      this.ref = this.dialogService.open(SupportMassiveFormComponent, {
+        header: 'FORMULARIO DE ACTUALIZACIÓN MASIVA',
+        width: '50%',
+        closable: false,
+        closeOnEscape: false,
+        dismissableMask: false,
+        showHeader: true,
+        position: 'center',
+        data: this.selectedSupports,
+      });
+      this.ref.onClose.subscribe({
+        next: () => {
+          this.loadSupports();
+        },
+      });
     }
   }
 }

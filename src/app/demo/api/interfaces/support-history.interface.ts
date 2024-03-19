@@ -13,3 +13,12 @@ export interface ISupportHistory {
   dateEntry: Date;
   serviceNote: ISupportNote[];
 }
+
+export interface ISupportHistoryMany {
+  stateCurrent?: ISupportState;
+  stateNext?: ISupportState;
+  remarks: string;
+  service: ISupport;
+  user: number;
+  dateEntry: Date;
+}

@@ -8,6 +8,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { SupportFormComponent } from './components/form/support-form.component';
 import { SupportFormHistoryComponent } from './components/form-history/support-form-history.component';
 import { SupportManyComponent } from './support-many/support-many.component';
+import { SupportMassiveFormComponent } from './components/form-massive/support-massive-form.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { SupportManyComponent } from './support-many/support-many.component';
     SupportFormComponent,
     SupportFormHistoryComponent,
     SupportManyComponent,
+    SupportMassiveFormComponent,
   ],
   imports: [CommonModule, SupportRoutingModule, SharedModule],
 })
