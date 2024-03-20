@@ -1,16 +1,19 @@
 <section
-  class="flex flex-column gap-5 bg-white px-5 py-6 w-full border-round shadow-1"
+  class="flex flex-column gap-5 bg-white px-5 py-6 w-full border-round shadow-2"
 >
-  <div class="flex flex-row justify-content-center">
+  <picture class="flex flex-row justify-content-center">
+    <source srcset="../../../../../../assets/logo.svg" type="image/svg+xml" />
     <img src="../../../../../../assets/logo.svg" alt="Logo" height="45" />
-  </div>
-  <div class="flex flex-column gap-1">
+  </picture>
+
+  <section class="flex flex-column gap-1">
     <h2 class="font-normal">Inicio de sesión</h2>
     <p class="text-gray-600">Ingrese sus credenciales para acceder al panel.</p>
-  </div>
+  </section>
+
   <form class="flex flex-column gap-3" [formGroup]="loginForm">
-    <div class="flex flex-column w-full">
-      <label>Nombre de usuario</label>
+    <fieldset class="border-none">
+      <legend>Nombre de usuario</legend>
       <div class="p-inputgroup">
         <span class="p-inputgroup-addon">
           <i class="pi pi-user"></i>
@@ -18,15 +21,18 @@
         <input
           pInputText
           maxlength="150"
-          placeholder="Ingrese su usuario"
+          placeholder="Ingrese su nombre de usuario"
           class="w-full"
           formControlName="username"
+          id="username"
+          aria-describedby="username-error"
         />
       </div>
-      <small class="p-error">Campo obligatorio*</small>
-    </div>
-    <div class="flex flex-column w-full">
-      <label>Contraseña</label>
+      <small id="username-error" class="p-error">Campo obligatorio*</small>
+    </fieldset>
+
+    <fieldset class="border-none">
+      <legend>Contraseña</legend>
       <div class="p-inputgroup">
         <span class="p-inputgroup-addon">
           <i class="pi pi-lock"></i>
@@ -39,10 +45,13 @@
           styleClass="w-full"
           inputStyleClass="w-full"
           formControlName="password"
-        />
+          id="password"
+          aria-describedby="password-error"
+        ></p-password>
       </div>
-      <small class="p-error">Campo obligatorio*</small>
-    </div>
+      <small id="password-error" class="p-error">Campo obligatorio*</small>
+    </fieldset>
+
     <p-button
       label="INICIAR SESIÓN"
       styleClass="w-full p-button-info"
