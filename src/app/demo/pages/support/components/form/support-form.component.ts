@@ -516,15 +516,15 @@ export class SupportFormComponent {
         this.supportForm.get('orderNumber')?.addValidators(Validators.required);
         this.supportForm.get('orderNumber')?.updateValueAndValidity();
         break;
-      case 10:
-        this.supportForm.disable();
-        this.supportForm.get('endReference')?.enable();
-        this.fieldsActive();
-        this.supportForm
-          .get('endReference')
-          ?.addValidators(Validators.required);
-        this.supportForm.get('endReference')?.updateValueAndValidity();
-        break;
+      // case 10:
+      //   this.supportForm.disable();
+      //   this.supportForm.get('endReference')?.enable();
+      //   this.fieldsActive();
+      //   this.supportForm
+      //     .get('endReference')
+      //     ?.addValidators(Validators.required);
+      //   this.supportForm.get('endReference')?.updateValueAndValidity();
+      //   break;
       case 11:
         this.supportForm.disable();
         this.supportForm.get('failureTypes')?.enable();

@@ -105,6 +105,7 @@ export class SupportMassiveFormComponent {
       acceptButtonStyleClass: 'p-button-sm p-button-info',
       rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
+        //TODO: Verificar si no hay error haciendo a la inversa mejor crear el historial primero y luego recien establecerlos a ese estado.
         this.supportService.updateMany(this.supports).subscribe({
           next: () => {
             this.supportHistoryService
@@ -145,6 +146,7 @@ export class SupportMassiveFormComponent {
   }
 
   private loadSupportsUpdate(supports: ISupport[]): void {
+    const currentDate = new Date();
     const endReference: string =
       this.supportMassiveForm.get('endReference')?.value;
     const supportsLength: number = supports.length;
@@ -153,6 +155,7 @@ export class SupportMassiveFormComponent {
       let support = supports[i];
       support.endReference = endReference;
       support.state = this.nextState;
+      support.dateDeparture = currentDate;
       this.supports.push(support);
     }
   }

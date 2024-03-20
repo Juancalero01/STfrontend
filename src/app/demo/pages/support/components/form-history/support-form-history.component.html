@@ -98,7 +98,10 @@
       </div>
     </form>
   </p-tabPanel>
-  <p-tabPanel header="NOTAS">
+  <p-tabPanel
+    header="NOTAS"
+    *ngIf="supportHistoryForm.get('stateCurrent')?.value !== 11"
+  >
     <div class="grid gap-2">
       <div
         *ngIf="notes.length > 0; else noNotes"

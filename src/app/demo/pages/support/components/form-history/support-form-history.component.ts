@@ -39,7 +39,6 @@ export class SupportFormHistoryComponent {
   public minDate: Date = new Date(this.config.data.dateEntry);
   public maxDate: Date = this.today;
   public showHours: boolean = false;
-  public testLastHistory: ISupportHistory = {} as ISupportHistory;
 
   //Inicializador de funciones.
   ngOnInit(): void {
