@@ -135,6 +135,7 @@ export class SupportTableComponent {
   public cleanFilters(table: Table, filter: any) {
     table.clear();
     filter.value = '';
+    this.selectedSupports = [];
   }
 
   //Añade un tag "NUEVO" para identificar los servicios recientes (Demora 1 dia en desaparecer)
@@ -170,10 +171,6 @@ export class SupportTableComponent {
   //Crea un vinculo para ir a verificar ese número de reclamo.
   public getSupportManyUrl(): string {
     return `${this.document.baseURI}cnet/support/many`;
-  }
-
-  test(): void {
-    console.log(this.selectedSupports);
   }
 
   //Indica si esta fuera del rango de estado que se puede seleccionar
@@ -219,6 +216,7 @@ export class SupportTableComponent {
     }
   }
 
+  //Abre el formulario para cerrar casos masivamente
   public openHistoryForm() {
     if (!this.tokenService.isAdmin()) {
       this.confirmationService.confirm({
@@ -243,6 +241,7 @@ export class SupportTableComponent {
       });
       this.ref.onClose.subscribe({
         next: () => {
+          this.selectedSupports = [];
           this.loadSupports();
         },
       });

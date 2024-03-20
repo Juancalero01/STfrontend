@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
-import { ISupportHistory } from '../interfaces/support-history.interface';
+import {
+  ISupportHistory,
+  ISupportHistoryMany,
+} from '../interfaces/support-history.interface';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -38,6 +41,15 @@ export class SupportHistoryService {
     return this.httpClient.put<ISupportHistory>(
       `${this.URL}/${id}`,
       supportHistory
+    );
+  }
+
+  public createMany(
+    supports: ISupportHistoryMany[]
+  ): Observable<ISupportHistoryMany[]> {
+    return this.httpClient.post<ISupportHistoryMany[]>(
+      `${this.URL}/many`,
+      supports
     );
   }
 }

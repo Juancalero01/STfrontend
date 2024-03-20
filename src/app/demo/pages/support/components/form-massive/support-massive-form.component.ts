@@ -28,9 +28,10 @@ export class SupportMassiveFormComponent {
   ) {}
 
   public supportsHistories: ISupportHistoryMany[] = [];
+  public supports: ISupport[] = [];
   public supportMassiveForm: FormGroup = this.buildForm();
-  public currentState?: ISupportState;
-  public nextState?: ISupportState;
+  public currentState: any;
+  public nextState: any;
 
   ngOnInit(): void {
     this.loadStates();
@@ -51,6 +52,7 @@ export class SupportMassiveFormComponent {
     });
   }
 
+  //Cierra el formulario
   public exitForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea salir del formulario?',
@@ -64,11 +66,13 @@ export class SupportMassiveFormComponent {
       rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
         this.supportsHistories = [];
+        this.supports = [];
         this.ref.close();
       },
     });
   }
 
+  //Valida el formulario
   public validateForm(controlName: string): boolean | undefined {
     return (
       this.supportMassiveForm.get(controlName)?.invalid &&
@@ -76,6 +80,7 @@ export class SupportMassiveFormComponent {
     );
   }
 
+  //Carga y asigna los estados necesarios
   private loadStates(): void {
     this.supportStateService.findAll().subscribe({
       next: (states: ISupportState[]) => {
@@ -85,33 +90,70 @@ export class SupportMassiveFormComponent {
     });
   }
 
+  //Guarda el cambio de historial y actualiza el servicio en general
   public saveForm(): void {
     this.loadSupportsHistories(this.config.data);
-
-    //Aca configurar el formulario para que guarde luego crear una nueva funcionalidad para que actualicce los estados del servicio.
-    //Estas dos cosas son servicios por lo tanto en la API se deben crear dos endpoints nuevos.
-    //Verificar que no se rompa nada, si se rompe posiblemente puede ser la fecha.
-    //Estar al tanto de las variables.
-
-    //Hay que crear una funcionalidad para que solo actualice el estado y el endReference del formulario general de esos servicios, probar
-    //masivamente.
+    this.loadSupportsUpdate(this.config.data);
+    this.confirmationService.confirm({
+      message: '¿Está seguro que desea guardar los cambios?',
+      header: 'CONFIRMAR',
+      icon: 'pi pi-info-circle',
+      acceptLabel: 'CONFIRMAR',
+      rejectLabel: 'CANCELAR',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
+      accept: () => {
+        this.supportService.updateMany(this.supports).subscribe({
+          next: () => {
+            this.supportHistoryService
+              .createMany(this.supportsHistories)
+              .subscribe({
+                next: () => {
+                  this.messageService.add({
+                    severity: 'success',
+                    summary: 'Operación exitosa',
+                    detail: 'Los servicios se cerraron correctamente',
+                  });
+                  this.ref.close();
+                },
+              });
+          },
+        });
+      },
+    });
   }
 
   private loadSupportsHistories(supports: ISupport[]): void {
+    const remarks = this.supportMassiveForm.get('remarks')?.value;
+    const userId = Number(this.tokenService.getUserId());
+    const currentDate = new Date();
+    const supportsLength = supports.length;
     this.supportsHistories = [];
-
-    supports.forEach((support: ISupport) => {
-      const supportHistory: ISupportHistoryMany = {
-        dateEntry: new Date(),
+    for (let i = 0; i < supportsLength; i++) {
+      let supportHistory: ISupportHistoryMany = {
+        dateEntry: currentDate,
         stateCurrent: this.currentState,
         stateNext: this.nextState,
-        remarks: this.supportMassiveForm.get('remarks')?.value,
-        service: support,
-        user: Number(this.tokenService.getUserId()),
+        remarks: remarks,
+        service: supports[i],
+        user: userId,
       };
       this.supportsHistories.push(supportHistory);
-    });
+    }
+  }
 
-    console.log(this.supportsHistories);
+  private loadSupportsUpdate(supports: ISupport[]): void {
+    const endReference: string =
+      this.supportMassiveForm.get('endReference')?.value;
+    const supportsLength: number = supports.length;
+    this.supports = [];
+    for (let i = 0; i < supportsLength; i++) {
+      let support = supports[i];
+      support.endReference = endReference;
+      support.state = this.nextState;
+      this.supports.push(support);
+    }
   }
 }
