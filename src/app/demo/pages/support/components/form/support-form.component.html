@@ -18,6 +18,7 @@
             [ngClass]="{
               'ng-invalid ng-dirty': validateForm('search')
             }"
+            (keydown.enter)="onKeyPressEnter($event)"
           />
           <p-button
             label="BUSCAR"

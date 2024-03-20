@@ -576,4 +576,19 @@ export class SupportFormComponent {
     this.supportForm.get('warranty')?.enable();
     this.supportForm.get('priority')?.enable();
   }
+
+  //Función para cargar el lector de codigo de barras de los productos, genera un enter automaticamente y envia la peticiíon
+  public onKeyPressEnter(event: Event) {
+    const allowedCharacters = /^\d{0,4}(-\d{0,5})?$/;
+    const inputValue = (event.target as HTMLInputElement).value;
+    if (allowedCharacters.test(inputValue)) {
+      this.searchProduct();
+    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Info',
+        detail: 'Número de serie invalido',
+      });
+    }
+  }
 }
