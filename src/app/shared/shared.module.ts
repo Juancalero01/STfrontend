@@ -6,6 +6,7 @@ import { ExcelService } from './utils/services/excel.service';
 import { RouterModule } from '@angular/router';
 import { BooleanPipe } from './utils/pipes/bool.pipe';
 import { ActivePipe } from './utils/pipes/active.pipe';
+import { UiModule } from './ui/ui.module';
 
 @NgModule({
   declarations: [NullPipe, BooleanPipe, ActivePipe],
@@ -18,6 +19,7 @@ import { ActivePipe } from './utils/pipes/active.pipe';
     BooleanPipe,
     ActivePipe,
     RouterModule,
+    UiModule,
   ],
   providers: [ExcelService],
 })
