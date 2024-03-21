@@ -7,9 +7,11 @@
       maxlength="150"
       placeholder="Ingrese el nombre o razón social del cliente"
       class="w-full"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('taxpayerName') }"
+      [ngClass]="{
+        'ng-invalid ng-dirty': isFormControlInvalid('taxpayerName')
+      }"
     />
-    <small *ngIf="validateForm('taxpayerName')" class="p-error">
+    <small *ngIf="isFormControlInvalid('taxpayerName')" class="p-error">
       Campo requerido*
     </small>
   </div>
@@ -166,13 +168,13 @@
     <p-button
       label="SALIR DEL FORMULARIO"
       styleClass="p-button-secondary w-full"
-      (onClick)="closeForm()"
+      (onClick)="closeClientForm()"
     />
     <p-button
       [label]="buttonLabel"
-      [disabled]="clientForm.invalid || !getChangesToUpdate()"
+      [disabled]="clientForm.invalid || !hasClientFormChanged()"
       styleClass="p-button-info w-full"
-      (onClick)="submitForm()"
+      (onClick)="processClientForm()"
     />
   </div>
 </form>

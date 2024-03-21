@@ -8,6 +8,7 @@ import { ITaxCondition } from 'src/app/demo/api/interfaces/tax-condition.interfa
 import { TaxConditionService } from 'src/app/demo/api/services/tax-condition.service';
 import { ProvinceService } from 'src/app/demo/api/services/province.service';
 import { ClientService } from 'src/app/demo/api/services/client.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-client-form',
@@ -25,23 +26,26 @@ export class ClientFormComponent {
     private readonly clientService: ClientService
   ) {}
 
-  public clientForm: FormGroup = this.buildForm();
+  public clientForm: FormGroup = this.buildClientForm();
   public provinces: IProvince[] = [];
   public taxConditions: ITaxCondition[] = [];
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
 
-  //Inicializador de funciones.
   ngOnInit(): void {
     this.getProvinces();
     this.getTaxConditions();
     if (this.config.data) {
-      this.loadForm(this.config.data);
+      this.loadClientDataIntoForm(this.config.data);
       this.buttonLabel = 'ACTUALIZAR FORMULARIO';
     }
   }
 
-  //Construcción de los campos y validaciones del formulario de clientes.
-  private buildForm(): FormGroup {
+  /**
+   * Construye y devuelve un FormGroup para el formulario de clientes.
+   * Este FormGroup contiene controles para capturar la información del cliente,
+   * aplicando validaciones a cada campo según los requisitos especificados.
+   */
+  private buildClientForm(): FormGroup {
     return this.formBuilder.group({
       taxpayerName: [
         null,
@@ -95,23 +99,33 @@ export class ClientFormComponent {
     });
   }
 
-  //Carga de datos para el formulario de clientes
-  private loadForm(client: IClient): void {
+  /**
+   * Carga los datos del cliente en el formulario correspondiente.
+   * Utiliza los datos del cliente proporcionados para completar los campos del formulario,
+   * asignando los valores de los campos a partir de la información del cliente.
+   */
+  private loadClientDataIntoForm(clientData: IClient): void {
     this.clientForm.patchValue({
-      ...client,
-      taxCondition: client.taxCondition?.id,
-      province: client.province?.id,
+      ...clientData,
+      taxCondition: clientData.taxCondition?.id,
+      province: clientData.province?.id,
     });
   }
 
-  //Obtiene las provincias para el dropdown correspondiente
+  /**
+   * Obtiene las provincias desde el servicio correspondiente y las asigna al dropdown correspondiente.
+   * Las provincias se utilizan para llenar opciones en un dropdown de selección en el formulario del cliente.
+   */
   private getProvinces(): void {
     this.provinceService.findAll().subscribe({
       next: (provinces: IProvince[]) => (this.provinces = provinces),
     });
   }
 
-  //Obtiene las condiciones del cliente para el dropdown correspondiente
+  /**
+   * Obtiene las condiciones fiscales del cliente desde el servicio correspondiente y las asigna al dropdown correspondiente.
+   * Las condiciones fiscales se utilizan para llenar opciones en un dropdown de selección en el formulario del cliente.
+   */
   private getTaxConditions(): void {
     this.taxConditionService.findAll().subscribe({
       next: (taxConditions: ITaxCondition[]) =>
@@ -119,25 +133,36 @@ export class ClientFormComponent {
     });
   }
 
-  //Validaciones del formulario de clientes.
-  public validateForm(controlName: string): boolean | undefined {
+  /**
+   * Valida un control específico del formulario del cliente.
+   * Comprueba si el control especificado es inválido y ha sido tocado.
+   * @param controlName El nombre del control que se va a validar.
+   * @returns Verdadero si el control es inválido y ha sido tocado, de lo contrario, indefinido.
+   */
+  public isFormControlInvalid(controlName: string): boolean | undefined {
     return (
       this.clientForm.get(controlName)?.invalid &&
       this.clientForm.get(controlName)?.touched
     );
   }
 
-  //Guarda o actualiza la información del cliente
-  public submitForm(): void {
+  /**
+   * Envía el formulario del cliente para crear un nuevo registro o actualizar uno existente.
+   * Determina si se debe llamar a la función de confirmación de creación o actualización del cliente.
+   */
+  public processClientForm(): void {
     if (!this.config.data) {
-      this.createClient();
+      this.confirmCreateClient();
     } else {
-      this.updateClient();
+      this.confirmUpdateClient();
     }
   }
 
-  //Cierra el formulario de clientes
-  public closeForm(): void {
+  /**
+   * Cierra el formulario de clientes.
+   * Muestra un diálogo de confirmación antes de cerrar.
+   */
+  public closeClientForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea cancelar la operación?',
       header: 'CONFIRMAR',
@@ -152,8 +177,11 @@ export class ClientFormComponent {
     });
   }
 
-  //Guarda la información del formulario de clientes.
-  public createClient(): void {
+  /**
+   * Crea un nuevo registro de cliente.
+   * Muestra un diálogo de confirmación antes de realizar la operación.
+   */
+  public confirmCreateClient(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea crear el registro?',
       header: 'CONFIRMAR',
@@ -174,13 +202,31 @@ export class ClientFormComponent {
             });
             this.ref.close();
           },
+          error: (err: HttpErrorResponse) => {
+            if (err.status === 409) {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'El cliente ya existe',
+              });
+            } else {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Ocurrió un error al crear el cliente',
+              });
+            }
+          },
         });
       },
     });
   }
 
-  //Actualiza la información del formulario de clientes.
-  public updateClient(): void {
+  /**
+   * Actualiza el registro de cliente.
+   * Muestra un diálogo de confirmación antes de realizar la operación.
+   */
+  public confirmUpdateClient(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea actualizar el registro?',
       header: 'CONFIRMAR',
@@ -204,13 +250,32 @@ export class ClientFormComponent {
 
               this.ref.close();
             },
+            error: (err: HttpErrorResponse) => {
+              if (err.status === 404) {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Cliente no encontrado',
+                });
+              } else {
+                console.error('Error en la actualización del cliente:', err);
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Ocurrió un error al actualizar el cliente',
+                });
+              }
+            },
           });
       },
     });
   }
 
-  //Obtiene si realmente el usuario modifico el formulario de clientes.
-  public getChangesToUpdate(): boolean {
+  /**
+   * Verifica si el usuario ha realizado modificaciones en el formulario de clientes.
+   * @returns true si el formulario ha sido modificado; de lo contrario, false.
+   */
+  public hasClientFormChanged(): boolean {
     return !this.clientForm.pristine;
   }
 }

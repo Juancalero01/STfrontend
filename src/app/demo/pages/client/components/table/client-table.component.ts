@@ -16,15 +16,16 @@ export class ClientTableComponent {
   ) {}
 
   public clients: IClient[] = [];
-  public ref: DynamicDialogRef = new DynamicDialogRef();
+  public dialogRef: DynamicDialogRef = new DynamicDialogRef();
 
-  //Inicializador de funciones.
   ngOnInit(): void {
-    this.loadClients();
+    this.getClients();
   }
 
-  //Carga de clientes para la tabla.
-  private loadClients(): void {
+  /**
+   * Carga los clientes desde el servicio de clientes y los asigna a la propiedad 'clients' para su visualización en la tabla.
+   */
+  private getClients(): void {
     this.clientService.findAll().subscribe({
       next: (clients: IClient[]) => {
         this.clients = clients;
@@ -32,13 +33,14 @@ export class ClientTableComponent {
     });
   }
 
-  //Abre el formulario para guardar o actualizar el cliente.
-  public openClientForm(client?: IClient) {
-    const header = client
-      ? 'FORMULARIO DE ACTUALIZACIÓN DE CLIENTE'
-      : 'FORMULARIO DE REGISTRO DE CLIENTE';
+  /**
+   * Abre un formulario para guardar o actualizar la información de un cliente.
+   * @param clientData Datos del cliente a editar. Si no se proporciona, se abre un formulario para registrar un nuevo cliente.
+   */
+  public openClientDialog(clientData?: IClient) {
+    const header = clientData ? 'ACTUALIZAR CLIENTE' : 'REGISTRAR CLIENTE';
 
-    this.ref = this.dialogService.open(ClientFormComponent, {
+    this.dialogRef = this.dialogService.open(ClientFormComponent, {
       header: header,
       width: '80%',
       closable: false,
@@ -46,15 +48,19 @@ export class ClientTableComponent {
       dismissableMask: false,
       showHeader: true,
       position: 'center',
-      data: client,
+      data: clientData,
     });
 
-    this.ref.onClose.subscribe(() => {
-      this.loadClients();
+    this.dialogRef.onClose.subscribe(() => {
+      this.getClients();
     });
   }
 
-  //Elimina los filtros de busqueda o paginación.
+  /**
+   * Elimina los filtros de búsqueda o paginación en una tabla.
+   * @param table La tabla (Table) de PrimeNG de la que se eliminarán los filtros.
+   * @param filter El filtro de búsqueda o paginación que se reiniciará.
+   */
   public cleanFilters(table: Table, filter: any) {
     table.clear();
     filter.value = '';
