@@ -1,5 +1,5 @@
 <form class="grid" [formGroup]="clientForm">
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+  <section class="flex flex-column col-12 lg:col-12 xl:col-12">
     <label>NOMBRE / RAZÓN SOCIAL</label>
     <input
       pInputText
@@ -14,8 +14,9 @@
     <small *ngIf="isFormControlInvalid('taxpayerName')" class="p-error">
       Campo requerido*
     </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-6">
+  </section>
+
+  <section class="flex flex-column col-12 lg:col-6 xl:col-6">
     <label>CUIT</label>
     <input
       pInputText
@@ -24,8 +25,9 @@
       placeholder="Ingrese el CUIT del cliente"
       pKeyFilter="num"
     />
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-6">
+  </section>
+
+  <section class="flex flex-column col-12 lg:col-6 xl:col-6">
     <label>CONDICIÓN FISCAL</label>
     <p-dropdown
       formControlName="taxCondition"
@@ -39,8 +41,9 @@
       styleClass="w-full"
     >
     </p-dropdown>
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-6">
+  </section>
+
+  <section class="flex flex-column col-12 lg:col-6 xl:col-6">
     <label>CORREO ELECTRÓNICO</label>
     <input
       pInputText
@@ -49,8 +52,9 @@
       placeholder="Ingrese el correo electrónico del cliente"
       pKeyFilter="email"
     />
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-6">
+  </section>
+
+  <section class="flex flex-column col-12 lg:col-6 xl:col-6">
     <label>TELÉFONO / CELULAR</label>
     <input
       pInputText
@@ -58,8 +62,9 @@
       maxlength="20"
       placeholder="Ingrese el teléfono o celular del cliente"
     />
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-6">
+  </section>
+
+  <section class="flex flex-column col-12 lg:col-6 xl:col-6">
     <label>PROVINCIA</label>
     <p-dropdown
       formControlName="province"
@@ -72,8 +77,9 @@
       styleClass="w-full"
     >
     </p-dropdown>
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-6">
+  </section>
+
+  <section class="flex flex-column col-12 lg:col-6 xl:col-6">
     <label>CALLE</label>
     <input
       pInputText
@@ -82,8 +88,9 @@
       placeholder="Ingrese la calle del cliente"
       class="w-full"
     />
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-3">
+  </section>
+
+  <section class="flex flex-column col-12 lg:col-6 xl:col-3">
     <label>NÚMERO DE CALLE</label>
     <input
       pInputText
@@ -92,8 +99,9 @@
       placeholder="Ingrese el número del domicilio del cliente"
       class="w-full"
     />
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-3">
+  </section>
+
+  <section class="flex flex-column col-12 lg:col-6 xl:col-3">
     <label>PISO</label>
     <input
       pInputText
@@ -102,8 +110,9 @@
       placeholder="Ingrese el piso del domicilio del cliente"
       class="w-full"
     />
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-3">
+  </section>
+
+  <section class="flex flex-column col-12 lg:col-6 xl:col-3">
     <label>DEPARTAMENTO(s) / OFICINA(s)</label>
     <input
       pInputText
@@ -112,8 +121,9 @@
       placeholder="Ingrese el departamento u oficina del cliente"
       class="w-full"
     />
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-3">
+  </section>
+
+  <section class="flex flex-column col-12 lg:col-6 xl:col-3">
     <label>CODIGO POSTAL</label>
     <input
       pInputText
@@ -122,8 +132,9 @@
       placeholder="Ingrese el código postal del cliente"
       class="w-full"
     />
-  </div>
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+  </section>
+
+  <section class="flex flex-column col-12 lg:col-12 xl:col-12">
     <label>PERSONA DE CONTACTO</label>
     <input
       pInputText
@@ -132,8 +143,9 @@
       placeholder="Ingrese el nombre de la persona de contacto"
       class="w-full"
     />
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-6">
+  </section>
+
+  <section class="flex flex-column col-12 lg:col-6 xl:col-6">
     <label>CORREO ELECTRÓNICO (Persona de Contacto)</label>
     <input
       pInputText
@@ -142,8 +154,9 @@
       placeholder="Ingrese el correo electrónico de la persona de contacto"
       pKeyFilter="email"
     />
-  </div>
-  <div class="flex flex-column col-12 lg:col-6 xl:col-6">
+  </section>
+
+  <section class="flex flex-column col-12 lg:col-6 xl:col-6">
     <label>TELÉFONO / CELULAR (Persona de Contacto)</label>
     <input
       pInputText
@@ -151,8 +164,9 @@
       maxlength="20"
       placeholder="Ingrese el teléfono o celular de la persona de contacto"
     />
-  </div>
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+  </section>
+
+  <section class="flex flex-column col-12 lg:col-12 xl:col-12">
     <label>COMENTARIOS</label>
     <textarea
       pInputTextarea
@@ -163,8 +177,11 @@
       [autoResize]="true"
       rows="5"
     ></textarea>
-  </div>
-  <div class="flex gap-2 col-12 lg:flex-row justify-content-end flex-column">
+  </section>
+
+  <section
+    class="flex gap-2 col-12 lg:flex-row justify-content-end flex-column"
+  >
     <p-button
       label="SALIR DEL FORMULARIO"
       styleClass="p-button-secondary w-full"
@@ -176,5 +193,5 @@
       styleClass="p-button-info w-full"
       (onClick)="processClientForm()"
     />
-  </div>
+  </section>
 </form>
