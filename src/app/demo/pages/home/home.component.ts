@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { SupportService } from 'src/app/demo/api/services/support.service';
-import { ISupport } from '../../api/interfaces/support.interface';
+import { ISupport, ISupportMain } from '../../api/interfaces/support.interface';
 
 @Component({
   selector: 'app-home',
@@ -9,32 +9,29 @@ import { ISupport } from '../../api/interfaces/support.interface';
 export class HomeComponent {
   constructor(private readonly supportService: SupportService) {}
 
-  public services: number = 0;
-  public servicesActive: number = 0;
-  public servicesRepair: number = 0;
-  public servicesWithOutRepair: number = 0;
   public supports: ISupport[] = [];
+  public supportMain: ISupportMain = {} as ISupportMain;
 
-  //Inicializador de funciones
   ngOnInit() {
-    this.countAllServices();
-    this.loadSupportsMain();
+    this.getDetailSupports();
+    this.getAllSupportsMain();
   }
 
-  //Cuenta todos los servicios (En total, Activos, Reparados y No reparados), este es por año actual.
-  private countAllServices() {
+  /**
+   * Carga los detalles de soportes desde el servicio principal y los asigna a la propiedad 'clients' para su visualización en la tabla.
+   */
+  private getDetailSupports() {
     this.supportService.getServiceMain().subscribe({
-      next: (supports: any) => {
-        this.services = supports.services;
-        this.servicesActive = supports.servicesActive;
-        this.servicesRepair = supports.servicesRepair;
-        this.servicesWithOutRepair = supports.servicesWithOutRepair;
+      next: (supportMain: ISupportMain) => {
+        this.supportMain = supportMain;
       },
     });
   }
 
-  //Carga de servicios activos.
-  private loadSupportsMain() {
+  /**
+   * Carga los soportes activos desde el servicio principal y los asigna a la propiedad 'supports' para su visualización en la tabla.
+   */
+  private getAllSupportsMain() {
     this.supportService.findAllActiveServices().subscribe({
       next: (supports: ISupport[]) => {
         this.supports = supports;

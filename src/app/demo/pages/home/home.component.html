@@ -1,77 +1,85 @@
 <section class="grid">
-  <div class="col-12 lg:col-6 xl:col-3">
-    <div class="p-card mb-0 p-4 transition-duration-400 hover:bg-blue-50">
-      <div class="flex justify-content-between mb-3">
-        <div>
-          <span class="block text-500 font-medium mb-3"
-            >SERVICIOS EN GENERAL</span
-          >
-          <div class="text-900 font-medium text-xl">{{ services }}</div>
-        </div>
-        <div
-          class="flex align-items-center justify-content-center bg-blue-100 border-round h-3rem w-3rem"
+  <section
+    class="col-12 lg:col-6 xl:col-3 p-card mb-0 p-4 transition-duration-400 hover:bg-blue-50"
+  >
+    <div class="flex justify-content-between mb-3">
+      <div>
+        <span class="block text-500 font-medium mb-3"
+          >SERVICIOS EN GENERAL</span
         >
-          <i class="pi pi-globe text-blue-500 text-xl"></i>
+        <div class="text-900 font-medium text-xl">
+          {{ supportMain.services }}
         </div>
       </div>
-      <span class="text-500">Total de servicios</span>
+      <div
+        class="flex align-items-center justify-content-center bg-blue-100 border-round h-3rem w-3rem"
+      >
+        <i class="pi pi-globe text-blue-500 text-xl"></i>
+      </div>
     </div>
-  </div>
-  <div class="col-12 lg:col-6 xl:col-3">
-    <div class="p-card mb-0 p-4 transition-duration-400 hover:bg-yellow-50">
-      <div class="flex justify-content-between mb-3">
-        <div>
-          <span class="block text-500 font-medium mb-3">SERVICIOS ACTIVOS</span>
-          <div class="text-900 font-medium text-xl">{{ servicesActive }}</div>
-        </div>
-        <div
-          class="flex align-items-center justify-content-center bg-yellow-100 border-round h-3rem w-3rem"
-        >
-          <i class="pi pi-star text-yellow-500 text-xl"></i>
+    <span class="text-500">Total de servicios</span>
+  </section>
+
+  <section
+    class="col-12 lg:col-6 xl:col-3 p-card mb-0 p-4 transition-duration-400 hover:bg-yellow-50"
+  >
+    <div class="flex justify-content-between mb-3">
+      <div>
+        <span class="block text-500 font-medium mb-3">SERVICIOS ACTIVOS</span>
+        <div class="text-900 font-medium text-xl">
+          {{ supportMain.servicesActive }}
         </div>
       </div>
-      <span class="text-500">Servicios activos actualmente.</span>
+      <div
+        class="flex align-items-center justify-content-center bg-yellow-100 border-round h-3rem w-3rem"
+      >
+        <i class="pi pi-star text-yellow-500 text-xl"></i>
+      </div>
     </div>
-  </div>
-  <div class="col-12 lg:col-6 xl:col-3">
-    <div class="p-card mb-0 p-4 transition-duration-400 hover:bg-green-50">
-      <div class="flex justify-content-between mb-3">
-        <div>
-          <span class="block text-500 font-medium mb-3"
-            >SERVICIOS REPARADOS</span
-          >
-          <div class="text-900 font-medium text-xl">{{ servicesRepair }}</div>
-        </div>
-        <div
-          class="flex align-items-center justify-content-center bg-green-100 border-round h-3rem w-3rem"
-        >
-          <i class="pi pi-thumbs-up text-green-500 text-xl"></i>
+    <span class="text-500">Servicios activos actualmente.</span>
+  </section>
+
+  <section
+    class="col-12 lg:col-6 xl:col-3 p-card mb-0 p-4 transition-duration-400 hover:bg-green-50"
+  >
+    <div class="flex justify-content-between mb-3">
+      <div>
+        <span class="block text-500 font-medium mb-3">SERVICIOS REPARADOS</span>
+        <div class="text-900 font-medium text-xl">
+          {{ supportMain.servicesRepair }}
         </div>
       </div>
-      <span class="text-500">Total de servicios reparados.</span>
+      <div
+        class="flex align-items-center justify-content-center bg-green-100 border-round h-3rem w-3rem"
+      >
+        <i class="pi pi-thumbs-up text-green-500 text-xl"></i>
+      </div>
     </div>
-  </div>
-  <div class="col-12 lg:col-6 xl:col-3">
-    <div class="p-card mb-0 p-4 transition-duration-400 hover:bg-red-50">
-      <div class="flex justify-content-between mb-3">
-        <div>
-          <span class="block text-500 font-medium mb-3"
-            >SERVICIOS NO REPARADOS</span
-          >
-          <div class="text-900 font-medium text-xl">
-            {{ servicesWithOutRepair }}
-          </div>
-        </div>
-        <div
-          class="flex align-items-center justify-content-center bg-orange-100 border-round h-3rem w-3rem"
+    <span class="text-500">Total de servicios reparados.</span>
+  </section>
+
+  <section
+    class="col-12 lg:col-6 xl:col-3 p-card mb-0 p-4 transition-duration-400 hover:bg-red-50"
+  >
+    <div class="flex justify-content-between mb-3">
+      <div>
+        <span class="block text-500 font-medium mb-3"
+          >SERVICIOS NO REPARADOS</span
         >
-          <i class="pi pi-thumbs-down text-orange-500 text-xl"></i>
+        <div class="text-900 font-medium text-xl">
+          {{ supportMain.servicesWithOutRepair }}
         </div>
       </div>
-      <span class="text-500">Total de servicios no reparados.</span>
+      <div
+        class="flex align-items-center justify-content-center bg-orange-100 border-round h-3rem w-3rem"
+      >
+        <i class="pi pi-thumbs-down text-orange-500 text-xl"></i>
+      </div>
     </div>
-  </div>
-  <div class="col-12 flex-1">
+    <span class="text-500">Total de servicios no reparados.</span>
+  </section>
+
+  <section class="col-12 flex-1">
     <div class="mb-0 p-4">
       <div>
         <span class="block text-500 font-medium mb-3">SERVICIOS ACTIVOS</span>
@@ -108,7 +116,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr class="text-sm w-full">
-            <td colspan="4">
+            <td colspan="6">
               <div class="flex gap-2 align-items-center">
                 <i class="pi pi-info-circle"></i>
                 <span class="font-medium">No hay actividad reciente</span>
@@ -118,5 +126,5 @@
         </ng-template>
       </p-table>
     </div>
-  </div>
+  </section>
 </section>
