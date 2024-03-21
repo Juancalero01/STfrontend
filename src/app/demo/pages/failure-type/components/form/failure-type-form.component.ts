@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -19,49 +20,67 @@ export class FailureTypeFormComponent {
     private readonly failureTypeService: FailureTypeService
   ) {}
 
-  public failureTypeForm: FormGroup = this.buildForm();
+  public failureTypeForm: FormGroup = this.buildFailureTypeForm();
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
 
-  //Inicializador de funciones.
   ngOnInit(): void {
     if (this.config.data) {
-      this.loadForm(this.config.data);
+      this.loadFailureTypeDataIntoForm(this.config.data);
       this.buttonLabel = 'ACTUALIZAR FORMULARIO';
     }
   }
 
-  //Construcción de los campos y validaciones del formulario principal de tipo de falals.
-  private buildForm(): FormGroup {
+  /**
+   * Construye y devuelve un FormGroup para el formulario de tipos de falla.
+   * Este FormGroup contiene controles para capturar la información del tipos de falla,
+   * aplicando validaciones a cada campo según los requisitos especificados.
+   */
+  private buildFailureTypeForm(): FormGroup {
     return this.formBuilder.group({
       name: [null, [Validators.required, Validators.maxLength(60)]],
       description: [null, [Validators.maxLength(250)]],
     });
   }
 
-  //Carga el formulario de tipo de fallas.
-  private loadForm(failureType: IFailureType): void {
+  /**
+   * Carga los datos del tipos de fallas en el formulario correspondiente.
+   * Utiliza los datos del tipos de fallas proporcionados para completar los campos del formulario,
+   * asignando los valores de los campos a partir de la información del tipos de fallas.
+   */
+  private loadFailureTypeDataIntoForm(failureType: IFailureType): void {
     this.failureTypeForm.patchValue(failureType);
   }
 
-  //Validaciones del formulario de tipo de fallas.
-  public validateForm(controlName: string): boolean | undefined {
+  /**
+   * Valida un control específico del formulario del tipos de fallas.
+   * Comprueba si el control especificado es inválido y ha sido tocado.
+   * @param controlName El nombre del control que se va a validar.
+   * @returns Verdadero si el control es inválido y ha sido tocado, de lo contrario, indefinido.
+   */
+  public isFormControlInvalid(controlName: string): boolean | undefined {
     return (
       this.failureTypeForm.get(controlName)?.invalid &&
       this.failureTypeForm.get(controlName)?.touched
     );
   }
 
-  //Guarda o actualiza la información del tipo de fallas.
-  public submitForm(): void {
+  /**
+   * Envía el formulario del cliente para crear un nuevo registro o actualizar uno existente.
+   * Determina si se debe llamar a la función de confirmación de creación o actualización del cliente.
+   */
+  public processFailureTypeForm(): void {
     if (!this.config.data) {
-      this.createFailureType();
+      this.confirmCreateFailureType();
     } else {
-      this.updateFailureType();
+      this.confirmUpdateFailureType();
     }
   }
 
-  //Cancela el formulario del tipo de fallas.
-  public cancelForm(): void {
+  /**
+   * Cierra el formulario de clientes.
+   * Muestra un diálogo de confirmación antes de cerrar.
+   */
+  public closeFailureTypeForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea cancelar la operación?',
       header: 'CONFIRMAR',
@@ -76,8 +95,11 @@ export class FailureTypeFormComponent {
     });
   }
 
-  //Guarda la información para una nueva falla.
-  public createFailureType(): void {
+  /**
+   * Crea un nuevo registro de tipos de fallas.
+   * Muestra un diálogo de confirmación antes de realizar la operación.
+   */
+  public confirmCreateFailureType(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea crear el registro?',
       header: 'CONFIRMAR',
@@ -98,13 +120,31 @@ export class FailureTypeFormComponent {
             });
             this.ref.close();
           },
+          error: (err: HttpErrorResponse) => {
+            if (err.status === 409) {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'El tipo de falla ya existe',
+              });
+            } else {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Ocurrió un error al crear el tipo de falla',
+              });
+            }
+          },
         });
       },
     });
   }
 
-  //Actualiza la información para la falla.
-  public updateFailureType(): void {
+  /**
+   * Actualiza el registro de tipos de fallas.
+   * Muestra un diálogo de confirmación antes de realizar la operación.
+   */
+  public confirmUpdateFailureType(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea actualizar el registro?',
       header: 'CONFIRMAR',
@@ -127,13 +167,31 @@ export class FailureTypeFormComponent {
               });
               this.ref.close();
             },
+            error: (err: HttpErrorResponse) => {
+              if (err.status === 404) {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Tipo de falla no encontrado',
+                });
+              } else {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Ocurrió un error al actualizar el tipo de falla',
+                });
+              }
+            },
           });
       },
     });
   }
 
-  //Obtiene si realmente el usuario modifico el formulario de tipo de fallas.
-  public getChangesToUpdate(): boolean {
+  /**
+   * Verifica si el usuario ha realizado modificaciones en el formulario de tipos de fallas.
+   * @returns true si el formulario ha sido modificado; de lo contrario, false.
+   */
+  public hasFailureTypeFormChanged(): boolean {
     return !this.failureTypeForm.pristine;
   }
 }

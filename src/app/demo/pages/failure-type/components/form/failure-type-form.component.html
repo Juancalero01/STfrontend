@@ -1,5 +1,5 @@
 <form class="grid" [formGroup]="failureTypeForm">
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+  <section class="flex flex-column col-12 lg:col-12 xl:col-12">
     <label>NOMBRE DE LA FALLA</label>
     <input
       formControlName="name"
@@ -8,13 +8,14 @@
       class="w-full"
       maxlength="60"
       placeholder="Ingrese nombre de la falla"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('name') }"
+      [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('name') }"
     />
-    <small *ngIf="validateForm('name')" class="p-error">
+    <small *ngIf="isFormControlInvalid('name')" class="p-error">
       Campo requerido*
     </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+  </section>
+
+  <section class="flex flex-column col-12 lg:col-12 xl:col-12">
     <label>DESCRIPCIÓN DE LA FALLA</label>
     <textarea
       pInputTextarea
@@ -25,18 +26,21 @@
       [autoResize]="true"
       rows="5"
     ></textarea>
-  </div>
-  <div class="flex gap-2 col-12 lg:flex-row justify-content-end flex-column">
+  </section>
+
+  <section
+    class="flex gap-2 col-12 lg:flex-row justify-content-end flex-column"
+  >
     <p-button
       label="SALIR DEL FORMULARIO"
       styleClass="p-button-secondary w-full"
-      (onClick)="cancelForm()"
+      (onClick)="closeFailureTypeForm()"
     />
     <p-button
       [label]="buttonLabel"
-      [disabled]="failureTypeForm.invalid || !getChangesToUpdate()"
+      [disabled]="failureTypeForm.invalid || !hasFailureTypeFormChanged()"
       styleClass="p-button-info w-full"
-      (onClick)="submitForm()"
+      (onClick)="processFailureTypeForm()"
     />
-  </div>
+  </section>
 </form>

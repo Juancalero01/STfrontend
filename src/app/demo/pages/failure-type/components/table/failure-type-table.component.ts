@@ -16,14 +16,15 @@ export class FailureTypeTableComponent {
   ) {}
 
   public failureTypes: IFailureType[] = [];
-  public ref: DynamicDialogRef = new DynamicDialogRef();
+  public dialogRef: DynamicDialogRef = new DynamicDialogRef();
 
-  //Inicializador de funciones.
   ngOnInit() {
     this.loadFailureTypes();
   }
 
-  //Cargar tipos de fallas
+  /**
+   * Carga los tipos de fallas desde el servicio de tipos de fallas y los asigna a la propiedad 'failureTypes' para su visualización en la tabla.
+   */
   private loadFailureTypes(): void {
     this.failureTypeService.findAll().subscribe({
       next: (failureTypes: IFailureType[]) => {
@@ -32,12 +33,15 @@ export class FailureTypeTableComponent {
     });
   }
 
-  //Abre el formulario de tipo de fallas.
-  public openFailureTypeForm(failureType?: IFailureType): void {
-    const header = failureType
-      ? 'FORMULARIO DE ACTUALIZACIÓN DE TIPO DE FALLA'
-      : 'FORMULARIO DE REGISTRO DE TIPO DE FALLA';
-    this.ref = this.dialogService.open(FailureTypeFormComponent, {
+  /**
+   * Abre un formulario para guardar o actualizar la información de un tipo de falla.
+   * @param failureTypeData Datos del tipo de falla a editar. Si no se proporciona, se abre un formulario para registrar un nuevo tipo de falla.
+   */
+  public openFailureTypeDialog(failureTypeData?: IFailureType): void {
+    const header = failureTypeData
+      ? 'ACTUALIZAR TIPO DE FALLA'
+      : 'REGISTRAR TIPO DE FALLA';
+    this.dialogRef = this.dialogService.open(FailureTypeFormComponent, {
       header: header,
       width: '50%',
       closable: false,
@@ -45,17 +49,21 @@ export class FailureTypeTableComponent {
       dismissableMask: false,
       showHeader: true,
       position: 'center',
-      data: failureType,
+      data: failureTypeData,
     });
 
-    this.ref.onClose.subscribe({
+    this.dialogRef.onClose.subscribe({
       next: () => {
         this.loadFailureTypes();
       },
     });
   }
 
-  //Elimina los filtros (Tabla(Paginación, Filtros de columna) Buscador)
+  /**
+   * Elimina los filtros de búsqueda o paginación en una tabla.
+   * @param table La tabla (Table) de PrimeNG de la que se eliminarán los filtros.
+   * @param filter El filtro de búsqueda o paginación que se reiniciará.
+   */
   public cleanFilters(table: Table, filter: any): void {
     table.clear();
     filter.value = '';
