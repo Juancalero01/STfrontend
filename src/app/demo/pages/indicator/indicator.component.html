@@ -1,11 +1,14 @@
 <section class="grid">
   <section class="col-12 md:col-12 lg:col-12 xl:col-3 noprint">
+    <app-panel-header
+      title="Indicadores"
+      subtitle="Busca y muestra los datos de indicadores"
+    >
+    </app-panel-header>
+    <br />
     <form class="flex flex-wrap gap-2" [formGroup]="indicatorForm">
-      <div class="w-full mb-2">
-        <span class="font-medium text-2xl">FILTROS</span>
-      </div>
-      <div class="flex flex-column w-full">
-        <label>CLIENTE</label>
+      <fieldset class="border-none w-full">
+        <legend>CLIENTE</legend>
         <p-dropdown
           [options]="clients"
           formControlName="client"
@@ -19,9 +22,10 @@
           [showClear]="true"
         />
         <small class="text-green-500"> Campo opcional* </small>
-      </div>
-      <div class="flex flex-column w-full">
-        <label>TIPO DE PRODUCTO</label>
+      </fieldset>
+
+      <fieldset class="border-none w-full">
+        <legend>TIPO DE PRODUCTO</legend>
         <p-dropdown
           [options]="productTypes"
           formControlName="productType"
@@ -35,9 +39,10 @@
           [showClear]="true"
         />
         <small class="text-green-500"> Campo opcional* </small>
-      </div>
-      <div class="flex flex-column w-full">
-        <label>FECHA DESDE</label>
+      </fieldset>
+
+      <fieldset class="border-none w-full">
+        <legend>FECHA DESDE</legend>
         <p-calendar
           formControlName="dateFrom"
           dateFormat="dd-mm-yy"
@@ -48,9 +53,10 @@
           placeholder="Seleccionar fecha"
         />
         <small class="p-error"> Campo requerido* </small>
-      </div>
-      <div class="flex flex-column w-full">
-        <label>FECHA HASTA</label>
+      </fieldset>
+
+      <fieldset class="border-none w-full">
+        <legend>FECHA HASTA</legend>
         <p-calendar
           [minDate]="indicatorForm.get('dateFrom')?.value"
           formControlName="dateUntil"
@@ -62,17 +68,16 @@
           placeholder="Seleccionar fecha"
         />
         <small class="p-error"> Campo requerido* </small>
-      </div>
-      <div class="w-full">
+      </fieldset>
+
+      <section class="w-full flex flex-column gap-2">
         <p-button
           label="GENERAR ESTADÍSTICAS"
           styleClass="w-full p-button-info"
           icon="pi pi-chart-pie"
-          [disabled]="indicatorForm.invalid || !getChangesToUpdate()"
+          [disabled]="indicatorForm.invalid || !hasIndicatorFormChanged()"
           (onClick)="generateIndicators()"
         />
-      </div>
-      <div class="w-full">
         <p-button
           label="EXPORTAR EXCEL"
           styleClass="w-full p-button-success"
@@ -80,27 +85,21 @@
           *ngIf="showButton"
           (onClick)="exportToExcel()"
         />
-      </div>
-
-      <div class="w-full">
         <p-button
           label="EXPORTAR PDF"
           styleClass="w-full p-button-secondary"
           icon="pi pi-file-pdf"
           *ngIf="showButton"
-          (onClick)="exportToPage()"
+          (onClick)="exportToPdf()"
         />
-      </div>
-
-      <div class="w-full">
         <p-button
           label="LIMPIAR FILTROS"
           styleClass="w-full p-button-danger"
           icon="pi pi-filter-slash"
           *ngIf="showCleanFilters"
-          (onClick)="cleanFormAndIndicators()"
+          (onClick)="clearFormAndHideIndicators()"
         />
-      </div>
+      </section>
     </form>
   </section>
   <section
@@ -138,7 +137,7 @@
                 icon="pi pi-eye"
                 styleClass="p-button-text p-button-secondary"
                 (onClick)="
-                  openIndicatorServiceForm(indicatorData.services, 'SERVICIOS')
+                  openIndicatorDialgog(indicatorData.services, 'SERVICIOS')
                 "
                 [disabled]="indicatorData.services.length === 0"
               />
@@ -178,7 +177,7 @@
               icon="pi pi-eye"
               styleClass="p-button-text p-button-secondary"
               (onClick)="
-                openIndicatorServiceForm(
+                openIndicatorDialgog(
                   indicatorData.servicesRepair,
                   'SERVICIOS REPARADOS'
                 )
@@ -203,7 +202,7 @@
               icon="pi pi-eye"
               styleClass="p-button-text p-button-secondary"
               (onClick)="
-                openIndicatorServiceForm(
+                openIndicatorDialgog(
                   indicatorData.servicesNotRepair,
                   'SERVICIOS NO REPARADOS'
                 )
@@ -228,7 +227,7 @@
               icon="pi pi-eye"
               styleClass="p-button-text p-button-secondary"
               (onClick)="
-                openIndicatorServiceForm(
+                openIndicatorDialgog(
                   indicatorData.reentryServices,
                   'SERVICIOS REINGRESADOS'
                 )
@@ -251,7 +250,7 @@
               icon="pi pi-eye"
               styleClass="p-button-text p-button-secondary"
               (onClick)="
-                openIndicatorServiceForm(
+                openIndicatorDialgog(
                   indicatorData.servicesActive,
                   'SERVICIOS REINGRESADOS'
                 )
@@ -370,8 +369,8 @@
   </section>
   <ng-template #elseBlock>
     <div>
-      Esperando a que inicie la generación de estadísticas. Por favor, haga clic
-      en el botón correspondiente.
+      Se está esperando el inicio de la generación de estadísticas. Por favor,
+      aguarde mientras se realiza este proceso.
       <i class="pi pi-spin pi-spinner"></i>
     </div>
   </ng-template>

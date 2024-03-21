@@ -10,6 +10,11 @@ import { ClientService } from '../../api/services/client.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ISupport } from '../../api/interfaces/support.interface';
 import { IndicatorFormComponent } from './components/form/indicator-form.component';
+import {
+  ClientData,
+  FailureData,
+  ProductTypeData,
+} from '../../api/interfaces/indicator';
 
 @Component({
   selector: 'app-indicator',
@@ -25,30 +30,38 @@ export class IndicatorComponent {
     private readonly excelService: ExcelService,
     private readonly dialogService: DialogService
   ) {}
+
   public productTypes: IProductType[] = [];
   public clients: IClient[] = [];
-  public indicatorForm: FormGroup = this.buildForm();
-  public dateFrom: string = '';
-  public dateUntil: string = '';
-  public productType: string = '';
-  public client: string = '';
+  public indicatorForm: FormGroup = this.buildIndicatorForm();
+
+  public failureTypesData: any = [];
+  public productTypesData: any;
+  public clientsData: any;
+
   public showIndicator: boolean = false;
   public showButton: boolean = false;
   public showCleanFilters: boolean = false;
   public indicatorData: any = [];
-  public failureTypesData: any;
-  public productTypesData: any;
-  public clientsData: any;
   public options: any;
-  public ref: DynamicDialogRef = new DynamicDialogRef();
+  public dialogRef: DynamicDialogRef = new DynamicDialogRef();
+
+  public dateFrom: string = '';
+  public dateUntil: string = '';
+  public productType: string = '';
+  public client: string = '';
 
   public ngOnInit() {
-    this.loadProductTypes();
-    this.loadClients();
+    this.getProductTypes();
+    this.getClients();
     this.getConfigGlobalChart();
   }
 
-  private loadProductTypes(): void {
+  /**
+   * Obtiene los tipos de producto desde el servicio correspondiente y las asigna al dropdown correspondiente.
+   * Los tipos de producto se utilizan para llenar opciones en un dropdown de selección en el formulario de indicadores.
+   */
+  private getProductTypes(): void {
     this.productTypeService.findAll().subscribe({
       next: (productTypes: IProductType[]) => {
         this.productTypes = productTypes;
@@ -56,7 +69,11 @@ export class IndicatorComponent {
     });
   }
 
-  private loadClients(): void {
+  /**
+   * Obtiene los clientes desde el servicio correspondiente y las asigna al dropdown correspondiente.
+   * Los clientes se utilizan para llenar opciones en un dropdown de selección en el formulario de indicadores.
+   */
+  private getClients(): void {
     this.clientService.findAll().subscribe({
       next: (clients: IClient[]) => {
         this.clients = clients;
@@ -64,6 +81,16 @@ export class IndicatorComponent {
     });
   }
 
+  /**
+   * Genera indicadores basados en los filtros seleccionados en el formulario.
+   *
+   * @remarks
+   * Esta función envía una solicitud al servicio para obtener los indicadores correspondientes
+   * según los filtros seleccionados en el formulario. Una vez que se reciben los datos, se actualizan
+   * los indicadores en la interfaz, se generan gráficos y se actualizan los valores de los campos
+   * de fecha, tipo de producto y cliente seleccionados. Además, se muestra un mensaje informativo si
+   * no se encuentran resultados.
+   */
   public generateIndicators(): void {
     const dataSend = {
       dateFrom: this.indicatorForm.get('dateFrom')?.value,
@@ -76,9 +103,9 @@ export class IndicatorComponent {
       next: (data: any) => {
         if (data !== null) {
           this.indicatorData = data;
-          this.generateFailures();
-          this.generateProducts();
-          this.generateClients();
+          this.generateFailuresChart();
+          this.generateProductsChart();
+          this.generateClientsChart();
           this.dateFrom = this.indicatorForm.get('dateFrom')?.value;
           this.dateUntil = this.indicatorForm.get('dateUntil')?.value;
           const productTypeId = this.indicatorForm.get('productType')?.value;
@@ -102,7 +129,7 @@ export class IndicatorComponent {
         } else {
           this.messageService.add({
             severity: 'info',
-            summary: 'Operación',
+            summary: 'Info',
             detail: 'Sin resultados',
           });
         }
@@ -110,7 +137,12 @@ export class IndicatorComponent {
     });
   }
 
-  private buildForm(): FormGroup {
+  /**
+   * Construye y devuelve un FormGroup para el formulario de busqueda de indicadores.
+   * Este FormGroup contiene controles para capturar la información de la busqueda de indicadores,
+   * aplicando validaciones a cada campo según los requisitos especificados.
+   */
+  private buildIndicatorForm(): FormGroup {
     return this.formBuilder.group({
       client: [null],
       productType: [null],
@@ -119,19 +151,29 @@ export class IndicatorComponent {
     });
   }
 
-  public getChangesToUpdate(): boolean {
+  /**
+   * Verifica si el usuario ha realizado modificaciones en el formulario de busqueda de indicadores.
+   * @returns true si el formulario ha sido modificado; de lo contrario, false.
+   */
+  public hasIndicatorFormChanged(): boolean {
     return !this.indicatorForm.pristine;
   }
 
-  private generateFailures() {
+  /**
+   * Genera un gráfico de fallas basado en los datos proporcionados por el indicador de fallas.
+   * Ordena los datos de fallas por porcentaje de mayor a menor y crea etiquetas y porcentajes
+   * para su representación en el gráfico.
+   */
+  private generateFailuresChart() {
     const sortedData = this.indicatorData.failureServices.sort(
-      (a: any, b: any) => b.percentage - a.percentage
+      (a: FailureData, b: FailureData) => b.percentage - a.percentage
     );
 
     const labels = sortedData.map(
-      (item: any) => `${item.failure} ${item.percentage}%`
+      (item: FailureData) => `${item.failure} ${item.percentage}%`
     );
-    const percentages = sortedData.map((item: any) => item.percentage);
+
+    const percentages = sortedData.map((item: FailureData) => item.percentage);
 
     this.failureTypesData = {
       labels: labels,
@@ -139,15 +181,22 @@ export class IndicatorComponent {
     };
   }
 
-  private generateProducts() {
+  /**
+   * Genera un gráfico de tipos de producto basado en los datos proporcionados por el indicador de tipos de productos.
+   * Ordena los datos de tipos de producto por porcentaje de mayor a menor y crea etiquetas y porcentajes
+   * para su representación en el gráfico.
+   */
+  private generateProductsChart() {
     const sortedData = this.indicatorData.productTypeServices.sort(
-      (a: any, b: any) => b.percentage - a.percentage
+      (a: ProductTypeData, b: ProductTypeData) => b.percentage - a.percentage
     );
 
     const labels = sortedData.map(
-      (item: any) => `${item.productType} ${item.percentage}%`
+      (item: ProductTypeData) => `${item.productType} ${item.percentage}%`
     );
-    const percentages = sortedData.map((item: any) => item.percentage);
+    const percentages = sortedData.map(
+      (item: ProductTypeData) => item.percentage
+    );
 
     this.productTypesData = {
       labels: labels,
@@ -155,15 +204,20 @@ export class IndicatorComponent {
     };
   }
 
-  private generateClients() {
+  /**
+   * Genera un gráfico de clientes basado en los datos proporcionados por el indicador de clientes.
+   * Ordena los datos de clientes por porcentaje de mayor a menor y crea etiquetas y porcentajes
+   * para su representación en el gráfico.
+   */
+  private generateClientsChart() {
     const sortedData = this.indicatorData.clientServices.sort(
-      (a: any, b: any) => b.percentage - a.percentage
+      (a: ClientData, b: ClientData) => b.percentage - a.percentage
     );
 
     const labels = sortedData.map(
-      (item: any) => `${item.taxpayerName} ${item.percentage}%`
+      (item: ClientData) => `${item.taxpayerName} ${item.percentage}%`
     );
-    const percentages = sortedData.map((item: any) => item.percentage);
+    const percentages = sortedData.map((item: ClientData) => item.percentage);
 
     this.clientsData = {
       labels: labels,
@@ -171,6 +225,66 @@ export class IndicatorComponent {
     };
   }
 
+  /**
+   * Exporta el contenido de la página actual para excel en formato de tabla.
+   */
+  public exportToExcel(): void {
+    const fileName = 'CNET_indicadores';
+    this.excelService.export(
+      {
+        dateFrom: this.dateFrom,
+        dateUntil: this.dateUntil,
+        client: this.client,
+        productType: this.productType,
+        ...this.indicatorData,
+      },
+      fileName
+    );
+  }
+
+  /**
+   * Reinicia el formulario de indicadores y oculta los indicadores en la interfaz.
+   */
+  public clearFormAndHideIndicators() {
+    this.indicatorForm.reset();
+    this.showButton = false;
+    this.showIndicator = false;
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Info',
+      detail: 'Filtros reseteados',
+    });
+    this.showCleanFilters = false;
+  }
+
+  /**
+   * Abre un diálogo de indicadores con los datos de soporte proporcionados.
+   * @param supports - Datos de soporte que se mostrarán en el formulario de indicadores.
+   * @param header - Título del diálogo de indicadores.
+   */
+  public openIndicatorDialgog(supports: ISupport[], header: string): void {
+    this.dialogRef = this.dialogService.open(IndicatorFormComponent, {
+      header: header,
+      width: '80%',
+      closable: true,
+      closeOnEscape: true,
+      dismissableMask: false,
+      showHeader: true,
+      position: 'center',
+      data: supports,
+    });
+  }
+
+  /**
+   * Exporta el contenido de la página actual para impresión.
+   */
+  public exportToPdf(): void {
+    window.print();
+  }
+
+  /**
+   * Obtiene la configuración global para el gráfico.
+   */
   private getConfigGlobalChart() {
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
@@ -206,48 +320,5 @@ export class IndicatorComponent {
         },
       },
     };
-  }
-
-  public exportToExcel(): void {
-    const fileName = 'CNET_indicadores';
-    this.excelService.export(
-      {
-        dateFrom: this.dateFrom,
-        dateUntil: this.dateUntil,
-        client: this.client,
-        productType: this.productType,
-        ...this.indicatorData,
-      },
-      fileName
-    );
-  }
-
-  public cleanFormAndIndicators() {
-    this.indicatorForm.reset();
-    this.showButton = false;
-    this.showIndicator = false;
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Operación',
-      detail: 'Filtros reseteados',
-    });
-    this.showCleanFilters = false;
-  }
-
-  public openIndicatorServiceForm(supports: ISupport[], header: string): void {
-    this.ref = this.dialogService.open(IndicatorFormComponent, {
-      header: header,
-      width: '80%',
-      closable: true,
-      closeOnEscape: true,
-      dismissableMask: false,
-      showHeader: true,
-      position: 'center',
-      data: supports,
-    });
-  }
-
-  public exportToPage(): void {
-    window.print();
   }
 }
