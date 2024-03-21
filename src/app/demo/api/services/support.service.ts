@@ -2,7 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { Observable } from 'rxjs';
-import { ISupport, ISupportMany } from '../interfaces/support.interface';
+import {
+  ISupport,
+  ISupportMain,
+  ISupportMany,
+} from '../interfaces/support.interface';
 @Injectable({
   providedIn: 'root',
 })
@@ -19,8 +23,8 @@ export class SupportService {
     return this.httpClient.get<ISupport[]>(this.URL);
   }
 
-  public getServiceMain(): Observable<any> {
-    return this.httpClient.get<any>(`${this.URL}/h`);
+  public getServiceMain(): Observable<ISupportMain> {
+    return this.httpClient.get<ISupportMain>(`${this.URL}/h`);
   }
 
   public findOne(id: number): Observable<ISupport> {

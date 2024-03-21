@@ -39,3 +39,10 @@ export interface ISupportMany {
   state: ISupportState;
   warrany: boolean;
 }
+
+export interface ISupportMain {
+  services: number;
+  servicesActive: number;
+  servicesRepair: number;
+  servicesWithOutRepair: number;
+}
