@@ -258,7 +258,6 @@ export class ClientFormComponent {
                   detail: 'Cliente no encontrado',
                 });
               } else {
-                console.error('Error en la actualización del cliente:', err);
                 this.messageService.add({
                   severity: 'error',
                   summary: 'Error',
