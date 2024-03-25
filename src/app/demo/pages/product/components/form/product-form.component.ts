@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -25,24 +26,26 @@ export class ProductFormComponent {
     private readonly formBuilder: FormBuilder
   ) {}
 
-  public productForm: FormGroup = this.buildForm();
+  public productForm: FormGroup = this.buildProductForm();
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
   public clients: IClient[] = [];
   public productTypes: IProductType[] = [];
 
-  //Inicializador de funciones.
   ngOnInit(): void {
     this.getClients();
     this.getProductTypes();
-
     if (this.config.data) {
-      this.loadForm(this.config.data);
+      this.loadProductDataIntoForm(this.config.data);
       this.buttonLabel = 'ACTUALIZAR FORMULARIO';
     }
   }
 
-  //Construcción de los campos y validaciones del formulario de productos.
-  public buildForm(): FormGroup {
+  /**
+   * Construye y devuelve un FormGroup para el formulario de productos.
+   * Este FormGroup contiene controles para capturar la información del producto,
+   * aplicando validaciones a cada campo según los requisitos especificados.
+   */
+  public buildProductForm(): FormGroup {
     return this.formBuilder.group({
       client: [null, [Validators.required]],
       productType: [null, [Validators.required]],
@@ -62,8 +65,12 @@ export class ProductFormComponent {
     });
   }
 
-  //Carga de datos para el formulario de productos.
-  private loadForm(product: IProduct): void {
+  /**
+   * Carga los datos del producto en el formulario correspondiente.
+   * Utiliza los datos del producto proporcionados para completar los campos del formulario,
+   * asignando los valores de los campos a partir de la información del producto.
+   */
+  private loadProductDataIntoForm(product: IProduct): void {
     this.productForm.patchValue({
       ...product,
       client: product.client.id,
@@ -72,14 +79,20 @@ export class ProductFormComponent {
     });
   }
 
-  //Obtiene los clientes.
+  /**
+   * Obtiene los clientes desde el servicio correspondiente y las asigna al dropdown correspondiente.
+   * Los clientes se utilizan para llenar opciones en un dropdown de selección en el formulario del producto.
+   */
   private getClients(): void {
     this.clientService.findAll().subscribe({
       next: (clients: IClient[]) => (this.clients = clients),
     });
   }
 
-  //Obtiene los tipos de producto.
+  /**
+   * Obtiene los tipos de producto desde el servicio correspondiente y las asigna al dropdown correspondiente.
+   * Los tipos de producto se utilizan para llenar opciones en un dropdown de selección en el formulario del producto.
+   */
   private getProductTypes(): void {
     this.productTypeService.findAll().subscribe({
       next: (productTypes: IProductType[]) =>
@@ -87,25 +100,36 @@ export class ProductFormComponent {
     });
   }
 
-  //Validaciones del formulario de productos
-  public validateForm(controlName: string): boolean | undefined {
+  /**
+   * Valida un control específico del formulario del cliente.
+   * Comprueba si el control especificado es inválido y ha sido tocado.
+   * @param controlName El nombre del control que se va a validar.
+   * @returns Verdadero si el control es inválido y ha sido tocado, de lo contrario, indefinido.
+   */
+  public isFormControlInvalid(controlName: string): boolean | undefined {
     return (
       this.productForm.get(controlName)?.invalid &&
       this.productForm.get(controlName)?.touched
     );
   }
 
-  //Guarda o actualiza la información del producto.
-  public submitForm(): void {
+  /**
+   * Envía el formulario del producto para crear un nuevo registro o actualizar uno existente.
+   * Determina si se debe llamar a la función de confirmación de creación o actualización del producto.
+   */
+  public processProductForm(): void {
     if (!this.config.data) {
-      this.createProduct();
+      this.confirmCreateProduct();
     } else {
-      this.updateProduct();
+      this.confirmUpdateProduct();
     }
   }
 
-  //Cierra el formulario
-  public closeForm(): void {
+  /**
+   * Cierra el formulario de productos.
+   * Muestra un diálogo de confirmación antes de cerrar.
+   */
+  public closeProductForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea cancelar la operación?',
       header: 'CONFIRMAR',
@@ -120,8 +144,11 @@ export class ProductFormComponent {
     });
   }
 
-  //Crea el producto
-  public createProduct(): void {
+  /**
+   * Crea un nuevo registro de producto.
+   * Muestra un diálogo de confirmación antes de realizar la operación.
+   */
+  public confirmCreateProduct(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea crear el registro?',
       header: 'CONFIRMAR',
@@ -142,13 +169,31 @@ export class ProductFormComponent {
             });
             this.ref.close();
           },
+          error: (err: HttpErrorResponse) => {
+            if (err.status === 409) {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'El producto ya existe',
+              });
+            } else {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Ocurrió un error al crear el producto',
+              });
+            }
+          },
         });
       },
     });
   }
 
-  //Actualiza el producto
-  public updateProduct(): void {
+  /**
+   * Actualiza el registro de producto.
+   * Muestra un diálogo de confirmación antes de realizar la operación.
+   */
+  public confirmUpdateProduct(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea actualizar el registro?',
       header: 'CONFIRMAR',
@@ -171,12 +216,29 @@ export class ProductFormComponent {
               });
               this.ref.close();
             },
+            error: (err: HttpErrorResponse) => {
+              if (err.status === 404) {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Producto no encontrado',
+                });
+              } else {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Ocurrió un error al actualizar el producto',
+                });
+              }
+            },
           });
       },
     });
   }
 
-  //Cambia el tipo de producto según el encabezado del número de serie.
+  /**
+   * Actualiza el número de serie del producto según el tipo de producto seleccionado.
+   */
   public onProductTypeChange(): void {
     const productTypeId = this.productForm.get('productType')?.value;
     const productType = this.productTypes.find(
@@ -197,8 +259,11 @@ export class ProductFormComponent {
     }
   }
 
-  //Obtiene si realmente el usuario modifico el formulario de productos.
-  public getChangesToUpdate(): boolean {
+  /**
+   * Verifica si el usuario ha realizado modificaciones en el formulario de productos.
+   * @returns true si el formulario ha sido modificado; de lo contrario, false.
+   */
+  public hasProductFormChanged(): boolean {
     return !this.productForm.pristine;
   }
 }

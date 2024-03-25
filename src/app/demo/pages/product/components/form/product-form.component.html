@@ -9,11 +9,11 @@
       styleClass="w-full"
       [options]="clients"
       [filter]="true"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('client') }"
+      [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('client') }"
       [showClear]="true"
     >
     </p-dropdown>
-    <small *ngIf="validateForm('client')" class="p-error">
+    <small *ngIf="isFormControlInvalid('client')" class="p-error">
       Campo requerido*
     </small>
   </div>
@@ -26,13 +26,13 @@
       placeholder="Seleccionar tipo de producto del cliente"
       styleClass="w-full"
       [options]="productTypes"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('productType') }"
+      [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('productType') }"
       [filter]="true"
       [showClear]="true"
       (onChange)="onProductTypeChange()"
     >
     </p-dropdown>
-    <small *ngIf="validateForm('productType')" class="p-error">
+    <small *ngIf="isFormControlInvalid('productType')" class="p-error">
       Campo requerido*
     </small>
   </div>
@@ -46,9 +46,9 @@
       class="w-full"
       [minlength]="1"
       [maxlength]="10"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('serial') }"
+      [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('serial') }"
     />
-    <small *ngIf="validateForm('serial')" class="p-error">
+    <small *ngIf="isFormControlInvalid('serial')" class="p-error">
       Campo requerido*
     </small>
   </div>
@@ -61,9 +61,9 @@
       placeholder="Ingresar número de remito del producto"
       class="w-full"
       [maxLength]="15"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('reference') }"
+      [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('reference') }"
     />
-    <small *ngIf="validateForm('reference')" class="p-error">
+    <small *ngIf="isFormControlInvalid('reference')" class="p-error">
       Campo requerido*
     </small>
   </div>
@@ -78,11 +78,13 @@
       styleClass="w-full"
       appendTo="body"
       placeholder="Seleccionar o ingresar fecha de despacho del producto"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('deliveryDate') }"
+      [ngClass]="{
+        'ng-invalid ng-dirty': isFormControlInvalid('deliveryDate')
+      }"
       [showClear]="true"
     >
     </p-calendar>
-    <small *ngIf="validateForm('deliveryDate')" class="p-error">
+    <small *ngIf="isFormControlInvalid('deliveryDate')" class="p-error">
       Campo requerido*
     </small>
   </div>
@@ -90,13 +92,13 @@
     <p-button
       label="SALIR DEL FORMULARIO"
       styleClass="p-button-secondary w-full"
-      (onClick)="closeForm()"
+      (onClick)="closeProductForm()"
     />
     <p-button
       [label]="buttonLabel"
-      [disabled]="productForm.invalid || !getChangesToUpdate()"
+      [disabled]="productForm.invalid || !hasProductFormChanged()"
       styleClass="p-button-info w-full"
-      (onClick)="submitForm()"
+      (onClick)="processProductForm()"
     />
   </div>
 </form>

@@ -26,21 +26,24 @@ export class ProductTableComponent {
   public productTypes: IProductType[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
 
-  //Inicializador de funciones.
   ngOnInit(): void {
     this.loadClients();
     this.loadProductTypes();
     this.loadProducts();
   }
 
-  //Carga de clientes
+  /**
+   * Carga los clientes desde el servicio de clientes y los asigna a la propiedad 'clients' para su visualización en como filtro en la tabla
+   */
   private loadClients(): void {
     this.clientService.findAll().subscribe({
       next: (clients: IClient[]) => (this.clients = clients),
     });
   }
 
-  //Carga de tipos de producto
+  /**
+   * Carga los tipos de producto desde el servicio de tipos de producto y los asigna a la propiedad 'productTypes' para su visualización en como filtro en la tabla
+   */
   private loadProductTypes(): void {
     this.productTypeService.findAll().subscribe({
       next: (productTypes: IProductType[]) =>
@@ -48,18 +51,21 @@ export class ProductTableComponent {
     });
   }
 
-  //Carga de productos
+  /**
+   * Carga los productos desde el servicio de productos y los asigna a la propiedad 'products' para su visualización en la tabla.
+   */
   private loadProducts(): void {
     this.productService.findAll().subscribe({
       next: (products: IProduct[]) => (this.products = products),
     });
   }
 
-  //Abre el formulario para registrar o actualizar el producto
-  public openProductForm(product?: IProduct) {
-    const header = product
-      ? 'FORMULARIO DE ACTUALIZACIÓN DE PRODUCTO'
-      : 'FORMULARIO DE REGISTRO DE PRODUCTO';
+  /**
+   * Abre un formulario para guardar o actualizar la información de un producto.
+   * @param productData Datos del producto a editar. Si no se proporciona, se abre un formulario para registrar un nuevo producto.
+   */
+  public openProductForm(productData?: IProduct) {
+    const header = productData ? 'ACTUALIZAR PRODUCTO' : 'REGISTRAR PRODUCTO';
 
     this.ref = this.dialogService.open(ProductFormComponent, {
       header: header,
@@ -69,13 +75,17 @@ export class ProductTableComponent {
       dismissableMask: false,
       showHeader: true,
       position: 'center',
-      data: product,
+      data: productData,
     });
 
     this.ref.onClose.subscribe(() => this.loadProducts());
   }
 
-  //Elimina los filtros (Tabla(Paginación, Filtros de columna) Buscador)
+  /**
+   * Elimina los filtros de búsqueda o paginación en una tabla.
+   * @param table La tabla (Table) de PrimeNG de la que se eliminarán los filtros.
+   * @param filter El filtro de búsqueda o paginación que se reiniciará.
+   */
   public cleanFilters(table: Table, filter: any) {
     table.clear();
     filter.value = '';
