@@ -14,24 +14,34 @@ export class IndicatorFormComponent {
   ) {}
   public supports: ISupport[] = [];
 
-  //Inicializador de funciones.
   ngOnInit(): void {
     if (this.config.data) {
       this.loadTable(this.config.data);
     }
   }
 
-  //Carga de soportes en la tabla.
+  /**
+   * Carga los datos de soporte en la tabla de la interfaz de usuario.
+   * @param supports Los datos de soporte que se cargarán en la tabla.
+   */
   private loadTable(supports: ISupport[]): void {
     this.supports = supports;
   }
 
-  //Crea un vinculo para ir a verificar ese número de reclamo.
+  /**
+   * Genera una URL para ver el historial de reclamaciones de soporte.
+   * @param reclaim El número de reclamación para el cual se desea ver el historial.
+   * @returns La URL completa que dirige al historial de reclamaciones de soporte para el reclamo dado.
+   */
   getSupportHistoryUrl(reclaim: string): string {
     return `${this.document.baseURI}cnet/support/history?s=${reclaim}`;
   }
 
-  //Añade un tag segun el estado del servicio.
+  /**
+   * Determina el tipo de etiqueta (tag) según el estado del servicio.
+   * @param stateId El identificador del estado del servicio.
+   * @returns El tipo de etiqueta (tag) correspondiente al estado del servicio.
+   */
   public getTagSeverity(stateId: number): string {
     if (stateId === 12) {
       return 'success';
