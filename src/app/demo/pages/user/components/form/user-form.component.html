@@ -7,9 +7,9 @@
       maxlength="255"
       placeholder="Ingrese el nombre de usuario"
       class="w-full"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('username') }"
+      [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('username') }"
     />
-    <small *ngIf="validateForm('username')" class="p-error">
+    <small *ngIf="isFormControlInvalid('username')" class="p-error">
       Campo requerido*
     </small>
   </div>
@@ -21,9 +21,9 @@
       maxlength="255"
       placeholder="Ingrese nombre y apellido"
       class="w-full"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('fullname') }"
+      [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('fullname') }"
     />
-    <small *ngIf="validateForm('fullname')" class="p-error">
+    <small *ngIf="isFormControlInvalid('fullname')" class="p-error">
       Campo requerido*
     </small>
   </div>
@@ -39,10 +39,10 @@
       styleClass="w-full"
       [filter]="true"
       [showClear]="true"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('role') }"
+      [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('role') }"
     >
     </p-dropdown>
-    <small *ngIf="validateForm('role')" class="p-error">
+    <small *ngIf="isFormControlInvalid('role')" class="p-error">
       Campo requerido*
     </small>
   </div>
@@ -54,9 +54,9 @@
       maxlength="255"
       placeholder="Ingrese correo electrónico"
       pKeyFilter="email"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('email') }"
+      [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('email') }"
     />
-    <small *ngIf="validateForm('email')" class="p-error">
+    <small *ngIf="isFormControlInvalid('email')" class="p-error">
       Campo requerido*
     </small>
   </div>
@@ -67,12 +67,12 @@
     <p-button
       label="RESTABLECER CONTRASEÑA"
       styleClass="p-button-success w-full"
-      (onClick)="resetPassword()"
+      (onClick)="resetUserPassword()"
     />
     <p-button
       [label]="buttonStatusLabel"
       styleClass="p-button-warning w-full"
-      (onClick)="changeState()"
+      (onClick)="changeUserState()"
     />
   </div>
   <div
@@ -84,13 +84,13 @@
     <p-button
       label="SALIR DEL FORMULARIO"
       styleClass="p-button-secondary w-full"
-      (onClick)="closeForm()"
+      (onClick)="closeUserForm()"
     />
     <p-button
       [label]="buttonLabel"
-      [disabled]="userForm.invalid || !getChangesToUpdate()"
+      [disabled]="userForm.invalid || !hasUserFormChanged()"
       styleClass="p-button-info w-full"
-      (onClick)="submitForm()"
+      (onClick)="processUserForm()"
     />
   </div>
 </form>

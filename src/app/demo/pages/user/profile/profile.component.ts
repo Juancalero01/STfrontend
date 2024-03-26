@@ -5,6 +5,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { TokenService } from 'src/app/demo/api/services/token.service';
 import { UserService } from 'src/app/demo/api/services/user.service';
 import { timer } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-profile',
@@ -20,10 +21,14 @@ export class ProfileComponent {
     private readonly confirmationService: ConfirmationService
   ) {}
 
-  public profileForm: FormGroup = this.buildForm();
+  public profileForm: FormGroup = this.buildProfileForm();
 
-  //Construcción de los campos y validaciones del formulario del perfil del usuario.
-  private buildForm(): FormGroup {
+  /**
+   * Construye y devuelve un FormGroup para el formulario de perfil de usuario.
+   * Este FormGroup contiene controles para capturar la información del perfil del usuario,
+   * aplicando validaciones a cada campo según los requisitos especificados.
+   */
+  private buildProfileForm(): FormGroup {
     return this.formBuilder.group({
       fullname: [
         this.tokenService.getUserFullname(),
@@ -40,8 +45,11 @@ export class ProfileComponent {
     });
   }
 
-  //Actualiza los campos que debe actualizar definido por requerimiento.
-  public updateProfile(): void {
+  /**
+   * Actualiza los campos del perfil de usuario según lo definido por los requisitos.
+   * Se muestra un cuadro de diálogo de confirmación antes de actualizar el perfil.
+   */
+  public updateUserProfile(): void {
     if (this.profileForm.valid) {
       const { password, newPassword } = this.profileForm.value;
       if (password === newPassword) {
@@ -85,7 +93,21 @@ export class ProfileComponent {
                   this.route.navigate(['/auth/login']);
                 });
               },
-              error: () => {},
+              error: (err: HttpErrorResponse) => {
+                if (err.status === 404) {
+                  this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Usuario no encontrado',
+                  });
+                } else {
+                  this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Ocurrió un error al actualizar el usuario',
+                  });
+                }
+              },
             });
         },
       });

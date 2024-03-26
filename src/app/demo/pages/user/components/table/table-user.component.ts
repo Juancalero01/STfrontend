@@ -20,12 +20,13 @@ export class TableUserComponent {
   public users: IUser[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
 
-  //Inicializador de funciones.
   ngOnInit() {
     this.getUsers();
   }
 
-  //Obtiene todos lo usuarios para visualizarlo en la tabla.
+  /**
+   * Carga los usuarios desde el servicio de usuarios y los asigna a la propiedad 'users' para su visualización en la tabla.
+   */
   private getUsers(): void {
     this.userService.findAll().subscribe({
       next: (users: IUser[]) => {
@@ -34,11 +35,12 @@ export class TableUserComponent {
     });
   }
 
-  //Abre el formulario para registrar o actualizar el usuario
-  public openUserForm(user?: IUser): void {
-    const header = user
-      ? 'FORMULARIO DE ACTUALIZACIÓN DE USUARIO'
-      : 'FORMULARIO DE REGISTRO DE USUARIO';
+  /**
+   * Abre un formulario para guardar o actualizar la información de un usuario.
+   * @param clientData Datos del usuario a editar. Si no se proporciona, se abre un formulario para registrar un nuevo usuario.
+   */
+  public openUserForm(userData?: IUser): void {
+    const header = userData ? 'ACTUALIZAR USUARIO' : 'REGISTRAR USUARIO';
 
     this.ref = this.dialogService.open(UserFormComponent, {
       header: header,
@@ -48,20 +50,28 @@ export class TableUserComponent {
       dismissableMask: false,
       showHeader: true,
       position: 'center',
-      data: user,
+      data: userData,
     });
     this.ref.onClose.subscribe(() => {
       this.getUsers();
     });
   }
 
-  //Elimina los filtros (Tabla(Paginación, Filtros de columna) Buscador)
+  /**
+   * Elimina los filtros de búsqueda o paginación en una tabla.
+   * @param table La tabla (Table) de PrimeNG de la que se eliminarán los filtros.
+   * @param filter El filtro de búsqueda o paginación que se reiniciará.
+   */
   public cleanFilters(table: Table, filter: any) {
     table.clear();
     filter.value = '';
   }
 
-  //Verifica para que solamente el superadmin pueda actualizar todo, y en otros roles pueden actualizar a oto rol.
+  /**
+   * Determina si el botón debe estar desactivado según el usuario actual y el usuario proporcionado.
+   * @param user El usuario para el cual se evalúa si el botón debe estar desactivado.
+   * @returns Verdadero si el botón debe estar desactivado; falso en caso contrario.
+   */
   public isDisabledButton(user: IUser): boolean {
     const currentUserId = this.tokenService.getUserId();
     const currentUsername = this.tokenService.getUserFullname();

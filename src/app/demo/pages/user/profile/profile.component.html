@@ -1,11 +1,11 @@
-<div class="h-full flex flex-column gap-4">
-  <div class="flex flex-column gap-1 align-items-center">
+<section class="h-full flex flex-column gap-4">
+  <section class="flex flex-column gap-1 align-items-center">
     <h2 class="font-semibold">MI PERFIL</h2>
     <p class="text-gray-600 font-medium">
       Panel para administrar tu información
     </p>
-  </div>
-  <div class="flex justify-content-center">
+  </section>
+  <section class="flex justify-content-center">
     <form class="w-30rem" [formGroup]="profileForm">
       <div class="grid">
         <div class="flex flex-column col-12">
@@ -63,11 +63,11 @@
       <p-button
         label="MODIFICAR PERFIL"
         styleClass="w-full p-button-info"
-        (onClick)="updateProfile()"
+        (onClick)="updateUserProfile()"
         [disabled]="profileForm.invalid"
       />
     </form>
-  </div>
-</div>
-<p-confirmDialog />
-<p-toast position="top-center" />
+  </section>
+  <p-confirmDialog />
+  <p-toast position="top-center" />
+</section>

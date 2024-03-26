@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -22,17 +23,16 @@ export class UserFormComponent {
     private readonly formBuilder: FormBuilder
   ) {}
 
-  public userForm: FormGroup = this.buildForm();
+  public userForm: FormGroup = this.buildUserForm();
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
   public buttonStatusLabel: string = '';
   public showButtons: boolean = false;
   public roles: IRole[] = [];
 
-  //Inicializa las funciones.
   ngOnInit(): void {
     this.getRoles();
     if (this.config.data) {
-      this.loadForm(this.config.data);
+      this.loadUserDataIntoForm(this.config.data);
       this.showButtons = true;
       this.buttonLabel = 'ACTUALIZAR FORMULARIO';
     }
@@ -47,17 +47,24 @@ export class UserFormComponent {
     });
   }
 
-  //Guarda o actualiza la información del usuario.
-  public submitForm(): void {
+  /**
+   * Envía el formulario del usuario para crear un nuevo registro o actualizar uno existente.
+   * Determina si se debe llamar a la función de confirmación de creación o actualización del usuario.
+   */
+  public processUserForm(): void {
     if (!this.config.data) {
-      this.createUser();
+      this.confirmCreateUser();
     } else {
-      this.updateUser();
+      this.confirmUpdateUser();
     }
   }
 
-  //Construcción de los campos y validaciones del formulario de usuario.
-  public buildForm(): FormGroup {
+  /**
+   * Construye y devuelve un FormGroup para el formulario de usuarios.
+   * Este FormGroup contiene controles para capturar la información del usuario,
+   * aplicando validaciones a cada campo según los requisitos especificados.
+   */
+  public buildUserForm(): FormGroup {
     return this.formBuilder.group({
       username: [
         null,
@@ -81,8 +88,12 @@ export class UserFormComponent {
     });
   }
 
-  //Carga el formulario del usuario.
-  private loadForm(user: IUser): void {
+  /**
+   * Carga los datos del usuario en el formulario correspondiente.
+   * Utiliza los datos del usuario proporcionados para completar los campos del formulario,
+   * asignando los valores de los campos a partir de la información del usuario.
+   */
+  private loadUserDataIntoForm(user: IUser): void {
     this.userForm.patchValue({
       ...user,
       role: user.role.id,
@@ -92,8 +103,11 @@ export class UserFormComponent {
       : 'HABILITAR USUARIO';
   }
 
-  //Cierra el formulario.
-  public closeForm(): void {
+  /**
+   * Cierra el formulario de usuarios.
+   * Muestra un diálogo de confirmación antes de cerrar.
+   */
+  public closeUserForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea cancelar la operación?',
       header: 'CONFIRMAR',
@@ -110,8 +124,11 @@ export class UserFormComponent {
     });
   }
 
-  //Guarda la información del usuario (Modo administrador solamente)
-  public createUser(): void {
+  /**
+   * Crea un nuevo registro de usuario.
+   * Muestra un diálogo de confirmación antes de realizar la operación.
+   */
+  public confirmCreateUser(): void {
     this.userForm.patchValue({
       password: this.userForm.get('username')?.value,
     });
@@ -135,13 +152,31 @@ export class UserFormComponent {
             });
             this.ref.close();
           },
+          error: (err: HttpErrorResponse) => {
+            if (err.status === 409) {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'El usuario ya existe',
+              });
+            } else {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Ocurrió un error al crear el usuario',
+              });
+            }
+          },
         });
       },
     });
   }
 
-  //Actualiza la información del usuario (Modo administrador solamente).
-  public updateUser(): void {
+  /**
+   * Actualiza el registro de usuario.
+   * Muestra un diálogo de confirmación antes de realizar la operación.
+   */
+  public confirmUpdateUser(): void {
     this.userForm.valueChanges;
     this.confirmationService.confirm({
       message: '¿Está seguro que desea actualizar el registro?',
@@ -165,13 +200,31 @@ export class UserFormComponent {
               });
               this.ref.close();
             },
+            error: (err: HttpErrorResponse) => {
+              if (err.status === 404) {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Usuario no encontrado',
+                });
+              } else {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Ocurrió un error al actualizar el usuario',
+                });
+              }
+            },
           });
       },
     });
   }
 
-  //Resetea la contraseña del usuario (Modo administrador solamente).
-  public resetPassword(): void {
+  /**
+   * Restablece la contraseña del usuario (solo disponible en modo administrador).
+   * Se muestra un cuadro de diálogo de confirmación antes de restablecer la contraseña.
+   */
+  public resetUserPassword(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea restaurar la contraseña?',
       header: 'CONFIRMAR',
@@ -191,7 +244,21 @@ export class UserFormComponent {
               detail: 'Contraseña reseteada correctamente',
             });
           },
-          error: () => {},
+          error: (err: HttpErrorResponse) => {
+            if (err.status === 404) {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Usuario no encontrado',
+              });
+            } else {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Ocurrió un error al resetear la contraseña',
+              });
+            }
+          },
           complete: () => {
             this.ref.close();
           },
@@ -200,8 +267,11 @@ export class UserFormComponent {
     });
   }
 
-  //Modifica el estado del usuario (Activo | Inactivo)
-  public changeState(): void {
+  /**
+   * Modifica el estado del usuario (Activo | Inactivo).
+   * Se muestra un cuadro de diálogo de confirmación antes de realizar el cambio de estado.
+   */
+  public changeUserState(): void {
     this.confirmationService.confirm({
       message: `¿Está seguro que desea ${this.buttonStatusLabel
         .toLowerCase()
@@ -224,18 +294,38 @@ export class UserFormComponent {
             });
             this.ref.close();
           },
+          error: (err: HttpErrorResponse) => {
+            if (err.status === 404) {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Usuario no encontrado',
+              });
+            } else {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Ocurrió un error al actualizar el estado del usuario',
+              });
+            }
+          },
         });
       },
     });
   }
 
   //Obtiene si realmente el usuario modifico el formulario de usuarios.
-  public getChangesToUpdate(): boolean {
+  public hasUserFormChanged(): boolean {
     return !this.userForm.pristine;
   }
 
-  //Validaciones del formulario del usuario.
-  public validateForm(controlName: string): boolean | undefined {
+  /**
+   * Valida un control específico del formulario del usuario.
+   * Comprueba si el control especificado es inválido y ha sido tocado.
+   * @param controlName El nombre del control que se va a validar.
+   * @returns Verdadero si el control es inválido y ha sido tocado, de lo contrario, indefinido.
+   */
+  public isFormControlInvalid(controlName: string): boolean | undefined {
     return (
       this.userForm.get(controlName)?.invalid &&
       this.userForm.get(controlName)?.touched
