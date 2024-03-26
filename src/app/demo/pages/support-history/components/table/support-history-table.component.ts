@@ -27,10 +27,8 @@ export class SupportHistoryTableComponent {
   public showFilters: boolean = true;
   public showSearch: boolean = false;
   public showCleanFilters: boolean = false;
+  public historyForm: FormGroup = this.buildHistoryForm();
 
-  public historyForm: FormGroup = this.buildForm();
-
-  //Incializador de funcionalidades
   ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {
       this.reclaim = params.get('s') || '';
@@ -73,8 +71,9 @@ export class SupportHistoryTableComponent {
       },
     });
   }
+
   //Construcción de los campos y validaciones del formulario de busqueda del historial del servicio.
-  private buildForm(): FormGroup {
+  private buildHistoryForm(): FormGroup {
     return this.formBuilder.group({
       reclaim: [
         null,
@@ -87,8 +86,13 @@ export class SupportHistoryTableComponent {
     });
   }
 
-  //Abre el formulario del historial de cambios de estado / notas / fallas / servicio en general
-  public openSupportHistoryForm(support?: ISupport): void {
+  /**
+   * Abre el formulario para visualizar o editar el historial de cambios de estado,
+   * notas, fallas o detalles del servicio en general.
+   * @param supportData (Opcional) El objeto ISupport que contiene la información del servicio.
+   * Si se proporciona, se utilizará para cargar los datos del servicio en el formulario.
+   */
+  public openSupportHistoryForm(supportData?: ISupport): void {
     this.ref = this.dialogService.open(SupportHistoryFormComponent, {
       header: `INFORMACIÓN DEL SERVICIO`,
       width: '80%',
@@ -99,20 +103,32 @@ export class SupportHistoryTableComponent {
       showHeader: true,
       maximizable: true,
       position: 'center',
-      data: support,
+      data: supportData,
     });
   }
 
-  //Añade un tag segun el estado del servicio.
+  /**
+   * Determina y devuelve el nombre de la clase CSS que representa el nivel de severidad
+   * según el estado del servicio.
+   * @param stateId El identificador del estado del servicio.
+   * @returns El nombre de la clase CSS que indica el nivel de severidad.
+   */
   public getTagSeverity(stateId: number): string {
-    if (stateId === 12) {
+    if (stateId === 13) {
+      return 'danger';
+    } else if (stateId === 12) {
       return 'success';
     } else {
-      return 'warning';
+      return 'info';
     }
   }
 
-  //Buscador del servicio o servicios según número de reclamo o número de serie del producto.
+  /**
+   * Realiza una búsqueda de servicios según el número de reclamo o el número de serie del producto.
+   * Si se proporciona un número de reclamo, se realiza una búsqueda por reclamo.
+   * Si se proporciona un número de serie, se realiza una búsqueda por número de serie del producto.
+   * Finalmente, muestra los resultados de la búsqueda y activa la opción para limpiar los filtros.
+   */
   public searchHistory() {
     const reclaimValue = this.historyForm.get('reclaim')?.value;
     const serialValue = this.historyForm.get('serial')?.value;
@@ -125,7 +141,10 @@ export class SupportHistoryTableComponent {
     this.showCleanFilters = true;
   }
 
-  //Busca por reclamo del servicio
+  /**
+   * Realiza una búsqueda de servicios utilizando el número de reclamo proporcionado.
+   * @param reclaim El número de reclamo del servicio a buscar.
+   */
   public searchReclaimService(reclaim: string): void {
     this.supportService.getServiceByReclaim(reclaim).subscribe({
       next: (supports: ISupport[]) => {
@@ -142,7 +161,10 @@ export class SupportHistoryTableComponent {
     });
   }
 
-  //Busca por el número de serie de producto.
+  /**
+   * Realiza una búsqueda de servicios utilizando el número de serie del producto proporcionado.
+   * @param serial El número de serie del producto para buscar servicios asociados.
+   */
   public searchSerialProduct(serial: string): void {
     this.supportService.getServicesByProductSerial(serial).subscribe({
       next: (supports: ISupport[]) => {
@@ -159,17 +181,23 @@ export class SupportHistoryTableComponent {
     });
   }
 
-  //Obtiene si realmente el usuario modifico el formulario de historial del servicio.
+  /**
+   * Verifica si se han realizado cambios en el formulario de historial del servicio.
+   * @returns Devuelve true si el usuario ha modificado el formulario, de lo contrario, devuelve false.
+   */
   public getChangesToUpdate(): boolean {
     return !this.historyForm.pristine;
   }
 
-  //Elimina filtros del formulario de busqueda del historial del servicio.
+  /**
+   * Restablece los filtros del formulario de búsqueda del historial de servicios.
+   * Además, muestra un mensaje informativo sobre la operación realizada.
+   */
   public cleanFormAndSearch() {
     this.historyForm.reset();
     this.messageService.add({
       severity: 'info',
-      summary: 'Operación',
+      summary: 'Info',
       detail: 'Filtros reseteados',
     });
     this.showSearch = false;
