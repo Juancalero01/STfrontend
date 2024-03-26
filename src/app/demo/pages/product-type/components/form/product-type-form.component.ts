@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -19,19 +20,22 @@ export class ProductTypeFormComponent {
     private readonly productTypeService: ProductTypeService
   ) {}
 
-  public productTypeForm: FormGroup = this.buildForm();
+  public productTypeForm: FormGroup = this.buildProductTypeForm();
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
 
-  //Inicializador de funciones.
   ngOnInit(): void {
     if (this.config.data) {
-      this.loadForm(this.config.data);
+      this.loadProductTypeDataIntoForm(this.config.data);
       this.buttonLabel = 'ACTUALIZAR FORMULARIO';
     }
   }
 
-  //Construcción de los campos y validaciones del formulario de tipos de producto.
-  private buildForm(): FormGroup {
+  /**
+   * Construye y devuelve un FormGroup para el formulario de tipos de producto.
+   * Este FormGroup contiene controles para capturar la información del tipo de producto,
+   * aplicando validaciones a cada campo según los requisitos especificados.
+   */
+  private buildProductTypeForm(): FormGroup {
     return this.formBuilder.group({
       prefix: [null, [Validators.required, Validators.maxLength(4)]],
       name: [
@@ -46,8 +50,12 @@ export class ProductTypeFormComponent {
     });
   }
 
-  //Carga de datos para el formulario de tipos de producto.
-  private loadForm(productType: IProductType): void {
+  /**
+   * Carga los datos del tipo de producto en el formulario correspondiente.
+   * Utiliza los datos del producto proporcionados para completar los campos del formulario,
+   * asignando los valores de los campos a partir de la información del tipo de producto.
+   */
+  private loadProductTypeDataIntoForm(productType: IProductType): void {
     this.productTypeForm.patchValue(productType);
     if (this.productTypeForm.get('prefix')?.value === null) {
       this.productTypeForm.get('prefix')?.clearValidators();
@@ -55,25 +63,36 @@ export class ProductTypeFormComponent {
     }
   }
 
-  //Validaciones del formulario de tipos de producto
-  public validateForm(controlName: string): boolean | undefined {
+  /**
+   * Valida un control específico del formulario del tipo de producto.
+   * Comprueba si el control especificado es inválido y ha sido tocado.
+   * @param controlName El nombre del control que se va a validar.
+   * @returns Verdadero si el control es inválido y ha sido tocado, de lo contrario, indefinido.
+   */
+  public isFormControlInvalid(controlName: string): boolean | undefined {
     return (
       this.productTypeForm.get(controlName)?.invalid &&
       this.productTypeForm.get(controlName)?.touched
     );
   }
 
-  //Guarda o actualiza la información del tipo de producto.
-  public submitForm(): void {
+  /**
+   * Envía el formulario del tipo de producto para crear un nuevo registro o actualizar uno existente.
+   * Determina si se debe llamar a la función de confirmación de creación o actualización del producto.
+   */
+  public processProductTypeForm(): void {
     if (!this.config.data) {
-      this.createProductType();
+      this.confirmCreateProductType();
     } else {
-      this.updateProductType();
+      this.confirmUpdateProductType();
     }
   }
 
-  //Cancela la operación del formulario.
-  public cancelForm(): void {
+  /**
+   * Cierra el formulario de tipos de producto.
+   * Muestra un diálogo de confirmación antes de cerrar.
+   */
+  public closeProductTypeForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea cancelar la operación?',
       header: 'CONFIRMAR',
@@ -88,8 +107,11 @@ export class ProductTypeFormComponent {
     });
   }
 
-  //Guarda la información cargada en el tipo de producto. (nuevo)
-  public createProductType(): void {
+  /**
+   * Crea un nuevo registro de tipo de producto.
+   * Muestra un diálogo de confirmación antes de realizar la operación.
+   */
+  public confirmCreateProductType(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea crear el registro?',
       header: 'CONFIRMAR',
@@ -112,13 +134,31 @@ export class ProductTypeFormComponent {
               });
               this.ref.close();
             },
+            error: (err: HttpErrorResponse) => {
+              if (err.status === 409) {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'El tipo de producto ya existe',
+                });
+              } else {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Ocurrió un error al crear el tipo de producto',
+                });
+              }
+            },
           });
       },
     });
   }
 
-  //Actualiza la información nueva en el tipo de producto.
-  public updateProductType(): void {
+  /**
+   * Actualiza el registro de tipo de producto.
+   * Muestra un diálogo de confirmación antes de realizar la operación.
+   */
+  public confirmUpdateProductType(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea actualizar el registro?',
       header: 'CONFIRMAR',
@@ -141,13 +181,31 @@ export class ProductTypeFormComponent {
               });
               this.ref.close();
             },
+            error: (err: HttpErrorResponse) => {
+              if (err.status === 404) {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Tipo de producto no encontrado',
+                });
+              } else {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Ocurrió un error al actualizar el tipo de producto',
+                });
+              }
+            },
           });
       },
     });
   }
 
-  //Obtiene si realmente el usuario modifico el formulario de tipos de producto.
-  public getChangesToUpdate(): boolean {
+  /**
+   * Verifica si el usuario ha realizado modificaciones en el formulario de tipos de producto.
+   * @returns true si el formulario ha sido modificado; de lo contrario, false.
+   */
+  public hasProductTypeFormChanged(): boolean {
     return !this.productTypeForm.pristine;
   }
 }

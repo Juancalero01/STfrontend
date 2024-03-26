@@ -9,9 +9,9 @@
       maxlength="4"
       pKeyFilter="num"
       placeholder="Ingresar cabecera de serie del tipo de producto"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('prefix') }"
+      [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('prefix') }"
     />
-    <small *ngIf="validateForm('prefix')" class="p-error">
+    <small *ngIf="isFormControlInvalid('prefix')" class="p-error">
       Campo requerido*
     </small>
   </div>
@@ -24,9 +24,9 @@
       class="w-full"
       maxlength="60"
       placeholder="Ingresar nombre del tipo de producto"
-      [ngClass]="{ 'ng-invalid ng-dirty': validateForm('name') }"
+      [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('name') }"
     />
-    <small *ngIf="validateForm('name')" class="p-error">
+    <small *ngIf="isFormControlInvalid('name')" class="p-error">
       Campo requerido*
     </small>
   </div>
@@ -46,13 +46,13 @@
     <p-button
       label="SALIR DEL FORMULARIO"
       styleClass="p-button-secondary w-full"
-      (onClick)="cancelForm()"
+      (onClick)="closeProductTypeForm()"
     />
     <p-button
       [label]="buttonLabel"
-      [disabled]="productTypeForm.invalid || !getChangesToUpdate()"
+      [disabled]="productTypeForm.invalid || !hasProductTypeFormChanged()"
       styleClass="p-button-info w-full"
-      (onClick)="submitForm()"
+      (onClick)="processProductTypeForm()"
     />
   </div>
 </form>

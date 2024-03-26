@@ -18,12 +18,13 @@ export class ProductTypeTableComponent {
   public productTypes: IProductType[] = [];
   public ref: DynamicDialogRef = new DynamicDialogRef();
 
-  //Inicializador de funciones.
   ngOnInit(): void {
     this.loadProductTypes();
   }
 
-  //Carga todos los tipos de productos para la tabla correspondiente.
+  /**
+   * Carga los tipos de producto desde el servicio de tipos de producto y los asigna a la propiedad 'productTypes' para su visualización en como filtro en la tabla
+   */
   private loadProductTypes(): void {
     this.productTypeService.findAll().subscribe({
       next: (productTypes: IProductType[]) => {
@@ -32,11 +33,14 @@ export class ProductTypeTableComponent {
     });
   }
 
-  //Abre el formulario para registrar o actualizar el tipo de producto
-  public openProductTypeForm(productType?: IProductType) {
-    const header = productType
-      ? 'FORMULARIO DE ACTUALIZACIÓN DE TIPO DE PRODUCTO'
-      : 'FORMULARIO DE REGISTRO DE TIPO DE PRODUCTO';
+  /**
+   * Abre un formulario para guardar o actualizar la información de un tipo de producto.
+   * @param productData Datos del tipo de producto a editar. Si no se proporciona, se abre un formulario para registrar un nuevo tipo de producto.
+   */
+  public openProductTypeForm(productTypeData?: IProductType) {
+    const header = productTypeData
+      ? 'ACTUALIZAR TIPO DE PRODUCTO'
+      : 'REGISTRAR TIPO DE PRODUCTO';
 
     this.ref = this.dialogService.open(ProductTypeFormComponent, {
       header: header,
@@ -46,7 +50,7 @@ export class ProductTypeTableComponent {
       dismissableMask: false,
       showHeader: true,
       position: 'center',
-      data: productType,
+      data: productTypeData,
     });
 
     this.ref.onClose.subscribe(() => {
@@ -54,7 +58,11 @@ export class ProductTypeTableComponent {
     });
   }
 
-  //Elimina los filtros (Tabla(Paginación, Filtros de columna) Buscador)
+  /**
+   * Elimina los filtros de búsqueda o paginación en una tabla.
+   * @param table La tabla (Table) de PrimeNG de la que se eliminarán los filtros.
+   * @param filter El filtro de búsqueda o paginación que se reiniciará.
+   */
   public cleanFilters(table: Table, filter: any) {
     table.clear();
     filter.value = '';
