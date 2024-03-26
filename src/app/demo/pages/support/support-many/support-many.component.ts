@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -34,7 +35,7 @@ export class SupportManyComponent {
     { value: true, label: 'SI' },
     { value: false, label: 'NO' },
   ];
-  public supportManyForm: FormGroup = this.buildForm();
+  public supportManyForm: FormGroup = this.buildSupportManyForm();
   public supports: ISupportMany[] = [];
   public today: Date = new Date();
   public minDate: Date = new Date(
@@ -42,15 +43,18 @@ export class SupportManyComponent {
   );
   public maxDate: Date = this.today;
 
-  //Inicializador de funciones.
   ngOnInit(): void {
     this.loadStates();
     this.loadPriorities();
     this.supportManyForm.get('dateEntry')?.setValue(this.today);
   }
 
-  //Construye el formulario principal
-  private buildForm(): FormGroup {
+  /**
+   * Construye y devuelve un FormGroup para el formulario de servicios masivos.
+   * Este FormGroup contiene controles para capturar la información de los servicios masivos,
+   * aplicando validaciones a cada campo según los requisitos especificados.
+   */
+  private buildSupportManyForm(): FormGroup {
     return this.formBuilder.group({
       search: [
         null,
@@ -67,18 +71,26 @@ export class SupportManyComponent {
     });
   }
 
-  //Guarda cada servicio nuevo
+  /**
+   * Guarda los datos de un nuevo servicio.
+   * Calcula el número de reclamo basado en la fecha de entrada y el último número de reclamo registrado.
+   * Agrega el nuevo servicio al arreglo de servicios.
+   * Reinicia los campos del formulario después de guardar los datos.
+   * Deshabilita los campos si hay servicios guardados en la lista.
+   * Pone el enfoque en el campo de búsqueda si está activo.
+   */
   public saveData(): void {
     const support = this.getSupportData();
     if (this.supports.length > 0) {
-      const lastReclaimNumber = this.getLastReclaimSupport();
+      const lastReclaimNumber = this.getLastReclaimSupportItem();
       support.reclaim = `CNET-${support.dateEntry
         .toISOString()
         .split('T')[0]
         .replace(/-/g, '')}-${lastReclaimNumber + 1}`;
     }
     this.supports.push(support);
-    this.resetFields();
+    //
+    this.resetFieldsFormOnSave();
     if (this.supports.length > 0) {
       this.disableFields();
     }
@@ -87,13 +99,24 @@ export class SupportManyComponent {
     }
   }
 
-  private getLastReclaimSupport(): number {
+  /**
+   * Obtiene el número de reclamo del último servicio registrado.
+   * Extrae el número de reclamo del formato "CNET-YYYYMMDD-N".
+   * @returns El número de reclamo del último servicio como un número entero.
+   */
+  private getLastReclaimSupportItem(): number {
     const lastSupport = this.supports[this.supports.length - 1];
     const lastReclaimNumber = Number(lastSupport.reclaim.split('-').pop());
     return lastReclaimNumber;
   }
 
-  //Busca el producto
+  /**
+   * Realiza una búsqueda de productos utilizando el número de serie proporcionado.
+   * Si se encuentra el producto, comprueba si hay soporte activo asociado a él o si ya ha sido agregado previamente.
+   * Calcula la garantía del producto basándose en la fecha de entrega.
+   * Actualiza el formulario de soporte múltiple con los datos del producto si es válido y no ha sido agregado previamente.
+   * Si es el primer producto agregado, calcula el número de reclamo más reciente.
+   */
   public searchProduct() {
     const serial = this.supportManyForm.get('search')?.value;
     this.productService.findOneSerial(serial).subscribe({
@@ -143,8 +166,16 @@ export class SupportManyComponent {
     });
   }
 
-  //Elimina el elemento, hay que ver si realmente es necesario.
-  public deleteItem(support: ISupportMany) {
+  /**
+   * Elimina un registro de soporte múltiple.
+   * Muestra un cuadro de diálogo de confirmación antes de proceder con la eliminación.
+   * Si se confirma la eliminación, elimina el registro del arreglo de soportes múltiples.
+   * Ajusta los números de reclamo de los registros restantes si es necesario.
+   * Muestra un mensaje de éxito después de eliminar el registro.
+   * Habilita los campos si no hay registros restantes en la lista de soportes.
+   * @param support El objeto de soporte a eliminar.
+   */
+  public deleteSupportItem(support: ISupportMany) {
     const index = this.supports.indexOf(support);
     this.confirmationService.confirm({
       message: '¿Está seguro que desea eliminar el registro?',
@@ -182,7 +213,11 @@ export class SupportManyComponent {
     });
   }
 
-  //Obtiene el ultimo numero de reclamo y lo asigna al formulario por defecto, seria el primer elemento en el que se asigna
+  /**
+   * Obtiene el último número de reclamo registrado y lo asigna al formulario por defecto.
+   * Si es el primer elemento en el que se asigna, se utiliza el número 1.
+   * Utiliza la fecha actual para generar el número de reclamo en el formato esperado.
+   */
   private getLastReclaimNumber(): void {
     const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
     this.supportService.findLastReclaim().subscribe({
@@ -197,7 +232,11 @@ export class SupportManyComponent {
     });
   }
 
-  //Carga los estados y establece por defecto el primer elemento del array
+  /**
+   * Carga los estados de soporte disponibles en el formulario.
+   * Obtiene todos los estados de soporte desde el servicio correspondiente.
+   * Asigna el primer estado encontrado al formulario de soporte múltiple.
+   */
   private loadStates(): void {
     this.supportStateService.findAll().subscribe({
       next: (states: ISupportState[]) => {
@@ -207,7 +246,12 @@ export class SupportManyComponent {
       },
     });
   }
-  //Carga las prioridades para el dropdown
+
+  /**
+   * Carga las prioridades de soporte disponibles en el componente.
+   * Obtiene todas las prioridades de soporte desde el servicio correspondiente.
+   * Asigna las prioridades obtenidas a la variable 'priorities' del componente.
+   */
   private loadPriorities(): void {
     this.supportPriorityService.findAll().subscribe({
       next: (priorities: ISupportPriority[]) => {
@@ -216,8 +260,11 @@ export class SupportManyComponent {
     });
   }
 
-  //Resetea los campos una vez que se haya cargado
-  private resetFields(): void {
+  /**
+   * Restablece los campos del formulario de soporte múltiple antes de guardar.
+   * Restaura los valores de los campos a sus estados iniciales.
+   */
+  private resetFieldsFormOnSave(): void {
     this.supportManyForm.reset({
       dateEntry: this.supportManyForm.get('dateEntry')?.value,
       state: this.supportManyForm.get('state')?.value,
@@ -227,34 +274,48 @@ export class SupportManyComponent {
     });
   }
 
-  private resetFieldsOnSave(): void {
+  /**
+   * Restablece los campos básicos del formulario de soporte múltiple.
+   * Vuelve a los valores iniciales de los campos básicos del formulario.
+   */
+  private resetFieldsForm(): void {
     this.supportManyForm.reset({
       dateEntry: this.supportManyForm.get('dateEntry')?.value,
       state: this.supportManyForm.get('state')?.value,
     });
   }
 
-  //Obtiene la información necesaria para enviarlo via endpoint
+  /**
+   * Obtiene la información necesaria del formulario para enviarla mediante un endpoint.
+   * Extrae los datos relevantes del formulario y los devuelve como un objeto de tipo ISupportMany.
+   */
   private getSupportData(): ISupportMany {
     const { search, ...support } = this.supportManyForm.getRawValue();
     return support;
   }
 
-  //Deshabilita los campos
+  /**
+   * Deshabilita los campos específicos del formulario de soporte múltiple.
+   */
   private disableFields() {
     this.supportManyForm.get('dateEntry')?.disable();
     this.supportManyForm.get('priority')?.disable();
     this.supportManyForm.get('startReference')?.disable();
   }
 
-  //Habilita los campos
+  /**
+   * Habilita los campos específicos del formulario de soporte múltiple.
+   */
   private enableFields() {
     this.supportManyForm.get('dateEntry')?.enable();
     this.supportManyForm.get('priority')?.enable();
     this.supportManyForm.get('startReference')?.enable();
   }
 
-  //Función para cargar el lector de codigo de barras de los productos, genera un enter automaticamente y envia la peticiíon
+  /**
+   * Función que maneja la pulsación de tecla "Enter" en el lector de códigos de barras de los productos.
+   * Genera automáticamente una pulsación de tecla "Enter" y envía la petición de búsqueda del producto.
+   */
   public onKeyPressEnter(event: Event) {
     const allowedCharacters = /^\d{0,4}(-\d{0,5})?$/;
     const inputValue = (event.target as HTMLInputElement).value;
@@ -269,7 +330,9 @@ export class SupportManyComponent {
     }
   }
 
-  //Limpiar los valores del inputtext del número de serie
+  /**
+   * Limpia el valor del campo de entrada de texto del número de serie.
+   */
   public clearValue() {
     const inputElement = this.search.nativeElement as HTMLInputElement;
     if (inputElement.value) {
@@ -278,7 +341,12 @@ export class SupportManyComponent {
     }
   }
 
-  //Guarda la información cargada en todos los servicios. (nuevos)
+  /**
+   * Guarda la información cargada en todos los servicios (nuevos).
+   * Muestra un mensaje de confirmación antes de crear los registros.
+   * Si se confirma, envía la solicitud de creación de los registros al servicio correspondiente.
+   * Maneja los posibles errores y realiza acciones después de completar la operación.
+   */
   public createSupports(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea crear los registros?',
@@ -298,21 +366,33 @@ export class SupportManyComponent {
               summary: 'Operación exitosa',
               detail: 'El registro se creó correctamente',
             }),
-          error: () => {},
+          error: (err: HttpErrorResponse) =>
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Ocurrió un error al crear los registros',
+            }),
           complete: () => {
             this.clearSupports();
-            this.resetFieldsOnSave();
+            this.resetFieldsForm();
             this.enableFields();
           },
         }),
     });
   }
 
-  //Limpia los soportes que se fueron creando
+  /**
+   * Elimina todos los soportes que se han creado.
+   */
   public clearSupports(): void {
     this.supports = [];
   }
 
+  /**
+   * Calcula si el producto está dentro del período de garantía.
+   * Actualiza el valor del campo "warranty" en el formulario de soporte múltiple.
+   * @param deliveryDate La fecha de entrega del producto.
+   */
   private calculateWarranty(deliveryDate: Date): void {
     const oneYearLater = new Date(deliveryDate);
     oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);

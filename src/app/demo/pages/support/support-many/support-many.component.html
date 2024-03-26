@@ -117,7 +117,7 @@
             <p-button
               icon="pi pi-trash"
               styleClass="p-button-text p-button-secondary"
-              (click)="deleteItem(support)"
+              (click)="deleteSupportItem(support)"
             />
           </td>
         </tr>
@@ -163,6 +163,6 @@
       </ng-template>
     </p-table>
   </section>
+  <p-confirmDialog />
+  <p-toast position="bottom-right" />
 </section>
-<p-confirmDialog />
-<p-toast position="bottom-right" />
