@@ -101,7 +101,7 @@ export class ProductFormComponent {
   }
 
   /**
-   * Valida un control específico del formulario del cliente.
+   * Valida un control específico del formulario del producto.
    * Comprueba si el control especificado es inválido y ha sido tocado.
    * @param controlName El nombre del control que se va a validar.
    * @returns Verdadero si el control es inválido y ha sido tocado, de lo contrario, indefinido.
