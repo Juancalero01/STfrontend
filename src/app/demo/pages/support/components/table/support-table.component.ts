@@ -57,7 +57,6 @@ export class SupportTableComponent {
     colorClass: string;
   } | null = null;
 
-  //Inicializador de funciones.
   ngOnInit(): void {
     this.loadClients();
     this.loadProductTypes();
@@ -66,7 +65,11 @@ export class SupportTableComponent {
     this.loadSupports();
   }
 
-  //Carga de servicios para visualizar en la tabla
+  /**
+   * Carga los servicios activos para ser visualizados en la tabla.
+   * Utiliza el servicio de soporte para obtener todos los servicios activos.
+   * Actualiza la lista de servicios en el componente con los resultados obtenidos.
+   */
   public loadSupports(): void {
     this.supportService.findAllActiveServices().subscribe({
       next: (supports: ISupport[]) => {
@@ -75,14 +78,22 @@ export class SupportTableComponent {
     });
   }
 
-  //Carga de clientes para filtros de columna (Clientes) GET
+  /**
+   * Carga los clientes para su visualización en el componente.
+   * Utiliza el servicio de cliente para obtener todos los clientes disponibles.
+   * Actualiza la lista de clientes en el componente con los resultados obtenidos.
+   */
   private loadClients(): void {
     this.clientService.findAll().subscribe({
       next: (clients: IClient[]) => (this.clients = clients),
     });
   }
 
-  //Carga de tipos de producto para filtros de columna (Tipos de producto) GET
+  /**
+   * Carga los tipos de producto para su visualización en el componente.
+   * Utiliza el servicio de tipo de producto para obtener todos los tipos de producto disponibles.
+   * Actualiza la lista de tipos de producto en el componente con los resultados obtenidos.
+   */
   private loadProductTypes(): void {
     this.productTypeService.findAll().subscribe({
       next: (productTypes: IProductType[]) =>
@@ -90,14 +101,23 @@ export class SupportTableComponent {
     });
   }
 
-  //Carga de prioridades para filtros de columna (Prioridades) GET
+  /**
+   * Carga las prioridades de soporte para su visualización en el componente.
+   * Utiliza el servicio de prioridad de soporte para obtener todas las prioridades disponibles.
+   * Actualiza la lista de prioridades en el componente con los resultados obtenidos.
+   */
   private loadPriorities(): void {
     this.priorityService.findAll().subscribe({
       next: (priorities: ISupportPriority[]) => (this.priorities = priorities),
     });
   }
 
-  //Carga de estados para filtros de columna (Estados) GET
+  /**
+   * Carga los estados para los filtros de columna (Estados).
+   * Utiliza el servicio de estado para obtener todos los estados disponibles.
+   * Filtra los estados para excluir aquellos con ID 12 y 13, que son estados especiales.
+   * Actualiza la lista de estados en el componente con los resultados obtenidos.
+   */
   private loadStates(): void {
     this.stateService.findAll().subscribe({
       next: (states: ISupportState[]) => {
@@ -108,7 +128,12 @@ export class SupportTableComponent {
     });
   }
 
-  //Abre el formulario para registrar o actualizar el servicio
+  /**
+   * Abre el formulario para registrar o actualizar el servicio de soporte técnico.
+   * Si se proporciona un objeto de soporte, abre el formulario de actualización; de lo contrario, abre el formulario de registro.
+   * Utiliza el servicio de diálogo para abrir el componente de formulario de soporte técnico.
+   * Actualiza la lista de soportes después de cerrar el formulario.
+   */
   public openSupportForm(support?: ISupport) {
     this.ref = this.dialogService.open(SupportFormComponent, {
       header: support
@@ -131,14 +156,23 @@ export class SupportTableComponent {
     });
   }
 
-  //Elimina los filtros (Tabla(Paginación, Filtros de columna) Buscador)
+  /**
+   * Elimina los filtros de búsqueda o paginación en una tabla.
+   * @param table La tabla (Table) de PrimeNG de la que se eliminarán los filtros.
+   * @param filter El filtro de búsqueda o paginación que se reiniciará.
+   */
   public cleanFilters(table: Table, filter: any) {
     table.clear();
     filter.value = '';
     this.selectedSupports = [];
   }
 
-  //Añade un tag "NUEVO" para identificar los servicios recientes (Demora 1 dia en desaparecer)
+  /**
+   * Determina si el servicio tiene una etiqueta "NUEVO" para identificar los servicios recientes.
+   * La etiqueta "NUEVO" permanece durante 1 día antes de desaparecer.
+   * @param dateEntry La fecha de entrada del servicio.
+   * @returns true si el servicio es nuevo y debe tener la etiqueta "NUEVO"; de lo contrario, false.
+   */
   public getEntryNewTag(dateEntry: Date): boolean {
     const todayWithoutTime = new Date();
     todayWithoutTime.setHours(0, 0, 0, 0);
@@ -148,7 +182,11 @@ export class SupportTableComponent {
     );
   }
 
-  //Añade color segun el porcentaje de los dias de las prioridades.
+  /**
+   * Calcula el color de fondo según el porcentaje de días transcurridos con respecto a la prioridad del servicio.
+   * @param support El servicio del cual se va a calcular el color de fondo.
+   * @returns El color de fondo basado en el porcentaje de días transcurridos.
+   */
   public calculateBackgroundColor(support: ISupport): string {
     const daysOfPriority: number = support.priority.days;
     const registrationDate: Date = new Date(support.dateEntry);
@@ -168,22 +206,38 @@ export class SupportTableComponent {
     }
   }
 
-  //Crea un vinculo para ir a verificar ese número de reclamo.
+  /**
+   * Genera un enlace para verificar el número de reclamo en la página de soporte múltiple.
+   * @returns El enlace generado para la página de soporte múltiple.
+   */
   public getSupportManyUrl(): string {
     return `${this.document.baseURI}cnet/support/many`;
   }
 
-  //Indica si esta fuera del rango de estado que se puede seleccionar
-  public isOutOfState(support: ISupport) {
+  /**
+   * Verifica si el estado del soporte está fuera del rango seleccionable.
+   * @param support El soporte del cual verificar el estado.
+   * @returns Verdadero si el estado del soporte está fuera del rango seleccionable, de lo contrario, falso.
+   */
+  public isInvalidSelectableState(support: ISupport) {
     return support.state.id !== 11;
   }
 
-  //Selección de filas
+  /**
+   * Verifica si una fila es seleccionable en función del estado del soporte.
+   * @param rowData Los datos de la fila a evaluar.
+   * @returns Verdadero si la fila es seleccionable, de lo contrario, falso.
+   */
   public isRowSelectable(event: any) {
-    return !this.isOutOfState(event.data);
+    return !this.isInvalidSelectableState(event.data);
   }
 
-  //Informa el tiempo transcurrido de la prioridad.
+  /**
+   * Calcula el estado de la prioridad del soporte en función del tiempo transcurrido.
+   * @param dateEntry La fecha de entrada del soporte.
+   * @param priorityDays El número de días de la prioridad del soporte.
+   * @returns Un objeto con información sobre el estado de la prioridad.
+   */
   public getPriorityStatus(
     dateEntry: string,
     priorityDays: number
@@ -216,7 +270,10 @@ export class SupportTableComponent {
     }
   }
 
-  //Abre el formulario para cerrar casos masivamente
+  /**
+   * Abre el formulario para cerrar múltiples casos de soporte simultáneamente.
+   * Si el usuario no es administrador, se muestra un mensaje informativo.
+   */
   public openHistoryForm() {
     if (!this.tokenService.isAdmin()) {
       this.confirmationService.confirm({
@@ -230,7 +287,7 @@ export class SupportTableComponent {
       });
     } else {
       this.ref = this.dialogService.open(SupportMassiveFormComponent, {
-        header: 'FORMULARIO DE ACTUALIZACIÓN MASIVA',
+        header: 'ACTUALIZACIÓN MASIVA',
         width: '50%',
         closable: false,
         closeOnEscape: false,

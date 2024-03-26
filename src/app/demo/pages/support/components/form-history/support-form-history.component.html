@@ -13,9 +13,11 @@
           [minDate]="minDate"
           [maxDate]="maxDate"
           [showClear]="true"
-          [ngClass]="{ 'ng-invalid ng-dirty': validateForm('dateEntry') }"
+          [ngClass]="{
+            'ng-invalid ng-dirty': validateSupportHistoryForm('dateEntry')
+          }"
         />
-        <small *ngIf="validateForm('dateEntry')" class="p-error">
+        <small *ngIf="validateSupportHistoryForm('dateEntry')" class="p-error">
           Campo requerido*
         </small>
       </div>
@@ -28,7 +30,9 @@
           styleClass="w-full"
           formControlName="stateCurrent"
           dropdownIcon="none"
-          [ngClass]="{ 'ng-invalid ng-dirty': validateForm('stateCurrent') }"
+          [ngClass]="{
+            'ng-invalid ng-dirty': validateSupportHistoryForm('stateCurrent')
+          }"
         />
       </div>
       <div class="flex flex-column col-12 lg:col-12 xl:col-12">
@@ -41,9 +45,11 @@
           formControlName="stateNext"
           placeholder="Seleccionar estado siguiente"
           [showClear]="true"
-          [ngClass]="{ 'ng-invalid ng-dirty': validateForm('stateNext') }"
+          [ngClass]="{
+            'ng-invalid ng-dirty': validateSupportHistoryForm('stateNext')
+          }"
         />
-        <small *ngIf="validateForm('stateNext')" class="p-error">
+        <small *ngIf="validateSupportHistoryForm('stateNext')" class="p-error">
           Campo requerido*
         </small>
       </div>
@@ -60,9 +66,14 @@
           [pKeyFilter]="'num'"
           [maxlength]="2"
           placeholder="Ingrese horas de reparación"
-          [ngClass]="{ 'ng-invalid ng-dirty': validateForm('repairedTime') }"
+          [ngClass]="{
+            'ng-invalid ng-dirty': validateSupportHistoryForm('repairedTime')
+          }"
         />
-        <small *ngIf="validateForm('repairedTime')" class="p-error">
+        <small
+          *ngIf="validateSupportHistoryForm('repairedTime')"
+          class="p-error"
+        >
           Campo requerido*
         </small>
       </div>
@@ -75,9 +86,11 @@
           class="w-full"
           [autoResize]="true"
           rows="5"
-          [ngClass]="{ 'ng-invalid ng-dirty': validateForm('remarks') }"
+          [ngClass]="{
+            'ng-invalid ng-dirty': validateSupportHistoryForm('remarks')
+          }"
         ></textarea>
-        <small *ngIf="validateForm('remarks')" class="p-error">
+        <small *ngIf="validateSupportHistoryForm('remarks')" class="p-error">
           Campo requerido*
         </small>
       </div>
@@ -87,7 +100,7 @@
         <p-button
           label="SALIR DEL FORMULARIO"
           styleClass="p-button-secondary w-full"
-          (onClick)="exitForm()"
+          (onClick)="closeSupportHistoryForm()"
         />
         <p-button
           styleClass="p-button-info w-full"
@@ -140,7 +153,9 @@
             [rows]="5"
             [autoResize]="true"
             placeholder="Ingrese una nota nueva si es necesario"
-            [ngClass]="{ 'ng-invalid ng-dirty': validateFormNote('comment') }"
+            [ngClass]="{
+              'ng-invalid ng-dirty': validateSupportHistoryNoteForm('comment')
+            }"
           ></textarea>
           <p-button
             icon="pi pi-send"
@@ -149,7 +164,10 @@
             [disabled]="supportHistoryNoteForm.invalid"
           />
         </div>
-        <small *ngIf="validateFormNote('comment')" class="p-error">
+        <small
+          *ngIf="validateSupportHistoryNoteForm('comment')"
+          class="p-error"
+        >
           Campo requerido*
         </small>
       </div>

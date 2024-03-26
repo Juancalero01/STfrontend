@@ -30,8 +30,8 @@ export class SupportFormHistoryComponent {
     private readonly messageService: MessageService
   ) {}
 
-  public supportHistoryForm: FormGroup = this.buildForm();
-  public supportHistoryNoteForm: FormGroup = this.buildFormNote();
+  public supportHistoryForm: FormGroup = this.buildSupportHistoryForm();
+  public supportHistoryNoteForm: FormGroup = this.buildSupportHistoryNoteForm();
   public currentStates: ISupportState[] = [];
   public nextStates: ISupportState[] = [];
   public notes: ISupportNote[] = [];
@@ -40,7 +40,6 @@ export class SupportFormHistoryComponent {
   public maxDate: Date = this.today;
   public showHours: boolean = false;
 
-  //Inicializador de funciones.
   ngOnInit(): void {
     this.setDefaultFormData();
     this.findLastDateEntry();
@@ -49,7 +48,10 @@ export class SupportFormHistoryComponent {
     this.loadNotes();
   }
 
-  //Carga de datos para el formulario principal de cambios de estado
+  /**
+   * Realiza la carga de datos esenciales en el formulario principal de cambios de estado.
+   * Asigna el estado actual, el servicio asociado y el usuario actual al formulario, preparándolo para su modificación.
+   */
   private loadForm(data: ISupport): void {
     this.supportHistoryForm.patchValue({
       stateCurrent: data.state.id,
@@ -58,7 +60,12 @@ export class SupportFormHistoryComponent {
     });
   }
 
-  //Carga de notas para visualizar en el formulario de notas
+  /**
+   * Carga las notas asociadas al servicio para visualizar en el formulario de notas.
+   * Obtiene el historial más reciente del servicio y verifica si coincide con el estado actual del servicio.
+   * Si coinciden, carga las notas correspondientes al historial y las asigna para su visualización.
+   */
+
   private loadNotes(): void {
     const serviceId = this.config.data.id;
     this.supportHistoryService.findLastHistory(serviceId).subscribe({
@@ -76,7 +83,10 @@ export class SupportFormHistoryComponent {
     });
   }
 
-  //Configuración segun en que estado se encuentre el formulario mostrara o no las selecciones siguientes.
+  /**
+   * Configura las opciones de selección según el estado actual del formulario.
+   * Determina qué selecciones mostrar o no dependiendo del estado actual del formulario.
+   */
   private loadStates(): void {
     this.supportStateService.findAll().subscribe({
       next: (states: ISupportState[]) => {
@@ -144,13 +154,20 @@ export class SupportFormHistoryComponent {
     });
   }
 
-  //Obtiene los datos importantes para añadirlos al formulario principal de cambios de estado, esto se hace de forma oculta (El usuario no lo debe cargar)
+  /**
+   * Establece los datos predeterminados necesarios para completar el formulario principal de cambios de estado.
+   * Esta función se ejecuta de forma automática para cargar los datos de manera oculta, sin intervención del usuario.
+   */
   private setDefaultFormData(): void {
     this.supportHistoryForm.get('dateEntry')?.setValue(this.today);
   }
 
-  //Construcción de los campos y validaciones del formulario principal de cambios de estado.
-  private buildForm(): FormGroup {
+  /**
+   * Construye y devuelve un FormGroup para el formulario de historial del servicio.
+   * Este FormGroup contiene controles para capturar la información del historial del servicio,
+   * aplicando validaciones a cada campo según los requisitos especificados.
+   */
+  private buildSupportHistoryForm(): FormGroup {
     return this.formBuilder.group({
       dateEntry: [null, [Validators.required]],
       repairedTime: [{ value: null, disabled: true }],
@@ -162,8 +179,12 @@ export class SupportFormHistoryComponent {
     });
   }
 
-  //Construcción de los campos y validaciones del formulario de notas.
-  private buildFormNote(): FormGroup {
+  /**
+   * Construye y devuelve un FormGroup para el formulario de notas del historial del servicio.
+   * Este FormGroup contiene controles para capturar la información de las notas del historial de servicio,
+   * aplicando validaciones a cada campo según los requisitos especificados.
+   */
+  private buildSupportHistoryNoteForm(): FormGroup {
     return this.formBuilder.group({
       dateEntry: [null],
       comment: [null, [Validators.required, Validators.maxLength(500)]],
@@ -173,8 +194,11 @@ export class SupportFormHistoryComponent {
     });
   }
 
-  //Cierra el formulario.
-  public exitForm(): void {
+  /**
+   * Cierra el formulario de historial de soportes.
+   * Muestra un diálogo de confirmación antes de cerrar.
+   */
+  public closeSupportHistoryForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea salir del formulario?',
       header: 'CONFIRMAR',
@@ -189,23 +213,39 @@ export class SupportFormHistoryComponent {
     });
   }
 
-  //Validaciones del formulario principal de cambio de estado.
-  public validateForm(controlName: string): boolean | undefined {
+  /**
+   * Valida un control específico del formulario del historial de soporte.
+   * Comprueba si el control especificado es inválido y ha sido tocado.
+   * @param controlName El nombre del control que se va a validar.
+   * @returns Verdadero si el control es inválido y ha sido tocado, de lo contrario, indefinido.
+   */
+  public validateSupportHistoryForm(controlName: string): boolean | undefined {
     return (
       this.supportHistoryForm.get(controlName)?.invalid &&
       this.supportHistoryForm.get(controlName)?.touched
     );
   }
 
-  //Validaciones del formulario de las notas.
-  public validateFormNote(controlName: string): boolean | undefined {
+  /**
+   * Valida un control específico del formulario de las notas del historial de soporte.
+   * Comprueba si el control especificado es inválido y ha sido tocado.
+   * @param controlName El nombre del control que se va a validar.
+   * @returns Verdadero si el control es inválido y ha sido tocado, de lo contrario, indefinido.
+   */
+  public validateSupportHistoryNoteForm(
+    controlName: string
+  ): boolean | undefined {
     return (
       this.supportHistoryNoteForm.get(controlName)?.invalid &&
       this.supportHistoryNoteForm.get(controlName)?.touched
     );
   }
 
-  //Obtiene la fecha de entrada del servicio y va comparando, para no ir para atras en el tiempo. (Funciona en el calendario)
+  /**
+   * Obtiene la fecha de entrada del último servicio y la compara con la fecha mínima permitida en el calendario.
+   * Se asegura de que la fecha mínima no retroceda en el tiempo.
+   * Esta función se ejecuta para establecer la fecha mínima permitida en el calendario según el historial de servicios del caso.
+   */
   private findLastDateEntry(): void {
     if (
       this.config.data.state.id !== 1 &&
@@ -222,7 +262,11 @@ export class SupportFormHistoryComponent {
     }
   }
 
-  //Chequea el historial de los cambios de estado.
+  /**
+   * Verifica si hay un estado específico en el historial de estados del servicio.
+   * @param stateIdToCheck El ID del estado que se desea verificar en el historial.
+   * @returns true si se encuentra el estado especificado en el historial, de lo contrario, false.
+   */
   private getCheckHistoryState(stateIdToCheck: number): boolean {
     if (this.config.data.serviceHistory) {
       return this.config.data.serviceHistory.some(
@@ -232,7 +276,11 @@ export class SupportFormHistoryComponent {
     return false;
   }
 
-  //Guarda la información de las notas segun el estado que este.
+  /**
+   * Guarda la información de las notas asociadas al estado actual del servicio.
+   * Si ya existe un historial de estados para el servicio y el estado actual es el mismo que el del formulario,
+   * se guarda la nota en ese historial. En caso contrario, se crea un nuevo historial de estado antes de guardar la nota.
+   */
   public saveFormNote() {
     this.setDataNoteDefault();
     this.confirmationService.confirm({
@@ -317,9 +365,10 @@ export class SupportFormHistoryComponent {
     });
   }
 
-  //Guarda la información del cambio de estado.
-  //Actualiza el estado del servicio.
-  //Actualiza algunos campos del servicio.
+  /**
+   * Guarda la información del cambio de estado del servicio.
+   * Actualiza el estado del servicio y algunos campos relacionados.
+   */
   public saveForm(): void {
     const service = this.config.data;
     const { repairedTime, ...body } = this.supportHistoryForm.getRawValue();
@@ -417,7 +466,10 @@ export class SupportFormHistoryComponent {
     });
   }
 
-  //Obtiene los datos importantes para añadir una nota, esto se hace de forma oculta (El usuario no lo debe cargar)
+  /**
+   * Establece los datos predeterminados para añadir una nota de forma automática.
+   * Estos datos se configuran de forma oculta para el usuario.
+   */
   private setDataNoteDefault() {
     this.supportHistoryNoteForm.patchValue({
       dateEntry: this.today,
@@ -426,7 +478,11 @@ export class SupportFormHistoryComponent {
     });
   }
 
-  //Obtiene la información del formulario, excluye el tiempo de reparación ya que en la mayoria de los estados no lo requiere (1 solo estado lo requeire).
+  /**
+   * Obtiene la información del formulario de historial de soporte, excluyendo el tiempo de reparación
+   * ya que la mayoría de los estados no lo requieren (solo un estado lo requiere).
+   * @returns La información del formulario de historial de soporte sin el tiempo de reparación.
+   */
   private getDataSupportHistory() {
     const { repairedTime, ...dataSend } = this.supportHistoryForm.getRawValue();
     return dataSend;

@@ -16,7 +16,7 @@
             minlength="1"
             placeholder="Ingresar número de serie"
             [ngClass]="{
-              'ng-invalid ng-dirty': validateForm('search')
+              'ng-invalid ng-dirty': validateSupportForm('search')
             }"
             (keydown.enter)="onKeyPressEnter($event)"
           />
@@ -27,7 +27,7 @@
             [disabled]="supportForm.get('search')?.invalid"
           />
         </div>
-        <small *ngIf="validateForm('search')" class="p-error">
+        <small *ngIf="validateSupportForm('search')" class="p-error">
           Campo requerido*
         </small>
       </div>
@@ -42,10 +42,12 @@
           [minDate]="minDate"
           [maxDate]="maxDate"
           [showClear]="true"
-          [ngClass]="{ 'ng-invalid ng-dirty': validateForm('dateEntry') }"
+          [ngClass]="{
+            'ng-invalid ng-dirty': validateSupportForm('dateEntry')
+          }"
           placeholder="Seleccionar fecha de registro del servicio"
         />
-        <small *ngIf="validateForm('dateEntry')" class="p-error">
+        <small *ngIf="validateSupportForm('dateEntry')" class="p-error">
           Campo requerido*
         </small>
       </div>
@@ -59,9 +61,9 @@
           styleClass="w-full"
           formControlName="priority"
           [showClear]="true"
-          [ngClass]="{ 'ng-invalid ng-dirty': validateForm('priority') }"
+          [ngClass]="{ 'ng-invalid ng-dirty': validateSupportForm('priority') }"
         />
-        <small *ngIf="validateForm('priority')" class="p-error">
+        <small *ngIf="validateSupportForm('priority')" class="p-error">
           Campo requerido*
         </small>
       </div>
@@ -73,9 +75,11 @@
           class="w-full"
           formControlName="bitrixUrl"
           placeholder="Ingresar URL de la tarea asociada"
-          [ngClass]="{ 'ng-invalid ng-dirty': validateForm('bitrixUrl') }"
+          [ngClass]="{
+            'ng-invalid ng-dirty': validateSupportForm('bitrixUrl')
+          }"
         />
-        <small *ngIf="validateForm('bitrixUrl')" class="p-error">
+        <small *ngIf="validateSupportForm('bitrixUrl')" class="p-error">
           Campo requerido*
         </small>
       </div>
@@ -178,7 +182,7 @@
           formControlName="warranty"
           [showClear]="true"
         />
-        <small *ngIf="validateForm('warranty')" class="p-error">
+        <small *ngIf="validateSupportForm('warranty')" class="p-error">
           Campo requerido*
         </small>
       </div>
@@ -192,10 +196,10 @@
           placeholder="Ingresar falla reportada por el cliente"
           [maxlength]="255"
           [ngClass]="{
-            'ng-invalid ng-dirty': validateForm('failure')
+            'ng-invalid ng-dirty': validateSupportForm('failure')
           }"
         />
-        <small *ngIf="validateForm('failure')" class="p-error">
+        <small *ngIf="validateSupportForm('failure')" class="p-error">
           Campo requerido*
         </small>
       </div>
@@ -220,10 +224,10 @@
           placeholder="Ingresar número de remito de producto saliente"
           [maxLength]="15"
           [ngClass]="{
-            'ng-invalid ng-dirty': validateForm('endReference')
+            'ng-invalid ng-dirty': validateSupportForm('endReference')
           }"
         />
-        <small *ngIf="validateForm('endReference')" class="p-error">
+        <small *ngIf="validateSupportForm('endReference')" class="p-error">
           Campo requerido*
         </small>
       </div>
@@ -238,10 +242,10 @@
           [maxlength]="255"
           [maxLength]="255"
           [ngClass]="{
-            'ng-invalid ng-dirty': validateForm('quoteNumber')
+            'ng-invalid ng-dirty': validateSupportForm('quoteNumber')
           }"
         />
-        <small *ngIf="validateForm('quoteNumber')" class="p-error">
+        <small *ngIf="validateSupportForm('quoteNumber')" class="p-error">
           Campo requerido*
         </small>
       </div>
@@ -255,10 +259,10 @@
           placeholder="Ingresar número de orden de compra si corresponde"
           [maxLength]="255"
           [ngClass]="{
-            'ng-invalid ng-dirty': validateForm('orderNumber')
+            'ng-invalid ng-dirty': validateSupportForm('orderNumber')
           }"
         />
-        <small *ngIf="validateForm('orderNumber')" class="p-error">
+        <small *ngIf="validateSupportForm('orderNumber')" class="p-error">
           Campo requerido*
         </small>
       </div>
@@ -273,10 +277,10 @@
           placeholder="Seleccionar aprobación de faja de seguridad"
           [showClear]="true"
           [ngClass]="{
-            'ng-invalid ng-dirty': validateForm('securityStrap')
+            'ng-invalid ng-dirty': validateSupportForm('securityStrap')
           }"
         />
-        <small *ngIf="validateForm('securityStrap')" class="p-error">
+        <small *ngIf="validateSupportForm('securityStrap')" class="p-error">
           Campo requerido*
         </small>
       </div>
@@ -293,10 +297,10 @@
           [showToggleAll]="false"
           [showClear]="true"
           [ngClass]="{
-            'ng-invalid ng-dirty': validateForm('failureTypes')
+            'ng-invalid ng-dirty': validateSupportForm('failureTypes')
           }"
         />
-        <small *ngIf="validateForm('failureTypes')" class="p-error">
+        <small *ngIf="validateSupportForm('failureTypes')" class="p-error">
           Campo requerido*
         </small>
       </div>
@@ -317,7 +321,7 @@
           *ngIf="showButtonClean"
           label="LIMPIAR FORMULARIO"
           styleClass="p-button-danger w-full"
-          (onClick)="cleanForm()"
+          (onClick)="cleanSupportForm()"
         />
         <p-button
           *ngIf="showButtonState"
@@ -333,13 +337,13 @@
         <p-button
           label="SALIR DEL FORMULARIO"
           styleClass="p-button-secondary w-full"
-          (onClick)="exitForm()"
+          (onClick)="closeSupportForm()"
         />
         <p-button
           [label]="mainButtonLabel"
           [disabled]="supportForm.invalid || !getChangesToUpdate()"
           styleClass="p-button-info w-full"
-          (onClick)="submitForm()"
+          (onClick)="processSupportForm()"
         />
       </div></form
   ></p-tabPanel>

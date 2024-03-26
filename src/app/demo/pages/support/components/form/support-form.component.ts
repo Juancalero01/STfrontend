@@ -19,6 +19,7 @@ import { SupportService } from 'src/app/demo/api/services/support.service';
 import { SupportFormHistoryComponent } from '../form-history/support-form-history.component';
 import { TokenService } from 'src/app/demo/api/services/token.service';
 import { ISupportHistory } from 'src/app/demo/api/interfaces/support-history.interface';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-support-form',
@@ -39,7 +40,7 @@ export class SupportFormComponent {
     private readonly dialogService: DialogService,
     private readonly tokenService: TokenService
   ) {}
-  public supportForm: FormGroup = this.buildForm();
+  public supportForm: FormGroup = this.buildSupportForm();
   public disableButtonHistory: boolean = false;
   public mainButtonLabel: string = 'REGISTRAR FORMULARIO';
   public showButtonState: boolean = false;
@@ -61,7 +62,6 @@ export class SupportFormComponent {
   );
   public maxDate: Date = this.today;
 
-  //Inicializador de funciones.
   ngOnInit() {
     this.requiredFieldsByState();
     this.fieldsWithoutAdmin();
@@ -70,7 +70,7 @@ export class SupportFormComponent {
     this.loadPriorities();
     this.loadFailureTypes();
     if (this.config.data) {
-      this.loadForm(this.config.data);
+      this.loadSupportForm(this.config.data);
       this.showButtonState = true;
       this.showButtonClean = false;
       this.showSearch = false;
@@ -83,15 +83,22 @@ export class SupportFormComponent {
     }
   }
 
-  //Obtiene los datos importantes para añadirlos al formulario de servicios, esto se hace de forma oculta (El usuario no lo debe cargar)
+  /**
+   * Establece los valores por defecto en el formulario de servicios.
+   * Los valores incluyen el estado inicial, la fecha de entrada y la prioridad por defecto.
+   */
   private setDefaultFormData(): void {
     this.supportForm.get('state')?.setValue(1);
     this.supportForm.get('dateEntry')?.setValue(this.today);
     this.supportForm.get('priority')?.setValue(4);
   }
 
-  //Construcción de los campos y validaciones del formulario de servicios.
-  private buildForm(): FormGroup {
+  /**
+   * Construye y retorna el formulario de soporte.
+   * Este formulario incluye campos para ingresar información relevante sobre el soporte.
+   * Algunos campos están deshabilitados inicialmente y se habilitan según sea necesario.
+   */
+  private buildSupportForm(): FormGroup {
     return this.formBuilder.group({
       search: [
         null,
@@ -131,8 +138,11 @@ export class SupportFormComponent {
     });
   }
 
-  //Carga de datos para el formulario de servicios.
-  private loadForm(support: ISupport) {
+  /**
+   * Carga los datos del formulario de servicio con la información del soporte proporcionado.
+   * @param support El objeto de soporte que contiene la información a cargar en el formulario.
+   */
+  private loadSupportForm(support: ISupport) {
     this.supportForm.patchValue({
       ...support,
       dateEntry: new Date(support.dateEntry),
@@ -150,14 +160,18 @@ export class SupportFormComponent {
     this.mainButtonLabel = 'ACTUALIZAR FORMULARIO';
   }
 
-  //Obtiene todos los estados, esto es para que cargue en que estado se encuentra el servicio.
+  /**
+   * Carga los estados de soporte disponibles.
+   */
   private loadStates(): void {
     this.supportStateService.findAll().subscribe({
       next: (states: ISupportState[]) => (this.states = states),
     });
   }
 
-  //Obtiene todas las prioridades, esto es para que cargue en que prioridad se encuentra el servicio.
+  /**
+   * Carga todas las prioridades de soporte.
+   */
   private loadPriorities(): void {
     this.supportPriorityService.findAll().subscribe({
       next: (priorities: ISupportPriority[]) => {
@@ -166,7 +180,9 @@ export class SupportFormComponent {
     });
   }
 
-  //Obtiene todos los tipos de fallas para mostrar y realizar el seleccionado correspondiente.
+  /**
+   * Carga todos los tipos de fallas para su selección.
+   */
   private loadFailureTypes(): void {
     this.failureTypeService.findAll().subscribe({
       next: (failureTypes: IFailureType[]) =>
@@ -174,12 +190,17 @@ export class SupportFormComponent {
     });
   }
 
-  //Carga el historial de cambios de estado, en la otra pestaña del formulario.
+  /**
+   * Carga el historial de cambios de estado del servicio.
+   * @param supportHistory El historial de cambios de estado del servicio.
+   */
   private loadSupportHistory(supportHistory: ISupportHistory[]): void {
     this.supportHistory = supportHistory;
   }
 
-  //Busca el producto por su identificador unico (Número de serie).
+  /**
+   * Busca un producto por su identificador único (Número de serie).
+   */
   public searchProduct() {
     const serial = this.supportForm.get('search')?.value;
     this.productService.findOneSerial(serial).subscribe({
@@ -219,13 +240,21 @@ export class SupportFormComponent {
     });
   }
 
-  //Guarda o actualiza la información del servicio.
-  public submitForm(): void {
-    !this.config.data ? this.createSupport() : this.updateSupport();
+  /**
+   * Envía el formulario del soporte para crear un nuevo registro o actualizar uno existente.
+   * Determina si se debe llamar a la función de confirmación de creación o actualización del soporte.
+   */
+  public processSupportForm(): void {
+    !this.config.data
+      ? this.confirmCreateSupport()
+      : this.confirmUpdateSupport();
   }
 
-  //Guarda la información cargada en el servicio. (nuevo)
-  public createSupport(): void {
+  /**
+   * Crea un nuevo registro de soporte.
+   * Muestra un diálogo de confirmación antes de realizar la operación.
+   */
+  public confirmCreateSupport(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea crear el registro?',
       header: 'CONFIRMAR',
@@ -244,14 +273,31 @@ export class SupportFormComponent {
               summary: 'Operación exitosa',
               detail: 'El registro se creó correctamente',
             }),
-          error: () => {},
+          error: (err: HttpErrorResponse) => {
+            if (err.status === 409) {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'El soporte ya existe',
+              });
+            } else {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Ocurrió un error al crear el soporte',
+              });
+            }
+          },
           complete: () => this.ref.close(),
         }),
     });
   }
 
-  //Actualiza la información nueva en el servicio.
-  public updateSupport(): void {
+  /**
+   * Actualiza el registro de soporte.
+   * Muestra un diálogo de confirmación antes de realizar la operación.
+   */
+  public confirmUpdateSupport(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea actualizar el registro?',
       header: 'CONFIRMAR',
@@ -272,15 +318,32 @@ export class SupportFormComponent {
                 summary: 'Operación exitosa',
                 detail: 'El registro se actualizó correctamente',
               }),
-            error: () => {},
+            error: (err: HttpErrorResponse) => {
+              if (err.status === 404) {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Soporte no encontrado',
+                });
+              } else {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Ocurrió un error al actualizar el soporte',
+                });
+              }
+            },
             complete: () => this.ref.close(),
           });
       },
     });
   }
 
-  //Cierra el formulario.
-  public exitForm(): void {
+  /**
+   * Cierra el formulario de soportes.
+   * Muestra un diálogo de confirmación antes de cerrar.
+   */
+  public closeSupportForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea salir del formulario?',
       header: 'CONFIRMAR',
@@ -354,8 +417,11 @@ export class SupportFormComponent {
     });
   }
 
-  //Limpia el formulario de servicios, esto se aplica cuando esta creando un nuevo caso.
-  public cleanForm(): void {
+  /**
+   * Limpia el formulario de servicios.
+   * Se aplica cuando se está creando un nuevo caso.
+   */
+  public cleanSupportForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea limpiar el formulario?',
       header: 'CONFIRMAR',
@@ -382,7 +448,12 @@ export class SupportFormComponent {
     });
   }
 
-  //Calcula la garantia del producto.
+  /**
+   * Calcula la garantía del producto.
+   *
+   * @param deliveryDate La fecha de entrega del producto.
+   * @param isUpdate Indica si se está actualizando el formulario.
+   */
   private calculateWarranty(
     deliveryDate: Date,
     isUpdate: boolean = false
@@ -424,7 +495,9 @@ export class SupportFormComponent {
     }
   }
 
-  //Obtiene el ultimo número de reclamo para agregarle +1 para un nuevo servicio.
+  /**
+   * Obtiene el último número de reclamo para agregarle +1 para un nuevo servicio.
+   */
   private getLastReclaimNumber(): void {
     const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
     this.supportService.findLastReclaim().subscribe({
@@ -439,7 +512,9 @@ export class SupportFormComponent {
     });
   }
 
-  //Obtiene datos del soportes que son importantes para el guardado o actualizado del servicio.
+  /**
+   * Obtiene los datos del formulario de soporte excluyendo ciertos campos.
+   */
   private getSupportData(): ISupport {
     const {
       search,
@@ -452,13 +527,21 @@ export class SupportFormComponent {
     return support;
   }
 
-  //Validaciones del formulario del servicio.
-  public validateForm(controlName: string): boolean | undefined {
+  /**
+   * Realiza validaciones en el formulario de servicio.
+   * @param controlName Nombre del control a validar.
+   * @returns Devuelve true si el control es inválido y ha sido tocado o permanece sin cambios (pristine).
+   */
+  public validateSupportForm(controlName: string): boolean | undefined {
     const control = this.supportForm.get(controlName);
     return control?.invalid && (control?.touched || control?.pristine);
   }
 
-  //Comprueba si no es administrador, entonces modifica el evento de deshabilitado o habilitado
+  /**
+   * Comprueba si el usuario no es administrador y modifica el estado de los campos en consecuencia.
+   * Si el usuario no es administrador y el estado del caso no es 11, deshabilita los campos de prioridad y garantía.
+   * Si el usuario no es administrador y el estado del caso es 11, deshabilita todo el formulario.
+   */
   private fieldsWithoutAdmin(): void {
     const isAdmin = this.tokenService.isAdmin();
     const isCase11 = this.config.data?.state.id === 11;
@@ -473,7 +556,11 @@ export class SupportFormComponent {
     }
   }
 
-  //Comprueba que se requiere campos según el campo en el que se encuentre el servicio.
+  /**
+   * Comprueba los campos requeridos según el estado del servicio.
+   * Habilita o deshabilita los campos en base al estado del servicio.
+   * @param state El estado del servicio.
+   */
   private requiredFieldsByState(state?: number): void {
     switch (state) {
       case 1:
@@ -516,15 +603,6 @@ export class SupportFormComponent {
         this.supportForm.get('orderNumber')?.addValidators(Validators.required);
         this.supportForm.get('orderNumber')?.updateValueAndValidity();
         break;
-      // case 10:
-      //   this.supportForm.disable();
-      //   this.supportForm.get('endReference')?.enable();
-      //   this.fieldsActive();
-      //   this.supportForm
-      //     .get('endReference')
-      //     ?.addValidators(Validators.required);
-      //   this.supportForm.get('endReference')?.updateValueAndValidity();
-      //   break;
       case 11:
         this.supportForm.disable();
         this.supportForm.get('failureTypes')?.enable();
@@ -556,18 +634,29 @@ export class SupportFormComponent {
     }
   }
 
-  //Obtiene si realmente el usuario modifico el formulario de servicios.
+  /**
+   * Comprueba si el formulario de servicios ha sido modificado por el usuario.
+   * @returns true si se han realizado cambios en el formulario, de lo contrario false.
+   */
   public getChangesToUpdate(): boolean {
     return !this.supportForm.pristine;
   }
 
-  //Obtiene el ultimo usuario del ultimo cambio de estado de servicios.
+  /**
+   * Obtiene el último usuario del último cambio de estado del servicio.
+   * @param support El servicio del cual se desea obtener el último usuario del cambio de estado.
+   * @returns El último usuario del último cambio de estado del servicio.
+   */
+
   private getLastUser(support: ISupport): any {
     const supportHistory = support.serviceHistory;
     return supportHistory[0].user;
   }
 
-  //Campos activos.
+  /**
+   * Activa los campos del formulario de servicios.
+   */
+
   public fieldsActive() {
     this.supportForm.get('bitrixUrl')?.enable();
     this.supportForm.get('startReference')?.enable();
@@ -577,7 +666,13 @@ export class SupportFormComponent {
     this.supportForm.get('priority')?.enable();
   }
 
-  //Función para cargar el lector de codigo de barras de los productos, genera un enter automaticamente y envia la peticiíon
+  /**
+   * Función que se activa al presionar la tecla Enter en el lector de códigos de barras de los productos.
+   * Verifica si el valor ingresado cumple con el formato esperado y realiza la búsqueda del producto.
+   * En caso de no cumplir con el formato, muestra un mensaje de error.
+   * @param event El evento de teclado.
+   */
+
   public onKeyPressEnter(event: Event) {
     const allowedCharacters = /^\d{0,4}(-\d{0,5})?$/;
     const inputValue = (event.target as HTMLInputElement).value;

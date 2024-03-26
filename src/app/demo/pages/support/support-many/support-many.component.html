@@ -1,11 +1,15 @@
+<app-panel-header
+  title="Ingresos Masivos de Servicios Técnicos"
+  subtitle="Administra y gestiona grandes lotes de ingresos al servicio técnico en este panel dedicado exclusivamente para operaciones masivas."
+>
+</app-panel-header>
+
+<br />
 <section class="grid">
   <section class="col-12 md:col-12 lg:col-12 xl:col-3">
     <form class="flex flex-wrap gap-3" [formGroup]="supportManyForm">
-      <div class="flex flex-column gap-1">
-        <h2 class="font-semibold">INGRESOS MASIVOS</h2>
-        <p class="text-gray-600 font-medium">
-          Panel para administrar lotes nuevos de ingresos a servicio técnico
-        </p>
+      <div class="w-full mb-2">
+        <span class="font-medium text-xl">FORMULARIO DE ENTRADA</span>
       </div>
       <div class="flex flex-column w-full">
         <label>FECHA DE REGISTRO</label>
@@ -153,10 +157,16 @@
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr class="text-sm w-full">
-          <td>
-            <div class="flex gap-2 align-items-center">
-              <i class="pi pi-info-circle"></i>
-              <span class="font-medium">No existen registros de servicios</span>
+          <td colspan="7">
+            <div
+              class="p-message p-message-info flex gap-1 p-4 h-fit align-items-center m-0"
+            >
+              <i class="pi pi-info-circle text-xl"></i>
+              <p class="ml-2">
+                Actualmente no se han ingresado datos para los ingresos masivos.
+                Por favor, complete el formulario de ingresos para agregar
+                nuevos registros.
+              </p>
             </div>
           </td>
         </tr>

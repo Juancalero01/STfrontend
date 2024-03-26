@@ -29,7 +29,7 @@ export class SupportMassiveFormComponent {
 
   public supportsHistories: ISupportHistoryMany[] = [];
   public supports: ISupport[] = [];
-  public supportMassiveForm: FormGroup = this.buildForm();
+  public supportMassiveForm: FormGroup = this.buildSupportMassiveForm();
   public currentState: any;
   public nextState: any;
 
@@ -37,8 +37,7 @@ export class SupportMassiveFormComponent {
     this.loadStates();
   }
 
-  //Solo comentario para cerrar todos los casos, se aplica para cada servicio del array.
-  private buildForm(): FormGroup {
+  private buildSupportMassiveForm(): FormGroup {
     return this.formBuilder.group({
       endReference: [
         null,
@@ -52,8 +51,11 @@ export class SupportMassiveFormComponent {
     });
   }
 
-  //Cierra el formulario
-  public exitForm(): void {
+  /**
+   * Cierra el formulario de soportes masivos.
+   * Muestra un diálogo de confirmación antes de cerrar.
+   */
+  public closeSupportMassiveForm(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea salir del formulario?',
       header: 'CONFIRMAR',
@@ -72,15 +74,23 @@ export class SupportMassiveFormComponent {
     });
   }
 
-  //Valida el formulario
-  public validateForm(controlName: string): boolean | undefined {
+  /**
+   * Valida un control específico del formulario del soporte masivo.
+   * Comprueba si el control especificado es inválido y ha sido tocado.
+   * @param controlName El nombre del control que se va a validar.
+   * @returns Verdadero si el control es inválido y ha sido tocado, de lo contrario, indefinido.
+   */
+  public isFormControlInvalid(controlName: string): boolean | undefined {
     return (
       this.supportMassiveForm.get(controlName)?.invalid &&
       this.supportMassiveForm.get(controlName)?.touched
     );
   }
 
-  //Carga y asigna los estados necesarios
+  /**
+   * Carga los estados disponibles para el formulario de cambios de estado.
+   * Asigna el estado actual y el siguiente estado según sus identificadores.
+   */
   private loadStates(): void {
     this.supportStateService.findAll().subscribe({
       next: (states: ISupportState[]) => {
@@ -90,7 +100,13 @@ export class SupportMassiveFormComponent {
     });
   }
 
-  //Guarda el cambio de historial y actualiza el servicio en general
+  /**
+   * Guarda el cambio de historial y actualiza el servicio en general.
+   * Carga los historiales de soporte y actualiza los servicios antes de confirmar.
+   * Muestra un mensaje de éxito si la operación se realiza correctamente.
+   * Cierra el diálogo después de confirmar.
+   * En caso de error, muestra un mensaje de error.
+   */
   public saveForm(): void {
     this.loadSupportsHistories(this.config.data);
     this.loadSupportsUpdate(this.config.data);
@@ -105,7 +121,6 @@ export class SupportMassiveFormComponent {
       acceptButtonStyleClass: 'p-button-sm p-button-info',
       rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
-        //TODO: Verificar si no hay error haciendo a la inversa mejor crear el historial primero y luego recien establecerlos a ese estado.
         this.supportService.updateMany(this.supports).subscribe({
           next: () => {
             this.supportHistoryService
@@ -121,11 +136,23 @@ export class SupportMassiveFormComponent {
                 },
               });
           },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'No se pudieron cerrar los servicios',
+            });
+          },
         });
       },
     });
   }
 
+  /**
+   * Carga los historiales de soporte para los servicios especificados.
+   * Establece los detalles comunes para todos los historiales de soporte.
+   * @param supports Los servicios para los cuales se deben cargar los historiales de soporte.
+   */
   private loadSupportsHistories(supports: ISupport[]): void {
     const remarks = this.supportMassiveForm.get('remarks')?.value;
     const userId = Number(this.tokenService.getUserId());
@@ -145,6 +172,10 @@ export class SupportMassiveFormComponent {
     }
   }
 
+  /**
+   * Carga los servicios para actualizar con los detalles comunes establecidos.
+   * @param supports Los servicios que se actualizarán.
+   */
   private loadSupportsUpdate(supports: ISupport[]): void {
     const currentDate = new Date();
     const endReference: string =
