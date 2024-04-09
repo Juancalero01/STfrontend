@@ -13,7 +13,7 @@ import { TokenService } from 'src/app/demo/api/services/token.service';
     >
       <ng-template pTemplate="end">
         <picture>
-          <img src="/assets/logo.webp" alt="Logo" height="32" />
+          <img src="assets/logo.webp" alt="Logo" height="32" />
         </picture>
       </ng-template>
     </p-menubar>
