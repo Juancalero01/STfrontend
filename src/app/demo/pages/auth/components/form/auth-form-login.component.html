@@ -10,7 +10,11 @@
     <p class="text-gray-600">Ingrese sus credenciales para acceder al panel.</p>
   </section>
 
-  <form class="flex flex-column gap-3" [formGroup]="loginForm">
+  <form
+    class="flex flex-column gap-3"
+    [formGroup]="loginForm"
+    (keyup.enter)="loginForm.valid && login()"
+  >
     <fieldset class="border-none">
       <legend>Nombre de usuario</legend>
       <div class="p-inputgroup">
@@ -29,7 +33,6 @@
       </div>
       <small id="username-error" class="p-error">Campo obligatorio*</small>
     </fieldset>
-
     <fieldset class="border-none">
       <legend>Contraseña</legend>
       <div class="p-inputgroup">
@@ -50,7 +53,6 @@
       </div>
       <small id="password-error" class="p-error">Campo obligatorio*</small>
     </fieldset>
-
     <p-button
       label="INICIAR SESIÓN"
       styleClass="w-full p-button-info"
