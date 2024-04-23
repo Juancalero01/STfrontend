@@ -58,7 +58,7 @@ export class SupportManyComponent {
     return this.formBuilder.group({
       search: [
         null,
-        [Validators.required, Validators.pattern(/^\d{1,4}(-\d{4,5})?$/)],
+        [Validators.required, Validators.pattern(/^\d{1,4}(-?\d{4,5})?$/)],
       ],
       dateEntry: [null, [Validators.required]],
       startReference: [null, [Validators.required]],
@@ -118,7 +118,13 @@ export class SupportManyComponent {
    * Si es el primer producto agregado, calcula el número de reclamo más reciente.
    */
   public searchProduct() {
-    const serial = this.supportManyForm.get('search')?.value;
+    let serial = this.supportManyForm.get('search')?.value;
+    if (serial && !serial.includes('-')) {
+      if (serial.startsWith('0160') || serial.startsWith('0161')) {
+        serial = serial.slice(0, 4) + '-' + serial.slice(4);
+      }
+    }
+
     this.productService.findOneSerial(serial).subscribe({
       next: (product: IProduct) => {
         if (!product) {
@@ -317,7 +323,7 @@ export class SupportManyComponent {
    * Genera automáticamente una pulsación de tecla "Enter" y envía la petición de búsqueda del producto.
    */
   public onKeyPressEnter(event: Event) {
-    const allowedCharacters = /^\d{0,4}(-\d{0,5})?$/;
+    const allowedCharacters = /^\d{1,4}(-?\d{4,5})?$/;
     const inputValue = (event.target as HTMLInputElement).value;
     if (allowedCharacters.test(inputValue)) {
       this.searchProduct();
