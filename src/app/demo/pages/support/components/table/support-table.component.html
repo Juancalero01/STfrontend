@@ -52,7 +52,7 @@
   <p-table
     #dt
     [value]="supports"
-    [globalFilterFields]="['reclaim']"
+    [globalFilterFields]="['reclaim', 'product.serial']"
     styleClass="p-datatable-striped p-datatable-sm"
     selectionMode="multiple"
     [(selection)]="selectedSupports"
