@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { IClient } from 'src/app/demo/api/interfaces/client.interface';
 import { IProductType } from 'src/app/demo/api/interfaces/product-type.interface';
@@ -30,6 +30,14 @@ export class ProductFormComponent {
   public buttonLabel: string = 'REGISTRAR FORMULARIO';
   public clients: IClient[] = [];
   public productTypes: IProductType[] = [];
+  public viewFormOne: boolean = true;
+  public viewFormTwo: boolean = false;
+  items: MenuItem[] | undefined;
+  activeIndex: number = 0;
+
+  onActiveIndexChange(event: number) {
+    this.activeIndex = event;
+  }
 
   ngOnInit(): void {
     this.getClients();
@@ -38,6 +46,22 @@ export class ProductFormComponent {
       this.loadProductDataIntoForm(this.config.data);
       this.buttonLabel = 'ACTUALIZAR FORMULARIO';
     }
+    this.items = [
+      {
+        label: 'Producto',
+        command: (event: any) => {
+          this.viewFormOne = true;
+          this.viewFormTwo = false;
+        },
+      },
+      {
+        label: 'Componentes',
+        command: (event: any) => {
+          this.viewFormOne = false;
+          this.viewFormTwo = true;
+        },
+      },
+    ];
   }
 
   /**

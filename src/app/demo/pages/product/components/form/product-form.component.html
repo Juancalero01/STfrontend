@@ -1,93 +1,122 @@
+<p-steps
+  [model]="items"
+  [readonly]="false"
+  [activeIndex]="activeIndex"
+  (activeIndexChange)="onActiveIndexChange($event)"
+/>
+
 <form class="grid" [formGroup]="productForm">
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-    <label>CLIENTE</label>
-    <p-dropdown
-      formControlName="client"
-      optionLabel="taxpayerName"
-      optionValue="id"
-      placeholder="Seleccionar cliente del producto"
-      styleClass="w-full"
-      [options]="clients"
-      [filter]="true"
-      [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('client') }"
-      [showClear]="true"
-    >
-    </p-dropdown>
-    <small *ngIf="isFormControlInvalid('client')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-    <label>TIPO DE PRODUCTO</label>
-    <p-dropdown
-      formControlName="productType"
-      optionLabel="name"
-      optionValue="id"
-      placeholder="Seleccionar tipo de producto del cliente"
-      styleClass="w-full"
-      [options]="productTypes"
-      [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('productType') }"
-      [filter]="true"
-      [showClear]="true"
-      (onChange)="onProductTypeChange()"
-    >
-    </p-dropdown>
-    <small *ngIf="isFormControlInvalid('productType')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-    <label>NÚMERO DE SERIE</label>
-    <input
-      type="text"
-      pInputText
-      formControlName="serial"
-      placeholder="Ingresar número de serie del producto"
-      class="w-full"
-      [minlength]="1"
-      [maxlength]="10"
-      [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('serial') }"
-    />
-    <small *ngIf="isFormControlInvalid('serial')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-    <label>NÚMERO DE REMITO (Remito del envio del producto al cliente)</label>
-    <input
-      type="text"
-      pInputText
-      formControlName="reference"
-      placeholder="Ingresar número de remito del producto"
-      class="w-full"
-      [maxLength]="15"
-      [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('reference') }"
-    />
-    <small *ngIf="isFormControlInvalid('reference')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
-  <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-    <label
-      >FECHA DE DESPACHO (Fecha en la que se envio el producto al
-      cliente)</label
-    >
-    <p-calendar
-      formControlName="deliveryDate"
-      dateFormat="dd-mm-yy"
-      styleClass="w-full"
-      appendTo="body"
-      placeholder="Seleccionar o ingresar fecha de despacho del producto"
-      [ngClass]="{
-        'ng-invalid ng-dirty': isFormControlInvalid('deliveryDate')
-      }"
-      [showClear]="true"
-    >
-    </p-calendar>
-    <small *ngIf="isFormControlInvalid('deliveryDate')" class="p-error">
-      Campo requerido*
-    </small>
-  </div>
+  <section class="col-12" *ngIf="viewFormOne">
+    <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+      <label>CLIENTE</label>
+      <p-dropdown
+        formControlName="client"
+        optionLabel="taxpayerName"
+        optionValue="id"
+        placeholder="Seleccionar cliente del producto"
+        styleClass="w-full"
+        [options]="clients"
+        [filter]="true"
+        [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('client') }"
+        [showClear]="true"
+      >
+      </p-dropdown>
+      <small *ngIf="isFormControlInvalid('client')" class="p-error">
+        Campo requerido*
+      </small>
+    </div>
+    <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+      <label>TIPO DE PRODUCTO</label>
+      <p-dropdown
+        formControlName="productType"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="Seleccionar tipo de producto del cliente"
+        styleClass="w-full"
+        [options]="productTypes"
+        [ngClass]="{
+          'ng-invalid ng-dirty': isFormControlInvalid('productType')
+        }"
+        [filter]="true"
+        [showClear]="true"
+        (onChange)="onProductTypeChange()"
+      >
+      </p-dropdown>
+      <small *ngIf="isFormControlInvalid('productType')" class="p-error">
+        Campo requerido*
+      </small>
+    </div>
+    <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+      <label>NÚMERO DE SERIE</label>
+      <input
+        type="text"
+        pInputText
+        formControlName="serial"
+        placeholder="Ingresar número de serie del producto"
+        class="w-full"
+        [minlength]="1"
+        [maxlength]="10"
+        [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('serial') }"
+      />
+      <small *ngIf="isFormControlInvalid('serial')" class="p-error">
+        Campo requerido*
+      </small>
+    </div>
+    <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+      <label>NÚMERO DE REMITO (Remito del envio del producto al cliente)</label>
+      <input
+        type="text"
+        pInputText
+        formControlName="reference"
+        placeholder="Ingresar número de remito del producto"
+        class="w-full"
+        [maxLength]="15"
+        [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('reference') }"
+      />
+      <small *ngIf="isFormControlInvalid('reference')" class="p-error">
+        Campo requerido*
+      </small>
+    </div>
+    <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+      <label
+        >FECHA DE DESPACHO (Fecha en la que se envio el producto al
+        cliente)</label
+      >
+      <p-calendar
+        formControlName="deliveryDate"
+        dateFormat="dd-mm-yy"
+        styleClass="w-full"
+        appendTo="body"
+        placeholder="Seleccionar o ingresar fecha de despacho del producto"
+        [ngClass]="{
+          'ng-invalid ng-dirty': isFormControlInvalid('deliveryDate')
+        }"
+        [showClear]="true"
+      >
+      </p-calendar>
+      <small *ngIf="isFormControlInvalid('deliveryDate')" class="p-error">
+        Campo requerido*
+      </small>
+    </div>
+  </section>
+  <section class="col-12" *ngIf="viewFormTwo">
+    <div class="flex flex-column col-12 lg:col-12 xl:col-12">
+      <label>BUSQUEDA</label>
+      <input
+        type="text"
+        pInputText
+        formControlName="serial"
+        placeholder="Ingresar número de serie del producto"
+        class="w-full"
+        [minlength]="1"
+        [maxlength]="10"
+        [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('serial') }"
+      />
+      <small *ngIf="isFormControlInvalid('serial')" class="p-error">
+        Campo requerido*
+      </small>
+    </div>
+  </section>
   <div class="flex gap-2 col-12 lg:flex-row justify-content-end flex-column">
     <p-button
       label="SALIR DEL FORMULARIO"
