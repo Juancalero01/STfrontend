@@ -40,9 +40,35 @@ body {
   box-shadow: none !important;
 }
 
-.p-checkbox .p-checkbox-box.p-highlight {
-  border-color: var(--blue-500) !important;
-  background: var(--blue-500) !important;
+.p-dialog .p-dialog-header {
+  border-bottom: 1px solid var(--gray-200) !important;
+}
+
+.p-dialog .p-dialog-header .p-dialog-title {
+  font-weight: 500 !important;
+  font-size: 1.3rem !important;
+}
+
+.p-dialog .p-dialog-content {
+  padding: 1.5rem 1.5rem !important;
+}
+
+.p-togglebutton.p-button:not(.p-disabled):not(.p-highlight) {
+  background: var(--red-500) !important;
+  border-color: var(--red-500) !important;
+  color: #ffffff !important;
+}
+
+.p-togglebutton.p-button.p-highlight .p-button-icon-left,
+.p-togglebutton.p-button:not(.p-disabled):not(.p-highlight)
+  .p-button-icon-left {
+  color: #ffffff !important;
+}
+
+.p-togglebutton.p-button.p-highlight {
+  background: var(--green-500) !important;
+  border-color: var(--green-500) !important;
+  color: #ffffff;
 }
 
 @media print {
