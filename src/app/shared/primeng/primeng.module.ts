@@ -29,7 +29,7 @@ import { TimelineModule } from 'primeng/timeline';
 import { ChartModule } from 'primeng/chart';
 import { CardModule } from 'primeng/card';
 import { PanelModule } from 'primeng/panel';
-import { StepsModule } from 'primeng/steps';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 
 @NgModule({
   imports: [
@@ -62,7 +62,7 @@ import { StepsModule } from 'primeng/steps';
     ChartModule,
     CardModule,
     PanelModule,
-    StepsModule,
+    ToggleButtonModule,
   ],
   exports: [
     ButtonModule,
@@ -94,7 +94,7 @@ import { StepsModule } from 'primeng/steps';
     ChartModule,
     CardModule,
     PanelModule,
-    StepsModule,
+    ToggleButtonModule,
   ],
   providers: [ConfirmationService, DialogService, MessageService],
 })
