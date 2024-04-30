@@ -1,14 +1,19 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import {
+  DialogService,
+  DynamicDialogConfig,
+  DynamicDialogRef,
+} from 'primeng/dynamicdialog';
 import { IClient } from 'src/app/demo/api/interfaces/client.interface';
 import { IProductType } from 'src/app/demo/api/interfaces/product-type.interface';
 import { IProduct } from 'src/app/demo/api/interfaces/product.interface';
 import { ClientService } from 'src/app/demo/api/services/client.service';
 import { ProductTypeService } from 'src/app/demo/api/services/product-type.service';
 import { ProductService } from 'src/app/demo/api/services/product.service';
+import { ProductPartFormComponent } from './product-part-form.component';
 
 @Component({
   selector: 'app-product-form',
@@ -17,51 +22,49 @@ import { ProductService } from 'src/app/demo/api/services/product.service';
 export class ProductFormComponent {
   constructor(
     private readonly ref: DynamicDialogRef,
-    private readonly config: DynamicDialogConfig,
     private readonly confirmationService: ConfirmationService,
     private readonly messageService: MessageService,
     private readonly clientService: ClientService,
     private readonly productTypeService: ProductTypeService,
     private readonly productService: ProductService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly config: DynamicDialogConfig,
+    private readonly dialogService: DialogService
   ) {}
 
   public productForm: FormGroup = this.buildProductForm();
-  public buttonLabel: string = 'REGISTRAR FORMULARIO';
+  public buttonLabel: string = 'Guardar';
   public clients: IClient[] = [];
   public productTypes: IProductType[] = [];
-  public viewFormOne: boolean = true;
-  public viewFormTwo: boolean = false;
-  items: MenuItem[] | undefined;
-  activeIndex: number = 0;
 
-  onActiveIndexChange(event: number) {
-    this.activeIndex = event;
-  }
+  public ref2: DynamicDialogRef = new DynamicDialogRef();
+  public dataTest: any[] = [];
 
   ngOnInit(): void {
     this.getClients();
     this.getProductTypes();
     if (this.config.data) {
-      this.loadProductDataIntoForm(this.config.data);
-      this.buttonLabel = 'ACTUALIZAR FORMULARIO';
+      this.getProduct(this.config.data);
+      this.buttonLabel = 'Editar';
     }
-    this.items = [
-      {
-        label: 'Producto',
-        command: (event: any) => {
-          this.viewFormOne = true;
-          this.viewFormTwo = false;
-        },
+  }
+
+  /**
+   * Carga los datos del producto en el formulario correspondiente.
+   * Utiliza los datos del producto proporcionados para completar los campos del formulario,
+   * asignando los valores de los campos a partir de la información del producto.
+   */
+  private getProduct(productId: number): void {
+    this.productService.findOne(productId).subscribe({
+      next: (product: IProduct) => {
+        this.productForm.patchValue({
+          ...product,
+          client: product.client.id,
+          productType: product.productType.id,
+          deliveryDate: new Date(product.deliveryDate),
+        });
       },
-      {
-        label: 'Componentes',
-        command: (event: any) => {
-          this.viewFormOne = false;
-          this.viewFormTwo = true;
-        },
-      },
-    ];
+    });
   }
 
   /**
@@ -86,20 +89,7 @@ export class ProductFormComponent {
         ],
       ],
       deliveryDate: [null, [Validators.required]],
-    });
-  }
-
-  /**
-   * Carga los datos del producto en el formulario correspondiente.
-   * Utiliza los datos del producto proporcionados para completar los campos del formulario,
-   * asignando los valores de los campos a partir de la información del producto.
-   */
-  private loadProductDataIntoForm(product: IProduct): void {
-    this.productForm.patchValue({
-      ...product,
-      client: product.client.id,
-      productType: product.productType.id,
-      deliveryDate: new Date(product.deliveryDate),
+      isActive: [true, [Validators.required]],
     });
   }
 
@@ -131,10 +121,8 @@ export class ProductFormComponent {
    * @returns Verdadero si el control es inválido y ha sido tocado, de lo contrario, indefinido.
    */
   public isFormControlInvalid(controlName: string): boolean | undefined {
-    return (
-      this.productForm.get(controlName)?.invalid &&
-      this.productForm.get(controlName)?.touched
-    );
+    const control = this.productForm.get(controlName);
+    return control?.invalid && (control?.touched || control?.pristine);
   }
 
   /**
@@ -155,11 +143,11 @@ export class ProductFormComponent {
    */
   public closeProductForm(): void {
     this.confirmationService.confirm({
-      message: '¿Está seguro que desea cancelar la operación?',
-      header: 'CONFIRMAR',
+      message: '¿Está seguro que desea salir?',
+      header: 'Confirmación',
       icon: 'pi pi-info-circle',
-      acceptLabel: 'CONFIRMAR',
-      rejectLabel: 'CANCELAR',
+      acceptLabel: 'Confirmar',
+      rejectLabel: 'Cancelar',
       acceptIcon: 'none',
       rejectIcon: 'none',
       acceptButtonStyleClass: 'p-button-sm p-button-info',
@@ -184,6 +172,9 @@ export class ProductFormComponent {
       acceptButtonStyleClass: 'p-button-sm p-button-info',
       rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
+        console.log(this.productForm.value);
+        console.log(this.dataTest);
+        return;
         this.productService.create(this.productForm.value).subscribe({
           next: () => {
             this.messageService.add({
@@ -289,5 +280,25 @@ export class ProductFormComponent {
    */
   public hasProductFormChanged(): boolean {
     return !this.productForm.pristine;
+  }
+
+  public openDialogTest() {
+    this.ref2 = this.dialogService.open(ProductPartFormComponent, {
+      header: 'Añadir componente',
+      width: '25%',
+      contentStyle: { 'min-height': '80%' },
+      closable: true,
+      closeOnEscape: false,
+      dismissableMask: false,
+      showHeader: true,
+      position: 'center',
+    });
+
+    this.ref2.onClose.subscribe({
+      next: (value: any) => {
+        console.log(value);
+        this.dataTest.push(value);
+      },
+    });
   }
 }

@@ -64,21 +64,20 @@ export class ProductTableComponent {
    * Abre un formulario para guardar o actualizar la información de un producto.
    * @param productData Datos del producto a editar. Si no se proporciona, se abre un formulario para registrar un nuevo producto.
    */
-  public openProductForm(productData?: IProduct) {
-    const header = productData ? 'ACTUALIZAR PRODUCTO' : 'REGISTRAR PRODUCTO';
+  public openProductForm(productId?: number) {
+    const header = productId ? 'Editar producto' : 'Registrar producto';
 
     this.ref = this.dialogService.open(ProductFormComponent, {
       header: header,
       width: '50%',
-      contentStyle: { 'min-height': '50%' },
+      contentStyle: { 'min-height': '80%' },
       closable: false,
       closeOnEscape: false,
       dismissableMask: false,
       showHeader: true,
       position: 'center',
-      data: productData,
+      data: productId,
     });
-
     this.ref.onClose.subscribe(() => this.loadProducts());
   }
 

@@ -1,133 +1,193 @@
-<p-steps
-  [model]="items"
-  [readonly]="false"
-  [activeIndex]="activeIndex"
-  (activeIndexChange)="onActiveIndexChange($event)"
-/>
+<section>
+  <form [formGroup]="productForm" class="flex flex-column">
+    <!-- form classic -->
+    <section class="flex flex-column gap-3">
+      <div class="flex justify-content-between align-items-center">
+        <div class="flex flex-column">
+          <h2 class="text-xl font-normal text-500">Datos de producto</h2>
+          <p class="text-sm">Información básica del producto</p>
+        </div>
+        <div class="flex flex-column align-items-center gap-1">
+          <p-toggleButton
+            formControlName="isActive"
+            [onLabel]="'Producto Activado'"
+            [offLabel]="'Producto Desactivado'"
+            styleClass="p-button-sm"
+            [onIcon]="'pi pi-check-circle'"
+            [offIcon]="'pi pi-times-circle'"
+            pTooltip="Activa o desactiva la visibilidad del producto en las búsquedas del servicio."
+          />
+        </div>
+      </div>
+      <div class="flex flex-column">
+        <label>Cliente*</label>
+        <p-dropdown
+          formControlName="client"
+          optionLabel="taxpayerName"
+          optionValue="id"
+          placeholder="Seleccionar cliente del producto"
+          styleClass="w-full"
+          [options]="clients"
+          [filter]="true"
+          [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('client') }"
+          [showClear]="true"
+        >
+        </p-dropdown>
+        <small *ngIf="isFormControlInvalid('client')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+      <div class="flex flex-column">
+        <label>Tipo de producto*</label>
+        <p-dropdown
+          formControlName="productType"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="Seleccionar tipo de producto del cliente"
+          styleClass="w-full"
+          [options]="productTypes"
+          [ngClass]="{
+            'ng-invalid ng-dirty': isFormControlInvalid('productType')
+          }"
+          [filter]="true"
+          [showClear]="true"
+          (onChange)="onProductTypeChange()"
+        >
+        </p-dropdown>
+        <small *ngIf="isFormControlInvalid('productType')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+      <div class="flex flex-column">
+        <label>Número de serie*</label>
+        <input
+          type="text"
+          pInputText
+          formControlName="serial"
+          placeholder="Ingresar número de serie del producto"
+          class="w-full"
+          [minlength]="1"
+          [maxlength]="10"
+          [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('serial') }"
+        />
+        <small *ngIf="isFormControlInvalid('serial')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+      <div class="flex flex-column">
+        <label>Remito*</label>
+        <input
+          type="text"
+          pInputText
+          formControlName="reference"
+          placeholder="Ingresar número de remito del producto"
+          class="w-full"
+          [maxLength]="15"
+          [ngClass]="{
+            'ng-invalid ng-dirty': isFormControlInvalid('reference')
+          }"
+        />
+        <small *ngIf="isFormControlInvalid('reference')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+      <div class="flex flex-column">
+        <label>Despacho*</label>
+        <p-calendar
+          formControlName="deliveryDate"
+          dateFormat="dd-mm-yy"
+          styleClass="w-full"
+          appendTo="body"
+          placeholder="Seleccionar o ingresar fecha de despacho del producto"
+          [ngClass]="{
+            'ng-invalid ng-dirty': isFormControlInvalid('deliveryDate')
+          }"
+          [showClear]="true"
+        >
+        </p-calendar>
+        <small *ngIf="isFormControlInvalid('deliveryDate')" class="p-error">
+          Campo requerido*
+        </small>
+      </div>
+    </section>
 
-<form class="grid" [formGroup]="productForm">
-  <section class="col-12" *ngIf="viewFormOne">
-    <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-      <label>CLIENTE</label>
-      <p-dropdown
-        formControlName="client"
-        optionLabel="taxpayerName"
-        optionValue="id"
-        placeholder="Seleccionar cliente del producto"
-        styleClass="w-full"
-        [options]="clients"
-        [filter]="true"
-        [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('client') }"
-        [showClear]="true"
-      >
-      </p-dropdown>
-      <small *ngIf="isFormControlInvalid('client')" class="p-error">
-        Campo requerido*
-      </small>
-    </div>
-    <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-      <label>TIPO DE PRODUCTO</label>
-      <p-dropdown
-        formControlName="productType"
-        optionLabel="name"
-        optionValue="id"
-        placeholder="Seleccionar tipo de producto del cliente"
-        styleClass="w-full"
-        [options]="productTypes"
-        [ngClass]="{
-          'ng-invalid ng-dirty': isFormControlInvalid('productType')
-        }"
-        [filter]="true"
-        [showClear]="true"
-        (onChange)="onProductTypeChange()"
-      >
-      </p-dropdown>
-      <small *ngIf="isFormControlInvalid('productType')" class="p-error">
-        Campo requerido*
-      </small>
-    </div>
-    <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-      <label>NÚMERO DE SERIE</label>
-      <input
-        type="text"
-        pInputText
-        formControlName="serial"
-        placeholder="Ingresar número de serie del producto"
-        class="w-full"
-        [minlength]="1"
-        [maxlength]="10"
-        [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('serial') }"
+    <p-divider></p-divider>
+
+    <!-- form components -->
+    <!--!TOOD: Modificar la estructura  -->
+    <section>
+      <div class="flex flex-column">
+        <div class="flex flex-column">
+          <h2 class="text-xl font-normal text-500">Componentes de producto</h2>
+          <p class="text-sm">Lista de componentes que conforman el producto</p>
+        </div>
+        <br />
+        <p-table [value]="dataTest" styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr class="text-sm h-3rem">
+              <th>Tipo de parte</th>
+              <th>Identificador de parte</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-data>
+            <tr class="text-sm h-3rem">
+              <td>
+                {{ data.productPartType.name }}
+              </td>
+              <td [pEditableColumn]="data.hardwareId">
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText
+                      type="text"
+                      [(ngModel)]="data.hardwareId"
+                      [ngModelOptions]="{ standalone: true }"
+                      class="w-full"
+                    />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{ data.hardwareId }}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <!-- <td class="flex gap-1">
+                <p-button
+                  icon="pi pi-pencil"
+                  styleClass="p-button-text p-button-secondary"
+                />
+                <p-button
+                  icon="pi pi-trash"
+                  styleClass="p-button-text p-button-secondary"
+                />
+              </td> -->
+            </tr>
+          </ng-template>
+        </p-table>
+
+        <p-button
+          icon="pi pi-plus"
+          label="Añadir nuevo componente"
+          styleClass="p-button-text p-button-info"
+          (onClick)="openDialogTest()"
+        />
+      </div>
+    </section>
+
+    <p-divider></p-divider>
+
+    <!-- buttons -->
+    <section class="flex justify-content-end gap-2">
+      <p-button
+        label="Salir"
+        styleClass="p-button-secondary w-full p-button-sm"
+        (onClick)="closeProductForm()"
       />
-      <small *ngIf="isFormControlInvalid('serial')" class="p-error">
-        Campo requerido*
-      </small>
-    </div>
-    <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-      <label>NÚMERO DE REMITO (Remito del envio del producto al cliente)</label>
-      <input
-        type="text"
-        pInputText
-        formControlName="reference"
-        placeholder="Ingresar número de remito del producto"
-        class="w-full"
-        [maxLength]="15"
-        [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('reference') }"
+      <p-button
+        [label]="buttonLabel"
+        [disabled]="productForm.invalid || !hasProductFormChanged()"
+        styleClass="p-button-info w-full p-button-sm"
+        (onClick)="processProductForm()"
       />
-      <small *ngIf="isFormControlInvalid('reference')" class="p-error">
-        Campo requerido*
-      </small>
-    </div>
-    <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-      <label
-        >FECHA DE DESPACHO (Fecha en la que se envio el producto al
-        cliente)</label
-      >
-      <p-calendar
-        formControlName="deliveryDate"
-        dateFormat="dd-mm-yy"
-        styleClass="w-full"
-        appendTo="body"
-        placeholder="Seleccionar o ingresar fecha de despacho del producto"
-        [ngClass]="{
-          'ng-invalid ng-dirty': isFormControlInvalid('deliveryDate')
-        }"
-        [showClear]="true"
-      >
-      </p-calendar>
-      <small *ngIf="isFormControlInvalid('deliveryDate')" class="p-error">
-        Campo requerido*
-      </small>
-    </div>
-  </section>
-  <section class="col-12" *ngIf="viewFormTwo">
-    <div class="flex flex-column col-12 lg:col-12 xl:col-12">
-      <label>BUSQUEDA</label>
-      <input
-        type="text"
-        pInputText
-        formControlName="serial"
-        placeholder="Ingresar número de serie del producto"
-        class="w-full"
-        [minlength]="1"
-        [maxlength]="10"
-        [ngClass]="{ 'ng-invalid ng-dirty': isFormControlInvalid('serial') }"
-      />
-      <small *ngIf="isFormControlInvalid('serial')" class="p-error">
-        Campo requerido*
-      </small>
-    </div>
-  </section>
-  <div class="flex gap-2 col-12 lg:flex-row justify-content-end flex-column">
-    <p-button
-      label="SALIR DEL FORMULARIO"
-      styleClass="p-button-secondary w-full"
-      (onClick)="closeProductForm()"
-    />
-    <p-button
-      [label]="buttonLabel"
-      [disabled]="productForm.invalid || !hasProductFormChanged()"
-      styleClass="p-button-info w-full"
-      (onClick)="processProductForm()"
-    />
-  </div>
-</form>
+    </section>
+  </form>
+</section>
