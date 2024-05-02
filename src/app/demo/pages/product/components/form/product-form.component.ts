@@ -14,6 +14,8 @@ import { ClientService } from 'src/app/demo/api/services/client.service';
 import { ProductTypeService } from 'src/app/demo/api/services/product-type.service';
 import { ProductService } from 'src/app/demo/api/services/product.service';
 import { ProductPartFormComponent } from './product-part-form.component';
+import { IProductPart } from 'src/app/demo/api/interfaces/product-part.interface';
+import { ProductPartService } from 'src/app/demo/api/services/product-part.service';
 
 @Component({
   selector: 'app-product-form',
@@ -27,8 +29,9 @@ export class ProductFormComponent {
     private readonly clientService: ClientService,
     private readonly productTypeService: ProductTypeService,
     private readonly productService: ProductService,
+    private readonly productPartService: ProductPartService,
     private readonly formBuilder: FormBuilder,
-    private readonly config: DynamicDialogConfig,
+    public readonly config: DynamicDialogConfig,
     private readonly dialogService: DialogService
   ) {}
 
@@ -37,8 +40,8 @@ export class ProductFormComponent {
   public clients: IClient[] = [];
   public productTypes: IProductType[] = [];
 
-  public ref2: DynamicDialogRef = new DynamicDialogRef();
-  public dataTest: any[] = [];
+  public refProductPart: DynamicDialogRef = new DynamicDialogRef();
+  public productPart: IProductPart[] = [];
 
   ngOnInit(): void {
     this.getClients();
@@ -63,6 +66,7 @@ export class ProductFormComponent {
           productType: product.productType.id,
           deliveryDate: new Date(product.deliveryDate),
         });
+        this.productPart = product.productPart;
       },
     });
   }
@@ -152,7 +156,10 @@ export class ProductFormComponent {
       rejectIcon: 'none',
       acceptButtonStyleClass: 'p-button-sm p-button-info',
       rejectButtonStyleClass: 'p-button-sm p-button-secondary',
-      accept: () => this.ref.close(),
+      accept: () => {
+        this.ref.close();
+        this.productPart = [];
+      },
     });
   }
 
@@ -163,43 +170,81 @@ export class ProductFormComponent {
   public confirmCreateProduct(): void {
     this.confirmationService.confirm({
       message: '¿Está seguro que desea crear el registro?',
-      header: 'CONFIRMAR',
+      header: 'Confirmación',
       icon: 'pi pi-info-circle',
-      acceptLabel: 'CONFIRMAR',
-      rejectLabel: 'CANCELAR',
+      acceptLabel: 'Confirmar',
+      rejectLabel: 'Cancelar',
       acceptIcon: 'none',
       rejectIcon: 'none',
       acceptButtonStyleClass: 'p-button-sm p-button-info',
       rejectButtonStyleClass: 'p-button-sm p-button-secondary',
       accept: () => {
-        console.log(this.productForm.value);
-        console.log(this.dataTest);
-        return;
-        this.productService.create(this.productForm.value).subscribe({
+        if (this.productPart.length) {
+          this.createProductWithParts();
+        } else {
+          this.productService.create(this.productForm.value).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Operación exitosa',
+                detail: 'Registro creado correctamente',
+              });
+              this.ref.close();
+            },
+            error: (err: HttpErrorResponse) => {
+              if (err.status === 409) {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'El producto ya existe',
+                });
+              } else {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Ocurrió un error al crear el producto',
+                });
+              }
+            },
+          });
+        }
+      },
+    });
+  }
+
+  public createProductWithParts(): void {
+    this.productService.create(this.productForm.value).subscribe({
+      next: (productCreated: IProduct) => {
+        this.productPart = this.productPart.map((productPart) => ({
+          ...productPart,
+          product: productCreated,
+        }));
+        this.productPartService.create(this.productPart).subscribe({
           next: () => {
             this.messageService.add({
               severity: 'success',
               summary: 'Operación exitosa',
               detail: 'Registro creado correctamente',
             });
+            this.productPart = [];
             this.ref.close();
           },
-          error: (err: HttpErrorResponse) => {
-            if (err.status === 409) {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'El producto ya existe',
-              });
-            } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Ocurrió un error al crear el producto',
-              });
-            }
-          },
         });
+      },
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 409) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'El producto ya existe',
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Ocurrió un error al crear el producto',
+          });
+        }
       },
     });
   }
@@ -282,22 +327,43 @@ export class ProductFormComponent {
     return !this.productForm.pristine;
   }
 
-  public openDialogTest() {
-    this.ref2 = this.dialogService.open(ProductPartFormComponent, {
+  public openProductPartForm() {
+    this.refProductPart = this.dialogService.open(ProductPartFormComponent, {
       header: 'Añadir componente',
       width: '25%',
       contentStyle: { 'min-height': '80%' },
-      closable: true,
+      closable: false,
       closeOnEscape: false,
       dismissableMask: false,
       showHeader: true,
       position: 'center',
+      data: this.productPart,
     });
 
-    this.ref2.onClose.subscribe({
-      next: (value: any) => {
-        console.log(value);
-        this.dataTest.push(value);
+    this.refProductPart.onClose.subscribe({
+      next: (productPart: IProductPart) => {
+        if (productPart) {
+          this.productPart.push(productPart);
+        }
+      },
+    });
+  }
+
+  public deleteProductPartItem(serial: string): void {
+    this.confirmationService.confirm({
+      message: '¿Está seguro que desea quitar esta parte del producto?',
+      header: 'Confirmación',
+      icon: 'pi pi-info-circle',
+      acceptLabel: 'Confirmar',
+      rejectLabel: 'Cancelar',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptButtonStyleClass: 'p-button-sm p-button-info',
+      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
+      accept: () => {
+        this.productPart = this.productPart.filter(
+          (item) => item.serial !== serial
+        );
       },
     });
   }
