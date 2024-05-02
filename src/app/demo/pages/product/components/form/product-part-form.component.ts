@@ -151,6 +151,7 @@ export class ProductPartFormComponent {
     });
   }
 
+  //todo: Modificar para cuando sean solo 3 caracteres se borre al momento de cambiar de tipo de parte, el resto queda igual
   public onProductPartTypeChange(): void {
     const productPartTypeId =
       this.productPartForm.get('productPartType')?.value?.id;
