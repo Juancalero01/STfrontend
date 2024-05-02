@@ -1,4 +1,5 @@
 import { IClient } from './client.interface';
+import { IProductPart } from './product-part.interface';
 import { IProductType } from './product-type.interface';
 
 export interface IProduct {
@@ -11,4 +12,5 @@ export interface IProduct {
   deliveryDate: Date;
   client: IClient;
   productType: IProductType;
+  productPart: IProductPart[];
 }
