@@ -330,7 +330,7 @@ export class ProductFormComponent {
   public openProductPartForm() {
     this.refProductPart = this.dialogService.open(ProductPartFormComponent, {
       header: 'Añadir componente',
-      width: '30%',
+      width: '40%',
       contentStyle: { 'min-height': '80%' },
       closable: false,
       closeOnEscape: false,
